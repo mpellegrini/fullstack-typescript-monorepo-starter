@@ -1,0 +1,1 @@
+# Fullstack Typescript Monorepo Starter

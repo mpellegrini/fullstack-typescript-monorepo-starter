@@ -1,0 +1,55 @@
+### Node ###
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# dotenv environment variable files
+.env
+.env.*
+!.env.example
+
+# typescript build artifacts
+/dist
+
+# cdk deployment artifacts
+/**/cdk.out
+cdk.context.json
+
+# turborepo logs and certain task outputs
+.turbo/
+
+# Vitest test coverage
+coverage/
+
+# svelte
+build/
+.svelte-kit/
+package/
+$houdini/
+
+# vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# vercel
+.vercel/

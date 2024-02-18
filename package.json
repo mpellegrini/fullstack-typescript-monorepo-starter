@@ -2,8 +2,13 @@
   "name": "monorepo-root",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@8.15.3",
+  "scripts": {
+    "format": "prettier --write ."
+  },
   "devDependencies": {
+    "prettier": "3.2.5",
+    "prettier-plugin-packagejson": "2.4.11",
     "turbo": "1.12.4"
-  }
+  },
+  "packageManager": "pnpm@8.15.3"
 }

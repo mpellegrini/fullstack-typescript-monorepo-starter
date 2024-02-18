@@ -1,0 +1,81 @@
+#-------------------------------------------------------------------------------------------------------------------
+# Keep this section in sync with .gitignore
+#-------------------------------------------------------------------------------------------------------------------
+
+### Node ###
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# dotenv environment variable files
+.env
+.env.*
+!.env.example
+
+# typescript build artifacts
+/dist
+
+# cdk deployment artifacts
+/**/cdk.out
+cdk.context.json
+
+# turborepo logs and certain task outputs
+.turbo/
+
+# Vitest test coverage
+coverage/
+
+# svelte
+build/
+.svelte-kit/
+package/
+$houdini/
+
+# vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# vercel
+.vercel/
+
+#-------------------------------------------------------------------------------------------------------------------
+# Prettier-specific overrides
+#-------------------------------------------------------------------------------------------------------------------
+
+# Package manager files
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+shrinkwrap.json
+
+# Prettier re-formats code blocks inside Markdown, which affects rendered output
+*.md
+
+# Prettier re-formats comments in JSON, making the documentation hard to read.
+**/tsconfig-base.json
+
+#VSCode - ignore project level vscode settings
+.vscode/
+
+# Prettier re-formats handlebar templates, making the template hard to maintain.
+*.hbs

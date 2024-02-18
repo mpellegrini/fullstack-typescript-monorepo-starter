@@ -3,9 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "husky": "9.0.11",
+    "lint-staged": "15.2.2",
     "prettier": "3.2.5",
     "prettier-plugin-packagejson": "2.4.11",
     "turbo": "1.12.4"

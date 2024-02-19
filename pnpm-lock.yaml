@@ -33,6 +33,21 @@ importers:
         specifier: 1.12.4
         version: 1.12.4
 
+  packages/example-pkg:
+    devDependencies:
+      '@toolchain/eslint-config':
+        specifier: workspace:*
+        version: link:../../toolchain/eslint-config
+      '@toolchain/typescript-config':
+        specifier: workspace:*
+        version: link:../../toolchain/typescript-config
+      '@toolchain/vitest-config':
+        specifier: workspace:*
+        version: link:../../toolchain/vitest-config
+      '@types/node':
+        specifier: 20.11.19
+        version: 20.11.19
+
   toolchain/eslint-config:
     dependencies:
       '@aws-appsync/eslint-plugin':

@@ -1,0 +1,6 @@
+{
+  "extends": "./node_modules/@toolchain/typescript-config/tsconfig-base.json",
+  "compilerOptions": {
+    "types": ["node", "vitest/globals"]
+  }
+}

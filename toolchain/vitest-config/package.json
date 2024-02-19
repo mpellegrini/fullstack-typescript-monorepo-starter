@@ -1,0 +1,12 @@
+{
+  "name": "@toolchain/vitest-config",
+  "version": "0.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": "./index.js",
+  "dependencies": {
+    "@vitest/coverage-v8": "1.2.2",
+    "vitest": "1.2.2"
+  }
+}

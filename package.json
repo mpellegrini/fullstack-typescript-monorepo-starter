@@ -6,7 +6,8 @@
     "clean": "turbo run clean",
     "format": "prettier --write .",
     "lint": "turbo run lint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "turbo run test"
   },
   "devDependencies": {
     "@commitlint/cli": "18.6.1",

@@ -4,6 +4,9 @@
     "clean": {
       "cache": false
     },
-    "lint": {}
+    "lint": {},
+    "test": {
+      "outputs": ["./coverage/**"]
+    }
   }
 }

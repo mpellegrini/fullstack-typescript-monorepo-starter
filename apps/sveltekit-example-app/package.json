@@ -1,0 +1,27 @@
+{
+  "name": "@apps/sveltekit-example-app",
+  "version": "0.0.1",
+  "private": true,
+  "description": "SvelteKit Example App",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "clean": "del .turbo .svelte-kit",
+    "dev": "vite dev",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "3.1.1",
+    "@sveltejs/kit": "2.5.0",
+    "@sveltejs/vite-plugin-svelte": "3.0.2",
+    "@toolchain/eslint-config": "workspace:*",
+    "@toolchain/vitest-config": "workspace:*",
+    "svelte": "4.2.11",
+    "svelte-check": "3.6.4",
+    "tslib": "2.6.2",
+    "vite": "5.1.3"
+  }
+}

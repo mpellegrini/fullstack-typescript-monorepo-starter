@@ -5,6 +5,7 @@
   "scripts": {
     "clean": "turbo run clean",
     "format": "prettier --write .",
+    "lint": "turbo run lint",
     "prepare": "husky"
   },
   "devDependencies": {

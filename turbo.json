@@ -3,6 +3,7 @@
   "pipeline": {
     "clean": {
       "cache": false
-    }
+    },
+    "lint": {}
   }
 }

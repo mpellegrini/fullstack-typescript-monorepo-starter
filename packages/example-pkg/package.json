@@ -1,0 +1,22 @@
+{
+  "name": "@packages/example-pkg",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Example Package",
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    "./subtract": "./src/index.ts"
+  },
+  "scripts": {
+    "clean": "del .turbo dist coverage",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@toolchain/eslint-config": "workspace:*",
+    "@toolchain/typescript-config": "workspace:*",
+    "@toolchain/vitest-config": "workspace:*",
+    "@types/node": "20.11.19"
+  }
+}

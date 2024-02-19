@@ -1,5 +1,6 @@
 import prettierPlugin from 'eslint-config-prettier'
 import { defineFlatConfig } from 'eslint-define-config'
+import sveltePlugin from 'eslint-plugin-svelte'
 
 /**
  * eslint-config-prettier configuration
@@ -12,6 +13,7 @@ import { defineFlatConfig } from 'eslint-define-config'
 export default defineFlatConfig([
   {
     rules: {
+      ...sveltePlugin.configs.prettier.rules,
       ...prettierPlugin.rules,
     },
   },

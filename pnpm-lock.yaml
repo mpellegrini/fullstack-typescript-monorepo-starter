@@ -37,6 +37,10 @@ importers:
         version: 1.12.4
 
   apps/sveltekit-example-app:
+    dependencies:
+      '@packages/example-pkg':
+        specifier: workspace:*
+        version: link:../../packages/example-pkg
     devDependencies:
       '@sveltejs/adapter-auto':
         specifier: 3.1.1

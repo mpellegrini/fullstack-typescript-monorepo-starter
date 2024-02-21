@@ -6,7 +6,7 @@
   "license": "UNLICENSED",
   "type": "module",
   "exports": {
-    "./subtract": "./src/index.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "clean": "del .turbo dist coverage",

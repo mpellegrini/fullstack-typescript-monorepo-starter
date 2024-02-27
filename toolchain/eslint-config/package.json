@@ -15,10 +15,10 @@
   },
   "dependencies": {
     "@aws-appsync/eslint-plugin": "1.6.0",
-    "@eslint/js": "8.56.0",
-    "@typescript-eslint/eslint-plugin": "7.0.1",
-    "@typescript-eslint/parser": "7.0.1",
-    "eslint": "8.56.0",
+    "@eslint/js": "8.57.0",
+    "@typescript-eslint/eslint-plugin": "7.1.0",
+    "@typescript-eslint/parser": "7.1.0",
+    "eslint": "8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "3.6.1",
     "eslint-plugin-eslint-comments": "3.2.0",
@@ -30,7 +30,7 @@
     "svelte-eslint-parser": "0.33.1"
   },
   "devDependencies": {
-    "@types/eslint": "8.56.2",
+    "@types/eslint": "8.56.4",
     "eslint-define-config": "2.1.0"
   }
 }

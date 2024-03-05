@@ -29,7 +29,7 @@ const config = {
   // Put the > of a multi-line HTML element at the end of the last line instead of being alone on the next line.
   bracketSameLine: true,
 
-  plugins: ['prettier-plugin-packagejson', 'prettier-plugin-svelte'],
+  plugins: ['prettier-plugin-packagejson', 'prettier-plugin-svelte', 'prettier-plugin-tailwindcss'],
 
   overrides: [
     {

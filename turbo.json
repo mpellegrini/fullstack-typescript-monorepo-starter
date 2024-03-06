@@ -1,12 +1,21 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
+    "build": {
+      "dependsOn": ["^build"]
+    },
     "clean": {
       "cache": false
     },
-    "lint": {},
+    "code-gen": {},
+    "lint": {
+      "dependsOn": ["code-gen"]
+    },
     "test": {
       "outputs": ["./coverage/**"]
+    },
+    "type-check": {
+      "dependsOn": ["code-gen"]
     }
   }
 }

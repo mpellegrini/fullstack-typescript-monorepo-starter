@@ -2,6 +2,9 @@
   "extends": ["//"],
   "pipeline": {
     "build": {
+      "outputs": [".svelte-kit/**", ".vercel/**"]
+    },
+    "code-gen": {
       "outputs": [".svelte-kit/**"]
     }
   }

@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Install
         uses: ./.github/composite-actions/install
@@ -23,14 +21,12 @@ jobs:
         run: pnpm run lint
 
   test:
-    name: test
+    name: 'Unit Tests'
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Install
         uses: ./.github/composite-actions/install

@@ -20,8 +20,8 @@ jobs:
       - name: Run ESLint check
         run: pnpm run lint
 
-  test:
-    name: 'Unit Tests'
+  type-check:
+    name: 'Type Check'
     runs-on: ubuntu-latest
 
     steps:
@@ -31,5 +31,19 @@ jobs:
       - name: Install
         uses: ./.github/composite-actions/install
 
-      - name: Run Unit Tests
+      - name: Run type checks
+        run: pnpm run type-check
+
+  test:
+    name: 'Unit Test'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Install
+        uses: ./.github/composite-actions/install
+
+      - name: Run unit test
         run: pnpm run test

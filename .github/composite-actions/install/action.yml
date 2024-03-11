@@ -1,0 +1,26 @@
+name: 'Install'
+description: 'Sets up Node, and installs dependencies'
+
+inputs:
+  fetch-depth:
+    default: '1'
+    required: false
+  persist-credentials:
+    default: true
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Install pnpm package manager
+      uses: pnpm/action-setup@v3
+
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: 'package.json'
+        cache: pnpm
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --ignore-scripts

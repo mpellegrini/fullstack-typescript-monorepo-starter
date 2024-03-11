@@ -9,9 +9,11 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "clean": "del .turbo dist coverage",
+    "check-types": "tsc --no-emit",
+    "clean": "del .turbo coverage",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

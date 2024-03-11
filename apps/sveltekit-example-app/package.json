@@ -6,12 +6,14 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "clean": "del .turbo .svelte-kit",
+    "check": "pnpm run code-gen && pnpm run type-check",
+    "clean": "del .turbo coverage .svelte-kit .vercel",
+    "code-gen": "svelte-kit sync",
     "dev": "vite dev",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "type-check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
     "@packages/example-pkg": "workspace:*"

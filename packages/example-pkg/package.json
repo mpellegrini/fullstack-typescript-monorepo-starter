@@ -9,7 +9,6 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "check-types": "tsc --no-emit",
     "clean": "del .turbo coverage",
     "lint": "eslint .",
     "test": "vitest run",

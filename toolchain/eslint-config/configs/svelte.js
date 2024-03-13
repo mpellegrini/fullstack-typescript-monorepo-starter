@@ -47,6 +47,14 @@ export default defineFlatConfig([
       ...plugin.configs.recommended.rules,
 
       'svelte/block-lang': ['error', { script: 'ts', style: ['postcss', 'css'] }],
+
+      /**
+       * Overrides rule defined in ./js/imports.js
+       *
+       * Svelte v4 requires mutable exports to work correctly for component props
+       * Revisit when upgrading to Svelte v5 and Runes
+       */
+      'import/no-mutable-exports': 'off',
     },
   },
   {

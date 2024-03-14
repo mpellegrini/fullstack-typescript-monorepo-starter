@@ -7,7 +7,12 @@
     "clean": {
       "cache": false
     },
-    "codegen": {},
+    "topo": {
+      "dependsOn": ["^topo"]
+    },
+    "codegen": {
+      "dependsOn": ["topo"]
+    },
     "lint": {
       "dependsOn": ["codegen"]
     },

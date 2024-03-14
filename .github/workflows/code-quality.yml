@@ -32,7 +32,7 @@ jobs:
         uses: ./.github/composite-actions/install
 
       - name: Run type checks
-        run: pnpm run type-check
+        run: pnpm run typecheck
 
   test:
     name: 'Unit Test'

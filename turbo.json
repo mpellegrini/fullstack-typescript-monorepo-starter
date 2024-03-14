@@ -7,15 +7,15 @@
     "clean": {
       "cache": false
     },
-    "code-gen": {},
+    "codegen": {},
     "lint": {
-      "dependsOn": ["code-gen"]
+      "dependsOn": ["codegen"]
     },
     "test": {
       "outputs": ["./coverage/**"]
     },
-    "type-check": {
-      "dependsOn": ["code-gen"]
+    "typecheck": {
+      "dependsOn": ["codegen"]
     }
   }
 }

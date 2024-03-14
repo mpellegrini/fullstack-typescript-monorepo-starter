@@ -12,7 +12,7 @@
     "clean": "del .turbo coverage",
     "lint": "eslint .",
     "test": "vitest run",
-    "type-check": "tsc --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

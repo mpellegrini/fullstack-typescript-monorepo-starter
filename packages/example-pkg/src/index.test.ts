@@ -1,4 +1,4 @@
-import { greetUser, type User } from './index.js'
+import { type User, greetUser } from './index.js'
 
 describe('greet user tests', () => {
   const user: User = {

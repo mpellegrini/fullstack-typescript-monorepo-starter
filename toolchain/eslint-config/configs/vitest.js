@@ -9,7 +9,7 @@ import plugin from 'eslint-plugin-vitest'
  */
 export default defineFlatConfig([
   {
-    files: ['**/*.test.ts', '**/*.spec.ts'],
+    files: ['src/**/*.test.ts', 'src/**/*.spec.ts'],
     plugins: {
       vitest: plugin,
     },

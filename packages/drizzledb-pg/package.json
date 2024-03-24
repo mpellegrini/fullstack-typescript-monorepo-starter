@@ -1,0 +1,39 @@
+{
+  "name": "@packages/drizzledb-pg",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Drizzle ORM Database Client and Schema for PostgreSQL",
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    "./client": "./src/client/index.ts",
+    "./schema": "./src/schema/index.ts"
+  },
+  "scripts": {
+    "clean": "del .turbo coverage",
+    "db:generate": "drizzle-kit generate:pg",
+    "db:migrate": "node --env-file=.env --import=tsx ./src/migrate.ts",
+    "db:push": "drizzle-kit push:pg",
+    "db:studio": "drizzle-kit studio",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "16.4.5",
+    "drizzle-orm": "0.30.4",
+    "postgres": "3.4.4",
+    "znv": "0.4.0",
+    "zod": "3.22.4"
+  },
+  "devDependencies": {
+    "@toolchain/eslint-config": "workspace:*",
+    "@toolchain/typescript-config": "workspace:*",
+    "@toolchain/vitest-config": "workspace:*",
+    "@types/node": "20.11.30",
+    "@types/pg": "8.11.4",
+    "drizzle-kit": "0.20.14",
+    "pg": "8.11.3",
+    "tsx": "4.7.1"
+  }
+}

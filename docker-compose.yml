@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: postgres:16.2-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./.docker/pg-data:/var/lib/postgresql/data
+
+  mailpit:
+    image: axllent/mailpit
+    restart: always
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATA_FILE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    ports:
+      - 8025:8025
+      - 1025:1025
+    volumes:
+      - ./.docker/mailpit-data:/data

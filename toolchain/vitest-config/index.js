@@ -14,3 +14,5 @@ export default defineConfig({
     },
   },
 })
+
+export { defineConfig, mergeConfig } from 'vitest/config'

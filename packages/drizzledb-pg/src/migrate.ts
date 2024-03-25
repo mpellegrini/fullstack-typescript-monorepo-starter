@@ -1,6 +1,6 @@
 import { migrate } from 'drizzle-orm/postgres-js/migrator'
 
-import { connection, db } from './client/postgresjs-client.js'
+import { connection, db } from './client/nodepostres-client.js'
 
 try {
   console.log('Drizzle database migration starting...')

@@ -1,1 +1,1 @@
-export { db } from './postgresjs-client.js'
+export { db } from './nodepostres-client.js'

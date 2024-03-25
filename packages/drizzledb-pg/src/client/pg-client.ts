@@ -22,7 +22,7 @@ export const connection = new pg.Pool({
   max: DB_MAX_CONNECTIONS,
 
   /**
-   * Mumber of milliseconds a client must sit idle in the pool and not
+   * Number of milliseconds a client must sit idle in the pool and not
    * be checked out before it is disconnected from the backend and discarded.
    */
   idleTimeoutMillis: 2_000,

@@ -1,6 +1,8 @@
 services:
   postgres:
-    image: postgres:16.2-alpine
+    build:
+      context: ./.docker
+      dockerfile: PgDockerfile
     restart: always
     environment:
       - POSTGRES_USER=postgres
@@ -13,7 +15,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./.docker/pg-data:/var/lib/postgresql/data
+      - ./.docker/data/pg-data:/var/lib/postgresql/data
 
   mailpit:
     image: axllent/mailpit
@@ -27,4 +29,4 @@ services:
       - 8025:8025
       - 1025:1025
     volumes:
-      - ./.docker/mailpit-data:/data
+      - ./.docker/data/mailpit-data:/data

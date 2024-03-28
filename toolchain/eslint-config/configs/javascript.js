@@ -3,6 +3,7 @@ import { defineFlatConfig } from 'eslint-define-config'
 
 import importConfig from './js/import.js'
 import promiseConfig from './js/promise.js'
+import unicornConfig from './js/unicorn.js'
 
 export default defineFlatConfig([
   {
@@ -43,4 +44,5 @@ export default defineFlatConfig([
   },
   importConfig,
   promiseConfig,
+  unicornConfig,
 ])

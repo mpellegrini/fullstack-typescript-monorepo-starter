@@ -16,8 +16,8 @@
   "dependencies": {
     "@aws-appsync/eslint-plugin": "1.6.0",
     "@eslint/js": "8.57.0",
-    "@typescript-eslint/eslint-plugin": "7.4.0",
-    "@typescript-eslint/parser": "7.4.0",
+    "@typescript-eslint/eslint-plugin": "7.5.0",
+    "@typescript-eslint/parser": "7.5.0",
     "eslint": "8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "3.6.1",
@@ -25,13 +25,13 @@
     "eslint-plugin-import": "2.29.1",
     "eslint-plugin-promise": "6.1.1",
     "eslint-plugin-svelte": "2.35.1",
-    "eslint-plugin-unicorn": "51.0.1",
-    "eslint-plugin-vitest": "0.4.0",
+    "eslint-plugin-unicorn": "52.0.0",
+    "eslint-plugin-vitest": "0.4.1",
     "globals": "15.0.0",
     "svelte-eslint-parser": "0.33.1"
   },
   "devDependencies": {
-    "@types/eslint": "8.56.6",
+    "@types/eslint": "8.56.7",
     "eslint-define-config": "2.1.0"
   }
 }

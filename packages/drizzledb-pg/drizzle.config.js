@@ -29,7 +29,7 @@ export default defineConfig({
   /**
    * https://orm.drizzle.team/kit-docs/config-reference#schemafilter
    */
-  schemaFilter: ['public'],
+  schemaFilter: ['public', 'auth'],
 
   /**
    * https://orm.drizzle.team/kit-docs/config-reference#driver

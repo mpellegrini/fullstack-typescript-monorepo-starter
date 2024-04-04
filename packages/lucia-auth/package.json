@@ -16,7 +16,7 @@
     "@lucia-auth/adapter-drizzle": "1.0.7",
     "@packages/drizzledb-pg": "workspace:*",
     "lucia": "3.1.1",
-    "oslo": "1.1.3"
+    "oslo": "1.2.0"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

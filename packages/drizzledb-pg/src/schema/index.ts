@@ -8,7 +8,7 @@ export const authSchema = pgSchema('auth')
 
 export const users = authSchema.table('users', {
   id: uuid('id').primaryKey().defaultRandom(),
-  username: citext('user_name').notNull(),
+  username: citext('username').notNull().unique(),
   hashedPassword: text('hashed_password').notNull(),
 })
 

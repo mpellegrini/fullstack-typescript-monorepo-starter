@@ -5,7 +5,10 @@
   "description": "Lucia Auth Client",
   "license": "UNLICENSED",
   "type": "module",
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./repository": "./src/repository/index.ts"
+  },
   "scripts": {
     "clean": "del .turbo coverage",
     "lint": "eslint .",

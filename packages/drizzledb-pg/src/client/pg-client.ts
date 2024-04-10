@@ -2,6 +2,8 @@ import { drizzle } from 'drizzle-orm/node-postgres'
 import pg from 'pg'
 import { parseEnv, z } from 'znv'
 
+import * as schema from '../schema/index.js'
+
 import 'dotenv/config'
 
 const { DB_CONNECTION_STRING, DB_MAX_CONNECTIONS } = parseEnv(process.env, {
@@ -34,4 +36,4 @@ connection.on('connect', () => console.log(`Connected`))
 connection.on('acquire', () => console.log('acquired a connection from the pool'))
 connection.on('release', () => console.log('released the connection to the pool'))
 
-export const db = drizzle(connection)
+export const db = drizzle(connection, { schema })

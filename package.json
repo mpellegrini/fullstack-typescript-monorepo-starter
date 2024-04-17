@@ -11,18 +11,18 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "@commitlint/cli": "19.2.1",
-    "@commitlint/config-conventional": "19.1.0",
+    "@commitlint/cli": "19.2.2",
+    "@commitlint/config-conventional": "19.2.2",
     "del-cli": "5.1.0",
     "husky": "9.0.11",
     "lint-staged": "15.2.2",
     "prettier": "3.2.5",
-    "prettier-plugin-packagejson": "2.4.14",
-    "prettier-plugin-svelte": "3.2.2",
-    "prettier-plugin-tailwindcss": "0.5.13",
+    "prettier-plugin-packagejson": "2.5.0",
+    "prettier-plugin-svelte": "3.2.3",
+    "prettier-plugin-tailwindcss": "0.5.14",
     "turbo": "1.13.2"
   },
-  "packageManager": "pnpm@8.15.6+sha256.01c01eeb990e379b31ef19c03e9d06a14afa5250b82e81303f88721c99ff2e6f",
+  "packageManager": "pnpm@9.0.1+sha256.46d50ee2afecb42b185ebbd662dc7bdd52ef5be56bf035bb615cab81a75345df",
   "engines": {
     "node": "20.11.x"
   }

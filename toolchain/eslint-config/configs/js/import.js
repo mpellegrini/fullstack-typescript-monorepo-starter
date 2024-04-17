@@ -100,7 +100,6 @@ export default defineFlatConfig({
       {
         groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
         'newlines-between': 'always',
-        pathGroupsExcludedImportTypes: ['internal'],
         alphabetize: {
           order: 'asc',
           orderImportKind: 'asc',

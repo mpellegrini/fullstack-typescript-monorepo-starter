@@ -3,8 +3,8 @@ import { message, setError, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
 
 import { schema } from '$lib'
-import { lucia } from '@packages/lucia-auth'
-import { createUser } from '@packages/lucia-auth/repository'
+import { lucia } from '@packages/auth-lucia'
+import { createUser } from '@packages/auth-lucia/repository'
 
 import type { Actions, PageServerLoad } from './$types.js'
 

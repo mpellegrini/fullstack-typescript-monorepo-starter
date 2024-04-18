@@ -41,12 +41,12 @@ importers:
 
   apps/sveltekit-example-app:
     dependencies:
+      '@packages/auth-lucia':
+        specifier: workspace:*
+        version: link:../../packages/auth-lucia
       '@packages/example-pkg':
         specifier: workspace:*
         version: link:../../packages/example-pkg
-      '@packages/lucia-auth':
-        specifier: workspace:*
-        version: link:../../packages/lucia-auth
     devDependencies:
       '@sveltejs/adapter-auto':
         specifier: 3.2.0
@@ -93,6 +93,31 @@ importers:
       zod:
         specifier: 3.22.4
         version: 3.22.4
+
+  packages/auth-lucia:
+    dependencies:
+      '@lucia-auth/adapter-drizzle':
+        specifier: 1.0.7
+        version: 1.0.7(lucia@3.1.1)
+      '@packages/drizzledb-pg':
+        specifier: workspace:*
+        version: link:../drizzledb-pg
+      lucia:
+        specifier: 3.1.1
+        version: 3.1.1
+      oslo:
+        specifier: 1.2.0
+        version: 1.2.0
+    devDependencies:
+      '@toolchain/eslint-config':
+        specifier: workspace:*
+        version: link:../../toolchain/eslint-config
+      '@toolchain/typescript-config':
+        specifier: workspace:*
+        version: link:../../toolchain/typescript-config
+      '@toolchain/vitest-config':
+        specifier: workspace:*
+        version: link:../../toolchain/vitest-config
 
   packages/drizzledb-pg:
     dependencies:
@@ -148,31 +173,6 @@ importers:
       '@types/node':
         specifier: 20.12.7
         version: 20.12.7
-
-  packages/lucia-auth:
-    dependencies:
-      '@lucia-auth/adapter-drizzle':
-        specifier: 1.0.7
-        version: 1.0.7(lucia@3.1.1)
-      '@packages/drizzledb-pg':
-        specifier: workspace:*
-        version: link:../drizzledb-pg
-      lucia:
-        specifier: 3.1.1
-        version: 3.1.1
-      oslo:
-        specifier: 1.2.0
-        version: 1.2.0
-    devDependencies:
-      '@toolchain/eslint-config':
-        specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
-        specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
-        specifier: workspace:*
-        version: link:../../toolchain/vitest-config
 
   toolchain/eslint-config:
     dependencies:

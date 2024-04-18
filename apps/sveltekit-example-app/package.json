@@ -16,8 +16,8 @@
     "typecheck": "svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "@packages/example-pkg": "workspace:*",
-    "@packages/lucia-auth": "workspace:*"
+    "@packages/auth-lucia": "workspace:*",
+    "@packages/example-pkg": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "3.2.0",

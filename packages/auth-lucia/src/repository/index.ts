@@ -1,7 +1,7 @@
 import { Argon2id } from 'oslo/password'
 
-import { db } from '@packages/drizzledb-pg/client'
-import { users } from '@packages/drizzledb-pg/schema'
+import { db } from '@packages/db-drizzlepg/client'
+import { users } from '@packages/db-drizzlepg/schema'
 
 export type NewUser = Omit<typeof users.$inferInsert, 'id' | 'hashedPassword'> & {
   password: string

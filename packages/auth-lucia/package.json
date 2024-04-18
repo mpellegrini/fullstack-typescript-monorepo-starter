@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@lucia-auth/adapter-drizzle": "1.0.7",
-    "@packages/drizzledb-pg": "workspace:*",
+    "@packages/db-drizzlepg": "workspace:*",
     "lucia": "3.1.1",
     "oslo": "1.2.0"
   },

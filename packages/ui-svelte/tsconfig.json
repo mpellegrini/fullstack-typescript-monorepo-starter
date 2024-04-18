@@ -1,0 +1,9 @@
+{
+  "extends": "./node_modules/@toolchain/typescript-config/tsconfig-base.json",
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "exactOptionalPropertyTypes": false,
+    "types": ["vitest/globals"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.svelte"]
+}

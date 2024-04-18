@@ -1,0 +1,40 @@
+{
+  "name": "@packages/ui-svelte",
+  "version": "0.0.0",
+  "description": "UI Component Library for Svelte and SvelteKit",
+  "type": "module",
+  "exports": {
+    "./atoms/*": "./src/components/atoms/*/index.ts",
+    "./styles/*": "./src/styles/*",
+    "./tailwind.config.js": "./tailwind.config.js"
+  },
+  "scripts": {
+    "story:build": "histoire build",
+    "story:dev": "histoire dev",
+    "story:preview": "histoire preview"
+  },
+  "dependencies": {
+    "bits-ui": "0.21.4",
+    "clsx": "2.1.0",
+    "lucide-svelte": "0.371.0",
+    "tailwind-merge": "2.2.2",
+    "tailwind-variants": "0.2.1"
+  },
+  "devDependencies": {
+    "@histoire/plugin-svelte": "0.17.17",
+    "@sveltejs/vite-plugin-svelte": "3.1.0",
+    "@toolchain/eslint-config": "workspace:*",
+    "@toolchain/typescript-config": "workspace:*",
+    "@toolchain/vitest-config": "workspace:*",
+    "autoprefixer": "10.4.19",
+    "histoire": "0.17.17",
+    "postcss": "8.4.38",
+    "postcss-load-config": "5.0.3",
+    "svelte-preprocess": "5.1.4",
+    "tailwindcss": "3.4.3",
+    "vite": "5.2.9"
+  },
+  "peerDependencies": {
+    "svelte": "4.2.15"
+  }
+}

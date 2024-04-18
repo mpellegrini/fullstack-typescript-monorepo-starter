@@ -1,4 +1,4 @@
-import { lucia } from '@packages/lucia-auth'
+import { lucia } from '@packages/auth-lucia'
 
 import type { Handle } from '@sveltejs/kit'
 

@@ -2,8 +2,8 @@ import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle'
 import { Lucia } from 'lucia'
 import { Argon2id } from 'oslo/password'
 
-import { db } from '@packages/drizzledb-pg/client'
-import { sessions, users } from '@packages/drizzledb-pg/schema'
+import { db } from '@packages/db-drizzlepg/client'
+import { sessions, users } from '@packages/db-drizzlepg/schema'
 
 const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users)
 

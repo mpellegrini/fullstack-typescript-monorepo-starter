@@ -1,5 +1,5 @@
 {
-  "name": "@packages/drizzledb-pg",
+  "name": "@packages/db-drizzlepg",
   "version": "0.0.0",
   "private": true,
   "description": "Drizzle ORM Database Client and Schema for PostgreSQL",

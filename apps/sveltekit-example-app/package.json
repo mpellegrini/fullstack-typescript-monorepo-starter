@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "@packages/auth-lucia": "workspace:*",
-    "@packages/example-pkg": "workspace:*"
+    "@packages/example-pkg": "workspace:*",
+    "@packages/ui-svelte": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "3.2.0",

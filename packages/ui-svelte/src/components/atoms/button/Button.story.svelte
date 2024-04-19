@@ -19,6 +19,7 @@
 
   let size: Size = 'default'
   let variant: Variant = 'default'
+  let text = 'Click Me!'
 </script>
 
 <svelte:component this={Hst.Story} title="Atoms/Button">
@@ -26,11 +27,12 @@
     {#if size === 'icon'}
       <BookOpen />
     {:else}
-      Click Me!
+      {text}
     {/if}
   </Button>
 
   <svelte:fragment slot="controls">
+    <svelte:component this={Hst.Text} title="Text" bind:value={text} />
     <svelte:component
       this={Hst.Select}
       bind:value={variant}

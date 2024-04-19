@@ -3,6 +3,7 @@
   import { zodClient } from 'sveltekit-superforms/adapters'
 
   import { schema } from '$lib'
+  import { Button } from '@packages/ui-svelte/atoms/button'
 
   import type { PageData } from './$types.js'
 
@@ -25,7 +26,7 @@
     bind:value={$form.email}
     {...$constraints.email} />
 
-  {#if $errors.email}<span class="text-red-500">{$errors.email}</span>{/if}
+  {#if $errors.email}<span class="text-destructive">{$errors.email}</span>{/if}
 
   <label for="password">Password</label>
   <input
@@ -34,7 +35,7 @@
     aria-invalid={$errors.password ? 'true' : undefined}
     bind:value={$form.password}
     {...$constraints.password} />
-  {#if $errors.password}<span class="text-red-500">{$errors.password}</span>{/if}
+  {#if $errors.password}<span class="text-destructive">{$errors.password}</span>{/if}
 
   <label for="password-confirm">Password</label>
   <input
@@ -44,10 +45,10 @@
     bind:value={$form.password_confirm}
     {...$constraints.password_confirm} />
   {#if $errors.password_confirm}
-    <span class="text-red-500">{$errors.password_confirm}</span>
+    <span class="text-destructive">{$errors.password_confirm}</span>
   {/if}
   <div>
-    <button>Submit</button>
+    <Button type="submit" variant="default" size="default">Submit</Button>
   </div>
 </form>
 

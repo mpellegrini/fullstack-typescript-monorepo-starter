@@ -47,9 +47,6 @@ importers:
       '@packages/example-pkg':
         specifier: workspace:*
         version: link:../../packages/example-pkg
-      '@packages/ui-svelte':
-        specifier: workspace:*
-        version: link:../../packages/ui-svelte
     devDependencies:
       '@sveltejs/adapter-auto':
         specifier: 3.2.0

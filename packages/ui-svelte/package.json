@@ -4,7 +4,11 @@
   "description": "UI Component Library for Svelte and SvelteKit",
   "type": "module",
   "exports": {
-    "./atoms/*": "./src/components/atoms/*/index.ts",
+    ".": {
+      "types": "./src/index.ts",
+      "svelte": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
     "./styles/*": "./src/styles/*",
     "./tailwind.config.js": "./tailwind.config.js"
   },

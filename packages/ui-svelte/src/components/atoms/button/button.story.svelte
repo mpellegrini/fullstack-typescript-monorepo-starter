@@ -1,8 +1,10 @@
 <script lang="ts">
-  import type { Hst as Histoire } from '@histoire/plugin-svelte'
   import { logEvent } from 'histoire/client'
-  import { Button, type Variant, type Size } from './index.js'
   import BookOpen from 'lucide-svelte/icons/book-open'
+
+  import { Button, type Size, type Variant } from './index.js'
+
+  import type { Hst as Histoire } from '@histoire/plugin-svelte'
 
   export let Hst: Histoire
 

@@ -48,6 +48,16 @@ export default defineFlatConfig([
 
       'svelte/block-lang': ['error', { script: 'ts', style: ['postcss', 'css'] }],
 
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_|\\${2}(Props|Slots|Events)',
+          caughtErrorsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
+      ],
+
       /**
        * Overrides rule defined in ./js/imports.js
        *

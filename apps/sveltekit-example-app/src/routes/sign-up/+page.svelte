@@ -3,7 +3,7 @@
   import { zodClient } from 'sveltekit-superforms/adapters'
 
   import { schema } from '$lib'
-  import { Button } from '@packages/ui-svelte/atoms/button'
+  import { Button } from '@packages/ui-svelte'
 
   import type { PageData } from './$types.js'
 

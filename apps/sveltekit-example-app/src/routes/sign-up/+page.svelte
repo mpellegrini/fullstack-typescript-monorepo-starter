@@ -3,55 +3,58 @@
   import { zodClient } from 'sveltekit-superforms/adapters'
 
   import { schema } from '$lib'
-  import { Button } from '@packages/ui-svelte'
+  import {
+    FormButton,
+    FormControl,
+    FormField,
+    FormFieldErrors,
+    FormLabel,
+    Input,
+  } from '@packages/ui-svelte'
 
   import type { PageData } from './$types.js'
 
   export let data: PageData
 
-  const { form, message, errors, constraints, enhance } = superForm(data.form, {
+  const form = superForm(data.form, {
     validators: zodClient(schema),
     validationMethod: 'auto',
   })
+
+  const { form: formData, message, enhance } = form
 </script>
 
 {#if $message}<h3>{$message}</h3>{/if}
 
 <form method="POST" novalidate use:enhance>
-  <label for="email">Email</label>
-  <input
-    name="email"
-    type="email"
-    aria-invalid={$errors.email ? 'true' : undefined}
-    bind:value={$form.email}
-    {...$constraints.email} />
+  <FormField {form} name="email">
+    <FormControl let:attrs>
+      <FormLabel>Email</FormLabel>
+      <Input {...attrs} bind:value={$formData.email} />
+    </FormControl>
+    <FormFieldErrors />
+  </FormField>
 
-  {#if $errors.email}<span class="text-destructive">{$errors.email}</span>{/if}
+  <FormField {form} name="password">
+    <FormControl let:attrs>
+      <FormLabel>Password</FormLabel>
+      <Input type="password" {...attrs} bind:value={$formData.password} />
+    </FormControl>
+    <FormFieldErrors />
+  </FormField>
 
-  <label for="password">Password</label>
-  <input
-    name="password"
-    type="password"
-    aria-invalid={$errors.password ? 'true' : undefined}
-    bind:value={$form.password}
-    {...$constraints.password} />
-  {#if $errors.password}<span class="text-destructive">{$errors.password}</span>{/if}
-
-  <label for="password-confirm">Password</label>
-  <input
-    name="password_confirm"
-    type="password"
-    aria-invalid={$errors.password_confirm ? 'true' : undefined}
-    bind:value={$form.password_confirm}
-    {...$constraints.password_confirm} />
-  {#if $errors.password_confirm}
-    <span class="text-destructive">{$errors.password_confirm}</span>
-  {/if}
-  <div>
-    <Button type="submit" variant="default" size="default">Submit</Button>
+  <FormField {form} name="password_confirm">
+    <FormControl let:attrs>
+      <FormLabel>Confirm Password</FormLabel>
+      <Input type="password" {...attrs} bind:value={$formData.password_confirm} />
+    </FormControl>
+    <FormFieldErrors />
+  </FormField>
+  <div class="p-5">
+    <FormButton>Submit</FormButton>
   </div>
 </form>
 
 <div class="w-1/2 pt-10">
-  <SuperDebug data={$form} collapsible={true} />
+  <SuperDebug data={$formData} collapsible={true} />
 </div>

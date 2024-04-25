@@ -12,10 +12,11 @@
     },
     "test": {
       "dependsOn": ["build"],
-      "inputs": ["./src/**/*.ts", "./src/**/*.svelte"],
+      "inputs": ["./src/**"],
       "outputs": ["./coverage/**"]
     },
     "typecheck": {
+      "inputs": ["./src/**"],
       "dependsOn": ["build"]
     }
   }

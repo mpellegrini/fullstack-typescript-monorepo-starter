@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build": "turbo run build",
     "clean": "turbo run clean",
     "format": "prettier --write .",
     "lint": "turbo run lint",

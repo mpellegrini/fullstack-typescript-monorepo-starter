@@ -1,7 +1,7 @@
 // prettier-ignore
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Node 20 + ESM + Strictest",
+  "display": "Base TypeScript Configuration",
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
 
@@ -11,16 +11,10 @@
     "disableSourceOfProjectReferenceRedirect": false, /* Disable preferring source files instead of declaration files when referencing composite projects */
 
     /* Language and Environment */
-    "target": "ES2022",                               /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "lib": [
-      "ES2023"
-    ],                                                /* Specify a set of bundled library declaration files that describe the target runtime environment. */
     "experimentalDecorators": true,                   /* Enable experimental support for TC39 stage 2 draft decorators. */
     "emitDecoratorMetadata": true,                    /* Emit design-type metadata for decorated declarations in source files. */
 
     /* Modules */
-    "module": "NodeNext",                             /* Specify what module code is generated. */
-    "moduleResolution": "NodeNext",                   /* Specify how TypeScript looks up a file from a given module specifier. */
     "resolveJsonModule": true,                        /* Enable importing .json files */
 
     /* Emit */
@@ -33,11 +27,13 @@
     "noEmitOnError": true,                            /* Disable emitting files if any type checking errors are reported. */
 
     /* Interop Constraints */
+    "isolatedModules": false,                         /* Ensure that each file can be safely transpiled without relying on other imports. */
     "verbatimModuleSyntax": true,                     /* Do not transform or elide any imports or exports not marked as type-only, ensuring they are written in the output file's format based on the 'module' setting. */
     "esModuleInterop": true,                          /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables `allowSyntheticDefaultImports` for type compatibility. */
     "forceConsistentCasingInFileNames": true,         /* Ensure that casing is correct in imports. */
 
     /* Type Checking */
+    "strict": true,                                   /* Enable all strict type-checking options. */
     "noImplicitAny": true,                            /* Enable error reporting for expressions and declarations with an implied 'any' type. */
     "strictNullChecks": true,                         /* When type checking, take into account 'null' and 'undefined'. */
     "strictFunctionTypes": true,                      /* When assigning functions, check to ensure parameters and the return values are subtype-compatible. */

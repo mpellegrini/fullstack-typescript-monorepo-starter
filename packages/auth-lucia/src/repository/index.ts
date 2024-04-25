@@ -19,12 +19,6 @@ export const findByUsername = async (username: string): Promise<User | undefined
 export const createUser = async (user: NewUser): Promise<string | undefined> => {
   const hashedPassword = await new Argon2id().hash(user.password)
 
-  await db.query.users.findMany({
-    with: {
-      sessions: true,
-    },
-  })
-
   return db
     .insert(users)
     .values({ username: user.username, hashedPassword })

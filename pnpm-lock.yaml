@@ -66,6 +66,9 @@ importers:
       '@toolchain/eslint-config':
         specifier: workspace:*
         version: link:../../toolchain/eslint-config
+      '@toolchain/typescript-config':
+        specifier: workspace:*
+        version: link:../../toolchain/typescript-config
       '@toolchain/vitest-config':
         specifier: workspace:*
         version: link:../../toolchain/vitest-config

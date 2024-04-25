@@ -6,7 +6,8 @@
   "license": "UNLICENSED",
   "type": "module",
   "files": [
-    "tsconfig-base.json"
+    "tsconfig-node20.json",
+    "tsconfig-svelte.json"
   ],
   "dependencies": {
     "typescript": "5.4.5"

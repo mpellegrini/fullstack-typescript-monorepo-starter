@@ -1,0 +1,20 @@
+// prettier-ignore
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Node 20 + ESM + Strictest",
+  "extends": "./base/tsconfig-base.json",
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig.json to read more about this file */
+
+    /* Language and Environment */
+    "target": "ES2022",                               /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "lib": [
+      "ES2023"
+    ],                                                /* Specify a set of bundled library declaration files that describe the target runtime environment. */
+
+    /* Modules */
+    "module": "NodeNext",                             /* Specify what module code is generated. */
+    "moduleResolution": "NodeNext"                   /* Specify how TypeScript looks up a file from a given module specifier. */
+  },
+  "include": ["../../../src/**/*.ts"]
+}

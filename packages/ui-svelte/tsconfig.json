@@ -1,9 +1,8 @@
 {
-  "extends": "./node_modules/@toolchain/typescript-config/tsconfig-base.json",
+  "extends": "./node_modules/@toolchain/typescript-config/tsconfig-svelte.json",
   "compilerOptions": {
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "exactOptionalPropertyTypes": false,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "types": ["vitest/globals"]
-  },
-  "include": ["src/**/*.ts", "src/**/*.svelte"]
+  }
 }

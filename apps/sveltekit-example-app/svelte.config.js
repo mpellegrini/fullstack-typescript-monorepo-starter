@@ -13,6 +13,12 @@ const config = {
     // See https://kit.svelte.dev/docs/adapters for more information about adapters.
     adapter: adapter(),
     alias: {},
+    typescript: {
+      config: (config) => {
+        config['extends'] = './.././node_modules/@toolchain/typescript-config/tsconfig-svelte.json'
+        return config
+      },
+    },
   },
 }
 

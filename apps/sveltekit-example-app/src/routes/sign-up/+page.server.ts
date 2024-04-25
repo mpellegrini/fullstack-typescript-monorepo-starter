@@ -31,11 +31,14 @@ export const actions = {
           ...sessionCookie.attributes,
         })
         return message(form, 'Form posted successfully!')
+      } else {
+        return message(form, 'User was not returned!')
       }
     } catch (err) {
       if (err instanceof Error) {
         return setError(form, 'email', 'E-mail already exists.')
       }
+      throw err
     }
   },
 } satisfies Actions

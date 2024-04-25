@@ -5,13 +5,10 @@
   "description": "SvelteKit Example App",
   "type": "module",
   "scripts": {
-    "build": "vite build",
-    "check": "pnpm run code-gen && pnpm run type-check",
+    "build": "svelte-kit sync",
     "clean": "del .turbo coverage .svelte-kit .vercel",
-    "codegen": "svelte-kit sync",
     "dev": "vite dev",
     "lint": "eslint .",
-    "preview": "vite preview",
     "test": "vitest run",
     "typecheck": "svelte-check --tsconfig ./tsconfig.json"
   },

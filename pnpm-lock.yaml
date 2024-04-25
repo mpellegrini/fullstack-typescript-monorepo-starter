@@ -234,6 +234,9 @@ importers:
       postcss-load-config:
         specifier: 5.0.3
         version: 5.0.3(jiti@1.21.0)(postcss@8.4.38)
+      svelte-check:
+        specifier: 3.6.9
+        version: 3.6.9(postcss-load-config@5.0.3(jiti@1.21.0)(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.15)
       tailwindcss:
         specifier: 3.4.3
         version: 3.4.3

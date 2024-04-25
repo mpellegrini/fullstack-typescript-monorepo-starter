@@ -7,20 +7,16 @@
     "clean": {
       "cache": false
     },
-    "topo": {
-      "dependsOn": ["^topo"]
-    },
-    "codegen": {
-      "dependsOn": ["topo"]
-    },
     "lint": {
-      "dependsOn": ["codegen"]
+      "dependsOn": ["build"]
     },
     "test": {
+      "dependsOn": ["build"],
+      "inputs": ["./src/**/*.ts", "./src/**/*.svelte"],
       "outputs": ["./coverage/**"]
     },
     "typecheck": {
-      "dependsOn": ["codegen"]
+      "dependsOn": ["build"]
     }
   }
 }

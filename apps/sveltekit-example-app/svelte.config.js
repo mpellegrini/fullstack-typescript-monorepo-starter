@@ -15,7 +15,7 @@ const config = {
     alias: {},
     typescript: {
       config: (config) => {
-        config['extends'] = './.././node_modules/@toolchain/typescript-config/tsconfig-svelte.json'
+        config['extends'] = './../node_modules/@toolchain/typescript-config/tsconfig-svelte.json'
         return config
       },
     },

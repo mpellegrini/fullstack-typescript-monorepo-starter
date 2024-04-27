@@ -13,6 +13,14 @@ export default mergeConfig(
     histoire: {
       setupFile: './histoire-setup.js',
       plugins: [HstSvelte()],
+      tree: {
+        groups: [
+          {
+            id: 'top',
+            title: '',
+          },
+        ],
+      },
     },
     plugins: [svelte()],
     test: {

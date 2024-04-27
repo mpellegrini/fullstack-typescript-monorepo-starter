@@ -1,7 +1,7 @@
 # Button
 
 ```svelte
-<BaseButton on:click={onClick}>Click me</BaseButton>
+<Button on:click={onClick}>Click me</Button>
 ```
 
 Hello world!

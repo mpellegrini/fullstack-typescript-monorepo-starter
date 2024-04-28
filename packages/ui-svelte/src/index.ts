@@ -1,6 +1,3 @@
-/**
- * src/components/atoms/accordion
- */
 export {
   Accordion,
   AccordionContent,
@@ -8,9 +5,26 @@ export {
   AccordionTrigger,
 } from './components/atoms/accordion/index.js'
 
-/**
- * src/components/atoms/button
- */
+export { Alert, AlertDescription, AlertTitle } from './components/atoms/alert/index.js'
+
+export {
+  AlertDialog,
+  AlertDialogTitle,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogPortal,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTrigger,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogDescription,
+} from './components/atoms/alert-dialog/index.js'
+
+export { Avatar, AvatarImage, AvatarFallback } from './components/atoms/avatar/index.js'
+
+export { Badge, badgeVariants } from './components/atoms/badge/index.js'
+
 export {
   Button,
   type ButtonEvents,
@@ -18,9 +32,30 @@ export {
   buttonVariants,
 } from './components/atoms/button/index.js'
 
-/**
- * src/components/atoms/form
- */
+export {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from './components/atoms/card/index.js'
+
+export { Checkbox } from './components/atoms/checkbox/index.js'
+
+export {
+  Dialog,
+  DialogTitle,
+  DialogPortal,
+  DialogFooter,
+  DialogHeader,
+  DialogTrigger,
+  DialogOverlay,
+  DialogContent,
+  DialogDescription,
+  DialogClose,
+} from './components/atoms/dialog/index.js'
+
 export {
   FormField,
   FormControl,
@@ -33,12 +68,8 @@ export {
   FormButton,
 } from './components/atoms/form/index.js'
 
-/**
- * src/components/atoms/input
- */
 export { Input } from './components/atoms/input/index.js'
 
-/**
- * src/components/atoms/label
- */
 export { Label } from './components/atoms/label/index.js'
+
+export { Switch } from './components/atoms/switch/index.js'

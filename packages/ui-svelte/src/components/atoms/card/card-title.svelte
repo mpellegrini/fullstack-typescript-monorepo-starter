@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { type HTMLAttributes } from 'svelte/elements'
-
   import { cn } from '../../../utils/index.js'
 
   import type { HeadingLevel } from './index.js'
+  import type { HTMLAttributes } from 'svelte/elements'
 
   type $$Props = HTMLAttributes<HTMLHeadingElement> & {
     tag?: HeadingLevel

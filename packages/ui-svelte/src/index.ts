@@ -39,6 +39,7 @@ export {
   CardFooter,
   CardHeader,
   CardTitle,
+  type HeadingLevel,
 } from './components/atoms/card/index.js'
 
 export { Checkbox } from './components/atoms/checkbox/index.js'

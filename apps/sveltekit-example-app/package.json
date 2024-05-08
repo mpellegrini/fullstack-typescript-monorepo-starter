@@ -20,19 +20,19 @@
     "@packages/example-pkg": "workspace:*",
     "@packages/ui-svelte": "workspace:*",
     "@sveltejs/adapter-auto": "3.2.0",
-    "@sveltejs/kit": "2.5.6",
+    "@sveltejs/kit": "2.5.7",
     "@sveltejs/vite-plugin-svelte": "3.1.0",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "autoprefixer": "10.4.19",
     "postcss": "8.4.38",
-    "svelte": "4.2.15",
-    "svelte-check": "3.6.9",
-    "sveltekit-superforms": "2.12.5",
+    "svelte": "4.2.16",
+    "svelte-check": "3.7.1",
+    "sveltekit-superforms": "2.13.1",
     "tailwindcss": "3.4.3",
     "tslib": "2.6.2",
-    "vite": "5.2.9",
-    "zod": "3.22.4"
+    "vite": "5.2.11",
+    "zod": "3.23.7"
   }
 }

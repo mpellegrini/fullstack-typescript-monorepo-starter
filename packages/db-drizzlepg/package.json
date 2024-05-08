@@ -21,18 +21,18 @@
   },
   "dependencies": {
     "dotenv": "16.4.5",
-    "drizzle-orm": "0.30.8",
+    "drizzle-orm": "0.30.10",
     "pg": "8.11.5",
     "znv": "0.4.0",
-    "zod": "3.22.4"
+    "zod": "3.23.7"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/node": "20.12.7",
-    "@types/pg": "8.11.5",
-    "drizzle-kit": "0.20.14",
-    "tsx": "4.7.2"
+    "@types/node": "20.12.10",
+    "@types/pg": "8.11.6",
+    "drizzle-kit": "0.20.18",
+    "tsx": "4.9.3"
   }
 }

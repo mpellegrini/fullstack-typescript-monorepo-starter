@@ -32,14 +32,14 @@ export default defineConfig({
   schemaFilter: ['public', 'auth'],
 
   /**
-   * https://orm.drizzle.team/kit-docs/config-reference#driver
+   * https://orm.drizzle.team/kit-docs/config-reference#dialect
    */
-  driver: 'pg',
+  dialect: 'postgresql',
 
   /**
    * https://orm.drizzle.team/kit-docs/config-reference#driver
    */
   dbCredentials: {
-    connectionString: process.env.DB_CONNECTION_STRING,
+    url: process.env.DB_CONNECTION_STRING,
   },
 })

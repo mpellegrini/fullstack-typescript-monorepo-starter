@@ -11,9 +11,9 @@
   },
   "scripts": {
     "clean": "del .turbo coverage",
-    "db:generate": "node --import=tsx ./node_modules/drizzle-kit/bin.cjs generate:pg",
+    "db:generate": "node --import=tsx ./node_modules/drizzle-kit/bin.cjs generate",
     "db:migrate": "node --import=tsx ./src/migrate.ts",
-    "db:push": "node --import=tsx ./node_modules/drizzle-kit/bin.cjs push:pg",
+    "db:push": "node --import=tsx ./node_modules/drizzle-kit/bin.cjs push",
     "db:studio": "drizzle-kit studio",
     "lint": "eslint .",
     "test": "vitest run",
@@ -24,15 +24,15 @@
     "drizzle-orm": "0.30.10",
     "pg": "8.11.5",
     "znv": "0.4.0",
-    "zod": "3.23.7"
+    "zod": "3.23.8"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/node": "20.12.10",
+    "@types/node": "20.12.11",
     "@types/pg": "8.11.6",
-    "drizzle-kit": "0.20.18",
-    "tsx": "4.9.3"
+    "drizzle-kit": "0.21.1",
+    "tsx": "4.10.2"
   }
 }

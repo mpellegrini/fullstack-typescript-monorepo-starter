@@ -14,6 +14,7 @@ services:
       - '5432:5432'
     volumes:
       - ./.docker/data/pg-data:/var/lib/postgresql/data
+      - ./.docker/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   mailpit:
     image: axllent/mailpit

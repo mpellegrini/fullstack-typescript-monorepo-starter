@@ -1,3 +1,4 @@
+import { fixupPluginRules } from '@eslint/compat'
 import { defineFlatConfig } from 'eslint-define-config'
 import plugin from 'eslint-plugin-import'
 
@@ -9,7 +10,7 @@ import plugin from 'eslint-plugin-import'
  */
 export default defineFlatConfig({
   plugins: {
-    import: plugin,
+    import: fixupPluginRules(plugin),
   },
   settings: {
     // see https://github.com/import-js/eslint-plugin-import/issues/2556#issuecomment-1419518561

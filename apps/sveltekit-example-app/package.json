@@ -20,7 +20,7 @@
     "@packages/example-pkg": "workspace:*",
     "@packages/ui-svelte": "workspace:*",
     "@sveltejs/adapter-auto": "3.2.0",
-    "@sveltejs/kit": "2.5.8",
+    "@sveltejs/kit": "2.5.9",
     "@sveltejs/vite-plugin-svelte": "3.1.0",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",

@@ -15,23 +15,23 @@
   },
   "dependencies": {
     "@aws-appsync/eslint-plugin": "1.6.0",
-    "@eslint/js": "9.3.0",
-    "@typescript-eslint/eslint-plugin": "7.10.0",
-    "@typescript-eslint/parser": "7.10.0",
-    "eslint": "9.3.0",
+    "@eslint/js": "9.4.0",
+    "@typescript-eslint/eslint-plugin": "7.12.0",
+    "@typescript-eslint/parser": "7.12.0",
+    "eslint": "9.4.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "3.6.1",
     "eslint-plugin-eslint-comments": "3.2.0",
     "eslint-plugin-import": "2.29.1",
-    "eslint-plugin-promise": "6.1.1",
-    "eslint-plugin-svelte": "2.39.0",
+    "eslint-plugin-promise": "6.2.0",
+    "eslint-plugin-svelte": "2.39.3",
     "eslint-plugin-unicorn": "53.0.0",
     "eslint-plugin-vitest": "0.5.4",
-    "globals": "15.3.0",
-    "svelte-eslint-parser": "0.36.0"
+    "globals": "15.4.0",
+    "svelte-eslint-parser": "0.37.0"
   },
   "devDependencies": {
-    "@eslint/compat": "1.0.1",
+    "@eslint/compat": "1.0.3",
     "@types/eslint": "8.56.10",
     "eslint-define-config": "2.1.0"
   }

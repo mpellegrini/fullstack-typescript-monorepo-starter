@@ -6,6 +6,7 @@ declare global {
   namespace App {
     // interface Error {}
     interface Locals {
+      //TODO - need to define non-lucia types for user and session
       user: User | null
       session: Session | null
     }

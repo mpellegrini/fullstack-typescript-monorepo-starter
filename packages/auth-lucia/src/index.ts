@@ -13,6 +13,11 @@ export const lucia = new Lucia(adapter, {
       secure: process.env['NODE_ENV'] === 'production',
     },
   },
+  getUserAttributes: ({ username }) => {
+    return {
+      username,
+    }
+  },
 })
 
 export const hashPassword = async (password: string): Promise<string> => {
@@ -24,5 +29,6 @@ export type { User, Session } from 'lucia'
 declare module 'lucia' {
   interface Register {
     Lucia: typeof lucia
+    DatabaseUserAttributes: { username: string }
   }
 }

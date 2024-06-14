@@ -3,9 +3,9 @@ import { Lucia } from 'lucia'
 import { Argon2id } from 'oslo/password'
 
 import { db } from '@packages/db-drizzlepg/client'
-import { sessions, users } from '@packages/db-drizzlepg/schema'
+import { sessionsTable, usersTable } from '@packages/db-drizzlepg/schema'
 
-const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users)
+const adapter = new DrizzlePostgreSQLAdapter(db, sessionsTable, usersTable)
 
 export const lucia = new Lucia(adapter, {
   sessionCookie: {

@@ -16,14 +16,14 @@
     "@commitlint/config-conventional": "19.2.2",
     "del-cli": "5.1.0",
     "husky": "9.0.11",
-    "lint-staged": "15.2.6",
+    "lint-staged": "15.2.7",
     "prettier": "3.3.2",
     "prettier-plugin-packagejson": "2.5.0",
     "prettier-plugin-svelte": "3.2.4",
-    "prettier-plugin-tailwindcss": "0.6.3",
-    "turbo": "2.0.3"
+    "prettier-plugin-tailwindcss": "0.6.5",
+    "turbo": "2.0.4"
   },
-  "packageManager": "pnpm@9.2.0+sha256.94fab213df221c55b6956b14a2264c21c6203cca9f0b3b95ff2fe9b84b120390",
+  "packageManager": "pnpm@9.4.0+sha256.b6fd0bfda555e7e584ad7e56b30c68b01d5a04f9ee93989f4b93ca8473c49c74",
   "engines": {
     "node": "20.11.x"
   }

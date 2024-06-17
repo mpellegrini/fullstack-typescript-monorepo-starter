@@ -2,21 +2,42 @@ import { sequence } from '@sveltejs/kit/hooks'
 
 import { type Session, type User, lucia } from '@packages/auth-lucia'
 
-import type { Handle, RequestEvent } from '@sveltejs/kit'
-import type { Cookie } from 'oslo/cookie'
+import type { Cookies, Handle } from '@sveltejs/kit'
 
-const setSessionCookie = (sessionCookie: Cookie, event: RequestEvent): void => {
-  event.cookies.set(sessionCookie.name, sessionCookie.value, {
+export interface CookieAttributes {
+  secure?: boolean
+  path?: string
+  domain?: string
+  sameSite?: 'lax' | 'strict' | 'none'
+  httpOnly?: boolean
+  maxAge?: number
+  expires?: Date
+}
+
+export const setCookie = (
+  name: string,
+  value: string,
+  options: CookieAttributes = {},
+  cookies: Cookies,
+): void => {
+  cookies.set(name, value, {
     path: '.',
-    ...sessionCookie.attributes,
+    ...options,
   })
 }
 
+type ValidatedSession =
+  | {
+      user: User
+      session: Session
+    }
+  | {
+      user: null
+      session: null
+    }
+
 const authHandler: Handle = async ({ event, resolve }) => {
-  let validatedSession: {
-    user: User | null
-    session: Session | null
-  } = {
+  let validatedSession: ValidatedSession = {
     user: null,
     session: null,
   }
@@ -30,16 +51,17 @@ const authHandler: Handle = async ({ event, resolve }) => {
 
     if (session?.fresh) {
       // Session expiration needs to be extended, create a new session cookie
-      setSessionCookie(lucia.createSessionCookie(session.id), event)
+      const { name, value, attributes } = lucia.createSessionCookie(session.id)
+      setCookie(name, value, attributes, event.cookies)
     }
 
     if (!session) {
       // Session is invalid, invalidate existing session cookie
-      setSessionCookie(lucia.createBlankSessionCookie(), event)
+      const { name, value, attributes } = lucia.createBlankSessionCookie()
+      setCookie(name, value, attributes, event.cookies)
     }
   }
 
-  //TODO - need to map user and session to non-lucia types
   event.locals.user = validatedSession.user
   event.locals.session = validatedSession.session
 

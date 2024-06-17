@@ -4,12 +4,12 @@ export default defineConfig({
   /**
    * https://orm.drizzle.team/kit-docs/config-reference#out
    */
-  out: './drizzle',
+  out: './src/migrations',
 
   /**
    * https://orm.drizzle.team/kit-docs/config-reference#schema
    */
-  schema: './src/schema/*',
+  schema: './src/schema/index.ts',
 
   /**
    * https://orm.drizzle.team/kit-docs/config-reference#breakpoints

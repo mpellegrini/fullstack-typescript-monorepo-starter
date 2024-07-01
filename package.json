@@ -19,9 +19,9 @@
     "lint-staged": "15.2.7",
     "prettier": "3.3.2",
     "prettier-plugin-packagejson": "2.5.0",
-    "prettier-plugin-svelte": "3.2.4",
+    "prettier-plugin-svelte": "3.2.5",
     "prettier-plugin-tailwindcss": "0.6.5",
-    "turbo": "2.0.4"
+    "turbo": "2.0.6"
   },
   "packageManager": "pnpm@9.4.0+sha256.b6fd0bfda555e7e584ad7e56b30c68b01d5a04f9ee93989f4b93ca8473c49c74",
   "engines": {

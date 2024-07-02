@@ -1,4 +1,3 @@
-// place files you want to import through the `$lib` alias in this folder.
 import { z } from 'zod'
 
 const password = z.string().min(6).max(255)
@@ -13,3 +12,5 @@ export const signupSchema = z
     message: 'Passwords do not match',
     path: ['password_confirm'],
   })
+
+export type SignUpForm = z.infer<typeof signupSchema>

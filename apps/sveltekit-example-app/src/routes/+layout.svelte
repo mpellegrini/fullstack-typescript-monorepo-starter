@@ -1,5 +1,5 @@
 <script lang="ts">
-  import '@packages/ui-svelte/styles/main.pcss'
+  import '../app.css'
 </script>
 
 <slot />

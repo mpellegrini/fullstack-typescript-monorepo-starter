@@ -1,15 +1,14 @@
-import { fail } from '@sveltejs/kit'
-import { message, setError, superValidate } from 'sveltekit-superforms'
+import { fail, message, setError, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
 
-import { signupSchema } from '$lib'
+import { signupSchema } from '$lib/schemas'
 import { lucia } from '@packages/auth-lucia'
 import { createUser } from '@packages/auth-lucia/repository'
 
 import type { Actions, PageServerLoad } from './$types.js'
 
 export const load = (async () => {
-  const form = await superValidate({ email: '' }, zod(signupSchema))
+  const form = await superValidate(zod(signupSchema))
   return { form }
 }) satisfies PageServerLoad
 
@@ -21,8 +20,10 @@ export const actions = {
       return fail(400, { form })
     }
 
+    const { data: formData } = form
+
     try {
-      const userId = await createUser({ username: form.data.email, password: form.data.password })
+      const userId = await createUser({ username: formData.email, password: formData.password })
       if (userId) {
         const session = await lucia.createSession(userId, {})
         const sessionCookie = lucia.createSessionCookie(session.id)

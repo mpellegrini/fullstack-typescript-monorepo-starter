@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "svelte-kit sync",
-    "clean": "del .turbo coverage .svelte-kit .vercel",
+    "clean": "del .turbo coverage .svelte-kit",
     "dev": "vite dev",
     "lint": "eslint .",
     "test": "vitest run",

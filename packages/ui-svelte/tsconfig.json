@@ -1,8 +1,0 @@
-{
-  "extends": "./node_modules/@toolchain/typescript-config/tsconfig-svelte.json",
-  "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "types": ["vitest/globals"]
-  }
-}

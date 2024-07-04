@@ -1,38 +1,34 @@
 {
-  "name": "@packages/ui-svelte",
+  "name": "@packages/ui-lib-svelte",
   "version": "0.0.0",
-  "description": "UI Component Library for Svelte and SvelteKit",
   "type": "module",
   "exports": {
     ".": {
       "types": "./src/index.ts",
       "svelte": "./src/index.ts",
       "default": "./src/index.ts"
-    },
-    "./styles/*": "./src/styles/*",
-    "./tailwind.config.js": "./tailwind.config.js"
+    }
   },
+  "svelte": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "clean": "del .turbo coverage",
+    "build": "svelte-kit sync",
+    "clean": "del .turbo coverage .svelte-kit",
+    "dev": "vite dev",
     "lint": "eslint .",
     "test": "vitest run",
     "typecheck": "svelte-check --tsconfig ./tsconfig.json"
   },
-  "dependencies": {
-    "clsx": "2.1.1",
-    "tailwind-merge": "2.3.0",
-    "tailwind-variants": "0.2.1"
-  },
   "devDependencies": {
+    "@sveltejs/adapter-auto": "3.2.2",
+    "@sveltejs/kit": "2.5.18",
     "@sveltejs/vite-plugin-svelte": "3.1.1",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "autoprefixer": "10.4.19",
-    "postcss": "8.4.39",
-    "postcss-load-config": "6.0.1",
+    "svelte": "5.0.0-next.172",
     "svelte-check": "3.8.4",
-    "tailwindcss": "3.4.4",
+    "tslib": "2.6.3",
     "vite": "5.3.3"
   },
   "peerDependencies": {

@@ -27,6 +27,9 @@ export default defineFlatConfig([
         parser: typescriptParser,
         projectService: true,
         extraFileExtensions: ['.svelte'],
+        svelteFeatures: {
+          experimentalGenerics: true,
+        },
       },
     },
     processor: 'svelte/svelte',

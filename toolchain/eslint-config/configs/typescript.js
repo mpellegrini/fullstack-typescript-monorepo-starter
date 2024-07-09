@@ -10,7 +10,7 @@ export default defineFlatConfig([
     languageOptions: {
       parser: parser,
       parserOptions: {
-        project: true,
+        projectService: true,
       },
     },
   },

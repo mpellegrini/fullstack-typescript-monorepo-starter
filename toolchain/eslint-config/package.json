@@ -16,8 +16,8 @@
   "dependencies": {
     "@aws-appsync/eslint-plugin": "1.6.0",
     "@eslint/js": "9.6.0",
-    "@typescript-eslint/eslint-plugin": "7.15.0",
-    "@typescript-eslint/parser": "7.15.0",
+    "@typescript-eslint/eslint-plugin": "8.0.0-alpha.41",
+    "@typescript-eslint/parser": "8.0.0-alpha.41",
     "eslint": "9.6.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "3.6.1",

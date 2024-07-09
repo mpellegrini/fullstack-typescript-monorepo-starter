@@ -3,21 +3,12 @@ import { defineFlatConfig } from 'eslint-define-config'
 import plugin from 'eslint-plugin-svelte'
 import svelteParser from 'svelte-eslint-parser'
 
-import baseTypeScriptConfig, { TYPESCRIPT_FILES } from './ts/base.js'
+import baseTypeScriptConfig from './ts/base.js'
 import typescriptImportConfig from './ts/import.js'
 
 const SVELTE_FILES = ['**/*.svelte']
 
 export default defineFlatConfig([
-  {
-    files: TYPESCRIPT_FILES,
-    languageOptions: {
-      parserOptions: {
-        extraFileExtensions: ['.svelte'],
-      },
-    },
-  },
-
   {
     files: SVELTE_FILES,
     ...baseTypeScriptConfig,
@@ -34,7 +25,7 @@ export default defineFlatConfig([
       parser: svelteParser,
       parserOptions: {
         parser: typescriptParser,
-        project: true,
+        projectService: true,
         extraFileExtensions: ['.svelte'],
       },
     },
@@ -68,6 +59,6 @@ export default defineFlatConfig([
     },
   },
   {
-    ignores: ['.svelte-kit', 'build', '$houdini'],
+    ignores: ['.svelte-kit', 'build'],
   },
 ])

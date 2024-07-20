@@ -1,22 +1,24 @@
 import { drizzle } from 'drizzle-orm/node-postgres'
 import pg from 'pg'
-import { parseEnv, z } from 'znv'
 
 import * as schema from '../schema/index.js'
 
-import 'dotenv/config'
+import { parseEnv } from './env-config.js'
 
-const { DB_CONNECTION_STRING, DB_MAX_CONNECTIONS } = parseEnv(process.env, {
-  DB_CONNECTION_STRING: z.string().url().default('postgresql://undefined'),
-  DB_MAX_CONNECTIONS: z.number().min(1).default(1),
-})
+const {
+  DB_CONNECTION_STRING,
+  DB_MIN_CONNECTIONS,
+  DB_MAX_CONNECTIONS,
+  DB_LOGGING_ENABLED,
+  DB_IDLE_TIMEOUT_MILLIS,
+} = parseEnv()
 
 export const connection = new pg.Pool({
   connectionString: DB_CONNECTION_STRING,
   /**
    * Minimum number of clients the pool should contain.
    */
-  min: 0,
+  min: DB_MIN_CONNECTIONS,
 
   /**
    * Maximum number of clients the pool should contain.
@@ -27,13 +29,22 @@ export const connection = new pg.Pool({
    * Number of milliseconds a client must sit idle in the pool and not
    * be checked out before it is disconnected from the backend and discarded.
    */
-  idleTimeoutMillis: 2_000,
+  idleTimeoutMillis: DB_IDLE_TIMEOUT_MILLIS,
 
-  log: (messages) => console.log(messages),
+  log: DB_LOGGING_ENABLED
+    ? (messages: string): void => {
+        if (messages === 'Remove idle client') console.debug(messages)
+      }
+    : undefined,
 })
 
-connection.on('connect', () => console.log(`Connected`))
-connection.on('acquire', () => console.log('acquired a connection from the pool'))
-connection.on('release', () => console.log('released the connection to the pool'))
+if (DB_LOGGING_ENABLED) {
+  connection.on('connect', () => console.debug(`Connected`))
+  connection.on('acquire', () => console.debug('Acquired a connection from the pool'))
+  connection.on('release', () => console.debug('Released the connection to the pool'))
+}
 
-export const db = drizzle(connection, { schema })
+export const db = drizzle(connection, {
+  schema,
+  logger: DB_LOGGING_ENABLED,
+})

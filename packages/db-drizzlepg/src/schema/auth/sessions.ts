@@ -1,21 +1,10 @@
-import { type ColumnBaseConfig, type ColumnDataType, getTableName, relations } from 'drizzle-orm'
-import { foreignKey, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
+import { text, timestamp, uuid } from 'drizzle-orm/pg-core'
+
+import { namedForeignKey } from '../utils.js'
 
 import { authSchema } from './schema.js'
 import users from './users.js'
-
-import type { AnyPgColumn, ExtraConfigColumn, ForeignKeyBuilder } from 'drizzle-orm/pg-core'
-
-export const namedForeignKey = (
-  columns: [ExtraConfigColumn<ColumnBaseConfig<ColumnDataType, string>>],
-  foreignColumns: [AnyPgColumn<{ tableName: string }>],
-): ForeignKeyBuilder => {
-  return foreignKey({
-    columns: columns,
-    foreignColumns: foreignColumns,
-    name: `${getTableName(columns[0].table)}_fk_${getTableName(foreignColumns[0].table)}`,
-  })
-}
 
 const sessions = authSchema.table(
   'sessions',
@@ -29,13 +18,12 @@ const sessions = authSchema.table(
   },
   (table) => {
     return {
-      fk1: namedForeignKey([table.userId], [users.id]),
+      fk1: namedForeignKey(table.userId, users.id),
     }
   },
 )
 
-export type SelectSession = typeof sessions.$inferSelect
-export type InsertSession = typeof sessions.$inferInsert
+export default sessions
 
 export const sessionRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
@@ -44,4 +32,4 @@ export const sessionRelations = relations(sessions, ({ one }) => ({
   }),
 }))
 
-export default sessions
+export type Session = typeof sessions.$inferSelect

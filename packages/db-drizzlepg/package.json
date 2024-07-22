@@ -14,7 +14,6 @@
     "db:generate": "node --import=tsx ./node_modules/drizzle-kit/bin.cjs generate",
     "db:migrate": "node --import=tsx ./src/migrate.ts",
     "db:push": "node --import=tsx ./node_modules/drizzle-kit/bin.cjs push",
-    "db:studio": "drizzle-kit studio",
     "lint": "eslint .",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

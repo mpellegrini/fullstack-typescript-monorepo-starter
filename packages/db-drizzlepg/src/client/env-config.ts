@@ -3,9 +3,9 @@ import { z } from 'zod'
 
 const envSchema = z.object({
   DB_CONNECTION_STRING: z.string().url(),
-  DB_MIN_CONNECTIONS: z.number().min(0).default(0),
-  DB_MAX_CONNECTIONS: z.number().min(1).default(1),
-  DB_IDLE_TIMEOUT_MILLIS: z.coerce.number().min(0).default(2_000),
+  DB_MAX_CONNECTIONS: z.coerce.number().min(1).default(10),
+  DB_IDLE_TIMEOUT_MILLIS: z.coerce.number().min(0).default(10_000),
+  DB_APPLICATION_NAME: z.string().default('node-postgres-pool'),
   DB_LOGGING_ENABLED: z
     .string()
     .toLowerCase()
@@ -14,8 +14,4 @@ const envSchema = z.object({
     .pipe(z.boolean()),
 })
 
-export type EnvConfig = z.infer<typeof envSchema>
-
-export const parseEnv = (): EnvConfig => {
-  return envSchema.parse(dotenv.config().parsed)
-}
+export default envSchema.parse(dotenv.config().parsed)

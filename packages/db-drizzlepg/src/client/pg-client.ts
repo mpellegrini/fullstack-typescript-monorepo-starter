@@ -31,12 +31,6 @@ export const connection = new pg.Pool({
    * default is 10000 ms (10 seconds) - set to 0 to disable auto-disconnection of idle clients.
    */
   idleTimeoutMillis: DB_IDLE_TIMEOUT_MILLIS,
-
-  log: DB_LOGGING_ENABLED
-    ? (messages: string): void => {
-        if (messages === 'Remove idle client') console.debug(messages)
-      }
-    : undefined,
 })
 
 if (DB_LOGGING_ENABLED) {

@@ -1,5 +1,6 @@
-import type { PageServerLoad } from './$types'
 import type { User } from '@packages/example-pkg'
+
+import type { PageServerLoad } from './$types'
 
 export const load = (({ locals }): { user: User } => {
   return {

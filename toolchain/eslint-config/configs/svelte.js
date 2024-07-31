@@ -46,6 +46,12 @@ export default defineFlatConfig([
       ...plugin.configs.base.overrides[0].rules,
       ...plugin.configs.recommended.rules,
 
+      /**
+       * Turn off this rule as attributes in svelte components
+       * are sorted with Perfectionist
+       */
+      'svelte/sort-attributes': 'off',
+
       'svelte/block-lang': ['error', { script: 'ts', style: ['postcss', 'css'] }],
 
       '@typescript-eslint/no-unused-vars': [

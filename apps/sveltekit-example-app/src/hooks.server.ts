@@ -1,8 +1,8 @@
+import type { Cookies, Handle } from '@sveltejs/kit'
+
 import { sequence } from '@sveltejs/kit/hooks'
 
 import { type Session, type User, lucia } from '@packages/auth-lucia'
-
-import type { Cookies, Handle } from '@sveltejs/kit'
 
 export interface CookieAttributes {
   domain?: string

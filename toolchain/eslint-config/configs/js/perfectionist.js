@@ -3,13 +3,6 @@ import plugin from 'eslint-plugin-perfectionist'
 
 const sortingMethodType = 'natural'
 
-/*
-  TODO: Need to implement the following additional rules
-  * sort-svelte-attributes
-  * sort-named-imports
-  * sort-imports
- */
-
 /**
  * eslint-plugin-perfectionist configuration
  *
@@ -62,6 +55,41 @@ export default defineFlatConfig({
         type: sortingMethodType,
       },
     ],
+    'perfectionist/sort-imports': [
+      'error',
+      {
+        customGroups: {
+          type: {
+            'ts-paths': ['$lib/**'],
+          },
+          value: {
+            'ts-paths': ['$lib/**'],
+          },
+        },
+        environment: 'node',
+        groups: [
+          'type',
+          ['builtin', 'external'],
+          'internal-type',
+          'internal',
+          'ts-paths',
+          'parent-type',
+          'sibling-type',
+          'index-type',
+          'parent',
+          'sibling',
+          'index',
+          'object',
+          'unknown',
+        ],
+        ignoreCase: true,
+        internalPattern: ['@{apps,packages,toolchain}/**'],
+        maxLineLength: undefined,
+        newlinesBetween: 'always',
+        order: 'asc',
+        type: sortingMethodType,
+      },
+    ],
     'perfectionist/sort-interfaces': [
       'error',
       {
@@ -101,6 +129,16 @@ export default defineFlatConfig({
         type: sortingMethodType,
       },
     ],
+    'perfectionist/sort-named-imports': [
+      'error',
+      {
+        groupKind: 'types-first',
+        ignoreAlias: false,
+        ignoreCase: true,
+        order: 'asc',
+        type: sortingMethodType,
+      },
+    ],
     'perfectionist/sort-object-types': [
       'error',
       {
@@ -125,6 +163,16 @@ export default defineFlatConfig({
         partitionByComment: true,
         partitionByNewLine: true,
         styledComponents: true,
+        type: sortingMethodType,
+      },
+    ],
+    'perfectionist/sort-svelte-attributes': [
+      'error',
+      {
+        customGroups: {},
+        groups: [],
+        ignoreCase: true,
+        order: 'asc',
         type: sortingMethodType,
       },
     ],

@@ -77,28 +77,9 @@ export default defineFlatConfig({
      * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-useless-path-segments.md
      */
     'import/no-useless-path-segments': ['error'],
-
-    /**
-     * Enforce a module import order convention.
-     *
-     * 🔧 Fixable - https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/order.md
-     */
-    'import/order': [
-      'error',
-      {
-        alphabetize: {
-          caseInsensitive: false,
-          order: 'asc',
-          orderImportKind: 'asc',
-        },
-        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
-        'newlines-between': 'always',
-      },
-    ],
   },
   settings: {
     // see https://github.com/import-js/eslint-plugin-import/issues/2556#issuecomment-1419518561
-    'import/internal-regex': '^@(apps|packages|toolchain|serverless|infrastructure)/',
     'import/parsers': {
       espree: ['.js', '.cjs', '.mjs', '.jsx'],
     },

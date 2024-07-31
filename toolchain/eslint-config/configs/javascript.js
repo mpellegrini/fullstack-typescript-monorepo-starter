@@ -20,22 +20,6 @@ export default defineFlatConfig([
       ...js.configs.recommended.rules,
 
       /**
-       * Enforce sorted import declarations within modules.
-       *
-       * 🔧 Fixable - https://eslint.org/docs/latest/rules/sort-imports
-       */
-      'sort-imports': [
-        'error',
-        {
-          allowSeparatedGroups: false,
-          ignoreCase: false,
-          ignoreDeclarationSort: true,
-          ignoreMemberSort: false,
-          memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
-        },
-      ],
-
-      /**
        * Disallow empty functions.
        *
        * 🚫 Not fixable - https://eslint.org/docs/latest/rules/no-empty-function

@@ -1,9 +1,10 @@
 import { fail, message, setError, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
 
-import { signupSchema } from '$lib/schemas'
 import { lucia } from '@packages/auth-lucia'
 import { createUser } from '@packages/auth-lucia/repository'
+
+import { signupSchema } from '$lib/schemas'
 
 import type { Actions, PageServerLoad } from './$types.js'
 

@@ -25,11 +25,11 @@
         <label class="block" for="email">Email</label>
         <div class="mt-2">
           <input
-            type="email"
-            name="email"
             aria-invalid={$errors.email ? 'true' : undefined}
-            data-invalid={$errors.email ? 'true' : undefined}
             bind:value={$formData.email}
+            data-invalid={$errors.email ? 'true' : undefined}
+            name="email"
+            type="email"
             {...$constraints.email}
             class="block w-full border py-1.5" />
 
@@ -40,11 +40,11 @@
         <label class="block" for="password">Password</label>
         <div class="mt-2">
           <input
-            type="password"
-            name="password"
             aria-invalid={$errors.password ? 'true' : undefined}
-            data-invalid={$errors.password ? 'true' : undefined}
             bind:value={$formData.password}
+            data-invalid={$errors.password ? 'true' : undefined}
+            name="password"
+            type="password"
             {...$constraints.password}
             class="block w-full border py-1.5" />
           {#if $errors.password}<span class="text-red-500">{$errors.password}</span>{/if}
@@ -54,11 +54,11 @@
         <label for="password_confirm">Confirm Password</label>
         <div class="mt-2">
           <input
-            type="password"
-            name="password_confirm"
             aria-invalid={$errors.password_confirm ? 'true' : undefined}
-            data-invalid={$errors.password_confirm ? 'true' : undefined}
             bind:value={$formData.password_confirm}
+            data-invalid={$errors.password_confirm ? 'true' : undefined}
+            name="password_confirm"
+            type="password"
             {...$constraints.password_confirm}
             class="block w-full border py-1.5" />
           {#if $errors.password_confirm}<span class="text-red-500">{$errors.password_confirm}</span
@@ -67,14 +67,14 @@
       </div>
 
       <button
-        type="submit"
         class="w-full rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-        disabled={$allErrors.length > 0}>
+        disabled={$allErrors.length > 0}
+        type="submit">
         Sign Up
       </button>
     </form>
     <div class="pt-10">
-      <SuperDebug data={$formData} collapsible={true} />
+      <SuperDebug collapsible={true} data={$formData} />
     </div>
   </div>
 </div>

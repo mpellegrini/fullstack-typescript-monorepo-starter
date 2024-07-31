@@ -10,11 +10,11 @@ const sessions = authSchema.table(
   'sessions',
   {
     id: text('id').primaryKey(),
-    userId: uuid('user_id').notNull(),
     expiresAt: timestamp('expires_at', {
-      withTimezone: true,
       mode: 'date',
+      withTimezone: true,
     }).notNull(),
+    userId: uuid('user_id').notNull(),
   },
   (table) => {
     return {

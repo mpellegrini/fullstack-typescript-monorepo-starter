@@ -13,7 +13,7 @@ export const load = (async () => {
 }) satisfies PageServerLoad
 
 export const actions = {
-  default: async ({ request, cookies }) => {
+  default: async ({ cookies, request }) => {
     const form = await superValidate(request, zod(signupSchema))
 
     if (!form.valid) {
@@ -23,7 +23,7 @@ export const actions = {
     const { data: formData } = form
 
     try {
-      const userId = await createUser({ username: formData.email, password: formData.password })
+      const userId = await createUser({ password: formData.password, username: formData.email })
       if (userId) {
         const session = await lucia.createSession(userId, {})
         const sessionCookie = lucia.createSessionCookie(session.id)

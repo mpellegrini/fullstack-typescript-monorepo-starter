@@ -9,10 +9,10 @@
   export let data: PageData
 
   const form = superForm(data.form, {
-    validators: zodClient(signupSchema),
     validationMethod: 'auto',
+    validators: zodClient(signupSchema),
   })
-  const { form: formData, allErrors, errors, constraints, message, enhance } = form
+  const { allErrors, constraints, enhance, errors, form: formData, message } = form
 </script>
 
 <div class="flex min-h-screen items-center justify-center bg-gray-100">

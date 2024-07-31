@@ -12,27 +12,27 @@ export default defineFlatConfig({
     ...plugin.configs['recommended-type-checked'].rules,
     ...plugin.configs['stylistic-type-checked'].rules,
 
-    '@typescript-eslint/no-use-before-define': [
-      'error',
-      {
-        functions: false,
-        classes: false,
-        variables: true,
-      },
-    ],
-    '@typescript-eslint/no-shadow': 'error',
-    '@typescript-eslint/no-redeclare': 'error',
-    '@typescript-eslint/explicit-module-boundary-types': 'error',
-    '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
     '@typescript-eslint/consistent-type-imports': 'error',
+    '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
+    '@typescript-eslint/explicit-module-boundary-types': 'error',
     '@typescript-eslint/no-non-null-assertion': 'error',
+    '@typescript-eslint/no-redeclare': 'error',
+    '@typescript-eslint/no-shadow': 'error',
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
         argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
         caughtErrorsIgnorePattern: '^_',
         ignoreRestSiblings: true,
+        varsIgnorePattern: '^_',
+      },
+    ],
+    '@typescript-eslint/no-use-before-define': [
+      'error',
+      {
+        classes: false,
+        functions: false,
+        variables: true,
       },
     ],
   },

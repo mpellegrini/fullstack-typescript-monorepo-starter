@@ -8,15 +8,15 @@ import { sessionsTable, usersTable } from '@packages/db-drizzlepg/schema'
 const adapter = new DrizzlePostgreSQLAdapter(db, sessionsTable, usersTable)
 
 export const lucia = new Lucia(adapter, {
-  sessionCookie: {
-    attributes: {
-      secure: process.env['NODE_ENV'] === 'production',
-    },
-  },
   getUserAttributes: ({ username }) => {
     return {
       username,
     }
+  },
+  sessionCookie: {
+    attributes: {
+      secure: process.env['NODE_ENV'] === 'production',
+    },
   },
 })
 
@@ -24,11 +24,11 @@ export const hashPassword = async (password: string): Promise<string> => {
   return new Argon2id().hash(password)
 }
 
-export type { User, Session } from 'lucia'
+export type { Session, User } from 'lucia'
 
 declare module 'lucia' {
   interface Register {
-    Lucia: typeof lucia
     DatabaseUserAttributes: { username: string }
+    Lucia: typeof lucia
   }
 }

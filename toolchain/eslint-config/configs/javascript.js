@@ -2,18 +2,19 @@ import js from '@eslint/js'
 import { defineFlatConfig } from 'eslint-define-config'
 
 import importConfig from './js/import.js'
+import perfectionistConfig from './js/perfectionist.js'
 import promiseConfig from './js/promise.js'
 import unicornConfig from './js/unicorn.js'
 
 export default defineFlatConfig([
   {
     languageOptions: {
-      sourceType: 'module',
       ecmaVersion: 'latest',
       parserOptions: {
-        sourceType: 'module',
         ecmaVersion: 'latest',
+        sourceType: 'module',
       },
+      sourceType: 'module',
     },
     rules: {
       ...js.configs.recommended.rules,
@@ -26,11 +27,11 @@ export default defineFlatConfig([
       'sort-imports': [
         'error',
         {
+          allowSeparatedGroups: false,
           ignoreCase: false,
           ignoreDeclarationSort: true,
           ignoreMemberSort: false,
           memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
-          allowSeparatedGroups: false,
         },
       ],
 
@@ -43,6 +44,7 @@ export default defineFlatConfig([
     },
   },
   importConfig,
+  perfectionistConfig,
   promiseConfig,
   unicornConfig,
 ])

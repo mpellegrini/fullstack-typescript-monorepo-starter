@@ -12,19 +12,6 @@ export default defineFlatConfig({
   plugins: {
     import: fixupPluginRules(plugin),
   },
-  settings: {
-    // see https://github.com/import-js/eslint-plugin-import/issues/2556#issuecomment-1419518561
-    'import/parsers': {
-      espree: ['.js', '.cjs', '.mjs', '.jsx'],
-    },
-    'import/resolver': {
-      node: {
-        extensions: ['.js', '.cjs', '.mjs', '.jsx'],
-      },
-      typescript: true,
-    },
-    'import/internal-regex': '^@(apps|packages|toolchain|serverless|infrastructure)/',
-  },
   rules: {
     ...plugin.configs.recommended.rules,
 
@@ -99,14 +86,27 @@ export default defineFlatConfig({
     'import/order': [
       'error',
       {
-        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
-        'newlines-between': 'always',
         alphabetize: {
+          caseInsensitive: false,
           order: 'asc',
           orderImportKind: 'asc',
-          caseInsensitive: false,
         },
+        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
+        'newlines-between': 'always',
       },
     ],
+  },
+  settings: {
+    // see https://github.com/import-js/eslint-plugin-import/issues/2556#issuecomment-1419518561
+    'import/internal-regex': '^@(apps|packages|toolchain|serverless|infrastructure)/',
+    'import/parsers': {
+      espree: ['.js', '.cjs', '.mjs', '.jsx'],
+    },
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.cjs', '.mjs', '.jsx'],
+      },
+      typescript: true,
+    },
   },
 })

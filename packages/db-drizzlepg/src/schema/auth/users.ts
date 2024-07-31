@@ -11,8 +11,8 @@ const users = authSchema.table(
   'users',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    username: citext('username').notNull(),
     hashedPassword: text('hashed_password').notNull(),
+    username: citext('username').notNull(),
   },
   (table) => {
     return {

@@ -3,13 +3,13 @@ import { Argon2id } from 'oslo/password'
 import { db } from '@packages/db-drizzlepg/client'
 import { type User, usersTable } from '@packages/db-drizzlepg/schema'
 
-export type NewUser = Omit<User, 'id' | 'hashedPassword'> & {
+export type NewUser = Omit<User, 'hashedPassword' | 'id'> & {
   password: string
 }
 
 export const findByUsername = async (username: string): Promise<User | undefined> => {
   return db.query.usersTable.findFirst({
-    columns: { id: true, username: true, hashedPassword: true },
+    columns: { id: true, hashedPassword: true, username: true },
     where: (col, { eq }) => eq(col.username, username),
   })
 }
@@ -19,7 +19,7 @@ export const createUser = async (user: NewUser): Promise<string | undefined> => 
 
   return db
     .insert(usersTable)
-    .values({ username: user.username, hashedPassword })
+    .values({ hashedPassword, username: user.username })
     .returning({ id: usersTable.id })
     .then((res) => res[0]?.id)
     .catch((err) => {

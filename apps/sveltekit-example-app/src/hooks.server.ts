@@ -5,13 +5,13 @@ import { type Session, type User, lucia } from '@packages/auth-lucia'
 import type { Cookies, Handle } from '@sveltejs/kit'
 
 export interface CookieAttributes {
-  secure?: boolean
-  path?: string
   domain?: string
-  sameSite?: 'lax' | 'strict' | 'none'
+  expires?: Date
   httpOnly?: boolean
   maxAge?: number
-  expires?: Date
+  path?: string
+  sameSite?: 'lax' | 'none' | 'strict'
+  secure?: boolean
 }
 
 export const setCookie = (
@@ -28,18 +28,18 @@ export const setCookie = (
 
 type ValidatedSession =
   | {
-      user: User
-      session: Session
+      session: null
+      user: null
     }
   | {
-      user: null
-      session: null
+      session: Session
+      user: User
     }
 
 const authHandler: Handle = async ({ event, resolve }) => {
   let validatedSession: ValidatedSession = {
-    user: null,
     session: null,
+    user: null,
   }
 
   const sessionId = event.cookies.get(lucia.sessionCookieName)
@@ -51,13 +51,13 @@ const authHandler: Handle = async ({ event, resolve }) => {
 
     if (session?.fresh) {
       // Session expiration needs to be extended, create a new session cookie
-      const { name, value, attributes } = lucia.createSessionCookie(session.id)
+      const { attributes, name, value } = lucia.createSessionCookie(session.id)
       setCookie(name, value, attributes, event.cookies)
     }
 
     if (!session) {
       // Session is invalid, invalidate existing session cookie
-      const { name, value, attributes } = lucia.createBlankSessionCookie()
+      const { attributes, name, value } = lucia.createBlankSessionCookie()
       setCookie(name, value, attributes, event.cookies)
     }
   }

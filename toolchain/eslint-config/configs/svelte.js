@@ -30,18 +30,18 @@ export default defineFlatConfig([
     languageOptions: {
       parser: svelteParser,
       parserOptions: {
+        extraFileExtensions: ['.svelte'],
         parser: typescriptParser,
         projectService: true,
-        extraFileExtensions: ['.svelte'],
         svelteFeatures: {
           experimentalGenerics: true,
         },
       },
     },
-    processor: 'svelte/svelte',
     plugins: {
       svelte: plugin,
     },
+    processor: 'svelte/svelte',
     rules: {
       ...plugin.configs.base.overrides[0].rules,
       ...plugin.configs.recommended.rules,
@@ -52,9 +52,9 @@ export default defineFlatConfig([
         'error',
         {
           argsIgnorePattern: '^_',
-          varsIgnorePattern: '^_|\\${2}(Props|Slots|Events)',
           caughtErrorsIgnorePattern: '^_',
           ignoreRestSiblings: true,
+          varsIgnorePattern: '^_|\\${2}(Props|Slots|Events)',
         },
       ],
 

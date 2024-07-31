@@ -2,10 +2,10 @@ import { type User, greetUser } from './index.js'
 
 describe('greet user tests', () => {
   const user: User = {
-    first_name: 'Bob',
-    last_name: 'Loblaw',
     email: 'bob@loblaw.com',
+    first_name: 'Bob',
     is_admin: false,
+    last_name: 'Loblaw',
   }
 
   it('user is an admin', () => {

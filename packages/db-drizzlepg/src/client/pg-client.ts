@@ -7,11 +7,11 @@ import env from './env-config.js'
 import { QueryLogger } from './utils.js'
 
 const {
-  DB_CONNECTION_STRING,
-  DB_MAX_CONNECTIONS,
-  DB_IDLE_TIMEOUT_MILLIS,
   DB_APPLICATION_NAME,
+  DB_CONNECTION_STRING,
+  DB_IDLE_TIMEOUT_MILLIS,
   DB_LOGGING_ENABLED,
+  DB_MAX_CONNECTIONS,
 } = env
 
 export const connection = new pg.Pool({
@@ -41,6 +41,6 @@ if (DB_LOGGING_ENABLED) {
 }
 
 export const db = drizzle(connection, {
-  schema,
   logger: DB_LOGGING_ENABLED ? new QueryLogger() : false,
+  schema,
 })

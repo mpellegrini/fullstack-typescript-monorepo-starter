@@ -10,13 +10,13 @@ import plugin from 'eslint-plugin-vitest'
 export default defineFlatConfig([
   {
     files: ['src/**/*.test.ts', 'src/**/*.spec.ts'],
-    plugins: {
-      vitest: plugin,
-    },
     languageOptions: {
       globals: {
         ...plugin.environments.env.globals,
       },
+    },
+    plugins: {
+      vitest: plugin,
     },
     rules: {
       /**

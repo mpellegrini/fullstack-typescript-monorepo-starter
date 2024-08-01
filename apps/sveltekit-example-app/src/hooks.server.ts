@@ -36,7 +36,8 @@ type ValidatedSession =
       user: User
     }
 
-const authHandler: Handle = async ({ event, resolve }) => {
+const authHandler: Handle = async (input) => {
+  const { event } = input
   let validatedSession: ValidatedSession = {
     session: null,
     user: null,
@@ -65,7 +66,7 @@ const authHandler: Handle = async ({ event, resolve }) => {
   event.locals.user = validatedSession.user
   event.locals.session = validatedSession.session
 
-  return resolve(event)
+  return input.resolve(event)
 }
 
 export const handle: Handle = sequence(authHandler)

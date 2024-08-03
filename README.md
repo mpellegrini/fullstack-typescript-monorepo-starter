@@ -1,33 +1,12 @@
 # Fullstack Typescript Monorepo Starter
 
-<!-- TOC -->
-* [Fullstack Typescript Monorepo Starter](#fullstack-typescript-monorepo-starter)
-  * [Overview](#overview)
-  * [Prerequisites](#prerequisites)
-  * [Useful Monorepo Operations](#useful-monorepo-operations)
-    * [Setup](#setup)
-    * [Clean](#clean)
-    * [Build](#build)
-    * [Test](#test)
-    * [Lint](#lint)
-    * [Type Check](#type-check)
-  * [Conventional Commits Best Practices](#conventional-commits-best-practices)
-    * [Default](#default)
-    * [Types](#types)
-    * [Scopes](#scopes)
-    * [Subject](#subject)
-    * [Body](#body)
-    * [Footer](#footer)
-    * [Examples](#examples)
-<!-- TOC -->
-
 ## Overview
 
-| Folder    | Description                                                         |
-|-----------|---------------------------------------------------------------------|
-| packages  | packages for shared code libraries                                  |
-| apps      | packages for web applications                                       |
-| toolchain | packages supporting the shared toolchain (eslint, jest, typescript) |
+| Folder    | Description                                                           |
+|-----------|-----------------------------------------------------------------------|
+| packages  | packages for shared code libraries                                    |
+| apps      | packages for web applications                                         |
+| toolchain | packages supporting the shared toolchain (eslint, vitest, typescript) |
 
 ## Prerequisites
 
@@ -86,6 +65,14 @@ Run TypeScript type checks for all workspaces in the monorepo
 
 ```shell
 pnpm run -w typecheck
+```
+
+## Building Docker Image
+```shell
+docker build . -t sveltekit-example-app
+```
+```shell
+docker run --rm --name=sveltekit-example-app -p 8080:8080 sveltekit-example-app
 ```
 
 ## Conventional Commits Best Practices

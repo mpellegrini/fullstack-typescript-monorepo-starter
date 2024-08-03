@@ -4,6 +4,9 @@
   "private": true,
   "description": "SvelteKit Example App",
   "type": "module",
+  "files": [
+    "build"
+  ],
   "scripts": {
     "build": "svelte-kit sync",
     "clean": "del .turbo coverage .svelte-kit",
@@ -13,12 +16,13 @@
     "typecheck": "svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "oslo": "1.2.1"
+    "oslo": "1.2.1",
+    "pg": "8.12.0"
   },
   "devDependencies": {
     "@packages/auth-lucia": "workspace:*",
     "@packages/example-pkg": "workspace:*",
-    "@sveltejs/adapter-auto": "3.2.2",
+    "@sveltejs/adapter-node": "5.2.0",
     "@sveltejs/kit": "2.5.18",
     "@sveltejs/vite-plugin-svelte": "3.1.1",
     "@toolchain/eslint-config": "workspace:*",

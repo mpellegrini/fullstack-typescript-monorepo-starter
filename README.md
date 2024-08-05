@@ -72,7 +72,7 @@ pnpm run -w typecheck
 docker build . -t sveltekit-example-app
 ```
 ```shell
-docker run --rm --name=sveltekit-example-app -p 8080:8080 sveltekit-example-app
+docker run --rm --name=sveltekit-example-app -p 8080:3000 sveltekit-example-app
 ```
 
 ## Conventional Commits Best Practices

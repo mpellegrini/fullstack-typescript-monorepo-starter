@@ -1,6 +1,10 @@
 .git
+.github
 .gitignore
 node_modules
+
+.husky
+.turbo
 
 .svelte-kit
 build

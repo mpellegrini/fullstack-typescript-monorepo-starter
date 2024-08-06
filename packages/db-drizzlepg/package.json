@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "dotenv": "16.4.5",
-    "drizzle-orm": "0.32.1",
+    "drizzle-orm": "0.32.2",
     "pg": "8.12.0",
     "zod": "3.23.8"
   },
@@ -28,9 +28,9 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/node": "22.0.2",
+    "@types/node": "22.1.0",
     "@types/pg": "8.11.6",
-    "drizzle-kit": "0.23.1",
-    "tsx": "4.16.3"
+    "drizzle-kit": "0.23.2",
+    "tsx": "4.16.5"
   }
 }

@@ -155,7 +155,7 @@ export default defineFlatConfig({
       'error',
       {
         customGroups: { top: ['id'] },
-        customIgnore: [],
+        destructureOnly: false,
         groups: ['top'],
         ignoreCase: true,
         ignorePattern: [],

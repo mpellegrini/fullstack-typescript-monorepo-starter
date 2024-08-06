@@ -36,8 +36,8 @@ type ValidatedSession =
       user: User
     }
 
-const authHandler: Handle = async (input) => {
-  const { event } = input
+// eslint-disable-next-line @typescript-eslint/unbound-method -- using resolve like this is acceptable
+const authHandler: Handle = async ({ event, resolve }) => {
   let validatedSession: ValidatedSession = {
     session: null,
     user: null,
@@ -66,7 +66,7 @@ const authHandler: Handle = async (input) => {
   event.locals.user = validatedSession.user
   event.locals.session = validatedSession.session
 
-  return input.resolve(event)
+  return resolve(event)
 }
 
 export const handle: Handle = sequence(authHandler)

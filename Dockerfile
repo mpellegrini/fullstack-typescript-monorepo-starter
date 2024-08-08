@@ -9,7 +9,7 @@ COPY . .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile
 
-RUN pnpm run build --filter=...@apps/$APP_NAME
+RUN pnpm exec turbo build --filter=@apps/$APP_NAME...
 
 RUN pnpm --filter=@apps/$APP_NAME exec vite build
 RUN pnpm --filter=@apps/$APP_NAME deploy --prod out

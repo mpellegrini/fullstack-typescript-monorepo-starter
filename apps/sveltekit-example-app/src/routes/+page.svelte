@@ -1,11 +1,9 @@
 <script lang="ts">
   import { greetUser } from '@packages/example-pkg'
 
-  import type { PageData } from './$types'
+  const { data } = $props()
 
-  export let data: PageData
-
-  $: greeting = greetUser(data.user)
+  const greeting = $derived(greetUser(data.user))
 </script>
 
 <div class="space-y-1">

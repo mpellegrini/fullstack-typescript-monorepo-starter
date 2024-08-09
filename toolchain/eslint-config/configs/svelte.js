@@ -7,7 +7,7 @@ import baseTypeScriptConfig from './ts/base.js'
 import deprecationConfig from './ts/deprecation.js'
 import typescriptImportConfig from './ts/import.js'
 
-const SVELTE_FILES = ['**/*.svelte']
+const SVELTE_FILES = ['**/*.svelte', '**/*.svelte.ts']
 
 export default defineFlatConfig([
   {

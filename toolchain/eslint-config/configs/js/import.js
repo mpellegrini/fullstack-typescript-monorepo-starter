@@ -18,7 +18,7 @@ export default defineFlatConfig({
     /**
      * Disallow non-import statements appearing before import statements.
      *
-     * 🔧 Fixable - https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/first.md
+     *  https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/first.md
      */
     'import/first': 'error',
 

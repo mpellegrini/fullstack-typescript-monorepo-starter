@@ -16,11 +16,9 @@ const sessions = authSchema.table(
     }).notNull(),
     userId: uuid('user_id').notNull(),
   },
-  (table) => {
-    return {
-      fk1: namedForeignKey(table.userId, users.id),
-    }
-  },
+  (table) => ({
+    fk1: namedForeignKey(table.userId, users.id),
+  }),
 )
 
 export default sessions

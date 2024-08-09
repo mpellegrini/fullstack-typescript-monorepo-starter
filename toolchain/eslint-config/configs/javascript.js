@@ -3,6 +3,7 @@ import { defineFlatConfig } from 'eslint-define-config'
 
 import importConfig from './js/import.js'
 import perfectionistConfig from './js/perfectionist.js'
+import preferArrow from './js/prefer-arrow.js'
 import promiseConfig from './js/promise.js'
 import unicornConfig from './js/unicorn.js'
 
@@ -25,10 +26,28 @@ export default defineFlatConfig([
        * 🚫 Not fixable - https://eslint.org/docs/latest/rules/no-empty-function
        */
       'no-empty-function': 'error',
+
+      /**
+       * Require braces around arrow function bodies.
+       *
+       * 🔧 Fixable - https://eslint.org/docs/latest/rules/arrow-body-style
+       */
+      'arrow-body-style': ['error', 'as-needed'],
+
+      /**
+       * Enforce the consistent use of either function declarations or expressions
+       * assigned to variables.
+       *
+       * 🔧 Fixable - https://eslint.org/docs/latest/rules/func-style
+       */
+      'func-style': ['error', 'expression'],
+
+      'prefer-arrow-callback': 'error',
     },
   },
   importConfig,
   perfectionistConfig,
   promiseConfig,
   unicornConfig,
+  preferArrow,
 ])

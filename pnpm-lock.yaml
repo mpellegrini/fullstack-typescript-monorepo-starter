@@ -100,6 +100,18 @@ importers:
         specifier: 3.23.8
         version: 3.23.8
 
+  packages/api:
+    devDependencies:
+      '@toolchain/eslint-config':
+        specifier: workspace:*
+        version: link:../../toolchain/eslint-config
+      '@toolchain/typescript-config':
+        specifier: workspace:*
+        version: link:../../toolchain/typescript-config
+      '@toolchain/vitest-config':
+        specifier: workspace:*
+        version: link:../../toolchain/vitest-config
+
   packages/auth-lucia:
     dependencies:
       '@lucia-auth/adapter-drizzle':

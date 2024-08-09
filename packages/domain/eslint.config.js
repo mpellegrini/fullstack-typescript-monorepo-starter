@@ -1,3 +1,1 @@
-import config from '@toolchain/eslint-config/profile/node'
-
-export default config
+export { default } from '@toolchain/eslint-config/profile/node'

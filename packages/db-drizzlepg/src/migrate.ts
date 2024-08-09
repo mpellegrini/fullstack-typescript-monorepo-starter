@@ -10,8 +10,8 @@ try {
   })
 
   console.log('Drizzle database migration completed successfully!')
-} catch (err) {
-  console.log('Drizzle database migrations failed!', err)
+} catch (error) {
+  console.log('Drizzle database migrations failed!', error)
 } finally {
   await connection.end()
 }

@@ -21,8 +21,8 @@ export const createUser = async (user: NewUser): Promise<string | undefined> => 
     .insert(usersTable)
     .values({ hashedPassword, username: user.username })
     .returning({ id: usersTable.id })
-    .then((res) => res[0]?.id)
-    .catch((err) => {
-      throw err
+    .then((resp) => resp[0]?.id)
+    .catch((error) => {
+      throw error
     })
 }

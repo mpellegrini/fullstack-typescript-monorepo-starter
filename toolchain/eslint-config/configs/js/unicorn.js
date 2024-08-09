@@ -6,40 +6,25 @@ export default defineFlatConfig({
     unicorn: plugin,
   },
   rules: {
-    /**
-     * Require consistent filename case for all linted files.
-     *
-     * 🚫 Not fixable - https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/filename-case.md
-     */
-    'unicorn/filename-case': ['error', { case: 'kebabCase' }],
+    ...plugin.configs['flat/recommended'].rules,
 
     /**
-     * Require using the node: protocol when importing Node.js built-in modules.
+     * Use destructured variables over properties.
      *
-     * 🔧 Fixable - https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/prefer-node-protocol.md
+     * 🔧 Fixable - https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/consistent-destructuring.md
+     *
      */
-    'unicorn/prefer-node-protocol': 'error',
+    'unicorn/consistent-destructuring': ['error'],
 
     /**
-     * Enforce passing a message value when creating a built-in error
+     * Enforce correct Error subclassing.
      *
-     * 🚫 Not fixable - https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/error-message.md
+     * 🔧 Partially Fixable  - https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/custom-error-definition.md
+     *
      */
-    'unicorn/error-message': 'error',
+    'unicorn/custom-error-definition': ['error'],
 
-    /**
-     * Enforce the use of new for all builtins, except String, Number, Boolean, Symbol and BigInt
-     *
-     * 🔧 Fixable - https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/new-for-builtins.md
-     */
-    'unicorn/new-for-builtins': 'error',
-
-    /**
-     * Disallow empty files
-     *
-     * 🚫 Not fixable - https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/no-empty-file.md
-     *
-     */
-    'unicorn/no-empty-file': 'error',
+    'unicorn/no-null': ['off'],
+    'unicorn/prevent-abbreviations': ['off'],
   },
 })

@@ -1,3 +1,1 @@
-import config from './profile/node.js'
-
-export default config
+export { default } from './profile/node.js'

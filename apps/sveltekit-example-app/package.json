@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build": "svelte-kit sync",
-    "clean": "del .turbo coverage .svelte-kit",
+    "clean": "del .turbo coverage .svelte-kit build",
     "dev": "vite dev",
     "lint": "eslint .",
     "test": "vitest run",

@@ -80,7 +80,7 @@ export default defineFlatConfig([
        *
        * 🚫 Not fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/consistent-test-filename.md
        */
-      'vitest/consistent-test-filename': ['error', { pattern: '.*\\.test\\.ts$' }],
+      'vitest/consistent-test-filename': ['error', { pattern: String.raw`.*\.test\.ts$` }],
 
       /**
        * Prefer test or it but not both.

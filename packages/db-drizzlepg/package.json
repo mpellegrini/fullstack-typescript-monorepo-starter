@@ -28,7 +28,7 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/node": "22.1.0",
+    "@types/node": "22.2.0",
     "@types/pg": "8.11.6",
     "drizzle-kit": "0.24.0",
     "tsx": "4.17.0"

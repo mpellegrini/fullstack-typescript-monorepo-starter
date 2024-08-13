@@ -1,7 +1,11 @@
-import type { ForeignKeyBuilder, PgColumn, UniqueConstraintBuilder } from 'drizzle-orm/pg-core'
-
 import { getTableName } from 'drizzle-orm'
-import { foreignKey, unique } from 'drizzle-orm/pg-core'
+import {
+  type ForeignKeyBuilder,
+  type PgColumn,
+  type UniqueConstraintBuilder,
+  foreignKey,
+  unique,
+} from 'drizzle-orm/pg-core'
 
 export const namedForeignKey = (column: PgColumn, foreignColumn: PgColumn): ForeignKeyBuilder =>
   foreignKey({

@@ -43,6 +43,8 @@ export default defineFlatConfig([
       'func-style': ['error', 'expression'],
 
       'prefer-arrow-callback': 'error',
+
+      'no-duplicate-imports': 'error',
     },
   },
   importConfig,

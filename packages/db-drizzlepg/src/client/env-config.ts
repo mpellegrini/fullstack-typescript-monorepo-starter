@@ -14,4 +14,6 @@ const envSchema = z.object({
   DB_MAX_CONNECTIONS: z.coerce.number().min(1).default(10),
 })
 
-export default envSchema.parse(dotenv.config().parsed)
+dotenv.config()
+
+export default envSchema.parse(process.env)

@@ -12,6 +12,7 @@ export default defineFlatConfig({
     ...plugin.configs['recommended-type-checked'].rules,
     ...plugin.configs['stylistic-type-checked'].rules,
 
+    '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
     '@typescript-eslint/consistent-type-exports': 'error',
     '@typescript-eslint/consistent-type-imports': [
       'error',
@@ -21,10 +22,9 @@ export default defineFlatConfig({
         prefer: 'type-imports',
       },
     ],
-    '@typescript-eslint/no-import-type-side-effects': 'error',
-
     '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
     '@typescript-eslint/explicit-module-boundary-types': 'error',
+    '@typescript-eslint/no-import-type-side-effects': 'error',
     '@typescript-eslint/no-non-null-assertion': 'error',
     '@typescript-eslint/no-redeclare': 'error',
     '@typescript-eslint/no-shadow': 'error',

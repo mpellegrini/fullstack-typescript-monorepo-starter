@@ -45,5 +45,12 @@ export default defineFlatConfig({
         variables: true,
       },
     ],
+    '@typescript-eslint/switch-exhaustiveness-check': [
+      'error',
+      {
+        allowDefaultCaseForExhaustiveSwitch: false,
+        requireDefaultForNonUnion: true,
+      },
+    ],
   },
 })

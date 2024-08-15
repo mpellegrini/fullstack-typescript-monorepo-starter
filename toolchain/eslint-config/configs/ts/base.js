@@ -4,7 +4,6 @@ import { defineFlatConfig } from 'eslint-define-config'
 export const TYPESCRIPT_FILES = ['**/*.ts', '**/*.cts', '**/*.mts', '**/*.tsx']
 
 export default defineFlatConfig({
-  '@typescript-eslint/method-signature-style': ['error', 'property'],
   plugins: {
     '@typescript-eslint': plugin,
   },
@@ -25,6 +24,7 @@ export default defineFlatConfig({
     ],
     '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
     '@typescript-eslint/explicit-module-boundary-types': 'error',
+    '@typescript-eslint/method-signature-style': ['error', 'property'],
     '@typescript-eslint/no-import-type-side-effects': 'error',
     '@typescript-eslint/no-non-null-assertion': 'error',
     '@typescript-eslint/no-redeclare': 'error',

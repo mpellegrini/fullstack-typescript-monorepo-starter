@@ -4,6 +4,7 @@ import { defineFlatConfig } from 'eslint-define-config'
 export const TYPESCRIPT_FILES = ['**/*.ts', '**/*.cts', '**/*.mts', '**/*.tsx']
 
 export default defineFlatConfig({
+  '@typescript-eslint/method-signature-style': ['error', 'property'],
   plugins: {
     '@typescript-eslint': plugin,
   },

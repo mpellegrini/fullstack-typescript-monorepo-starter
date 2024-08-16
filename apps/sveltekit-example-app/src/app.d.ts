@@ -1,13 +1,14 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
-import type { Session, User } from '@packages/auth-lucia'
+
+import type { ApiClient } from '@packages/api/client'
 
 declare global {
   namespace App {
     // interface Error {}
     interface Locals {
-      session: Session | null
-      user: User | null
+      api: ApiClient['api']
+      getAuthedUser: () => Promise<null | { id: string; username: string }>
     }
     // interface PageData {}
     // interface PageState {}

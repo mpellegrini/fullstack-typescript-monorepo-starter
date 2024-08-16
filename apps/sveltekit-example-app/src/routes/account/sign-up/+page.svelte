@@ -20,18 +20,18 @@
 
     <form class="space-y-6" method="POST" novalidate use:enhance>
       <div>
-        <label class="block" for="email">Email</label>
+        <label class="block" for="username">Email</label>
         <div class="mt-2">
           <input
-            aria-invalid={$errors.email ? 'true' : undefined}
-            bind:value={$formData.email}
-            data-invalid={$errors.email ? 'true' : undefined}
-            name="email"
+            aria-invalid={$errors.username ? 'true' : undefined}
+            bind:value={$formData.username}
+            data-invalid={$errors.username ? 'true' : undefined}
+            name="username"
             type="email"
-            {...$constraints.email}
+            {...$constraints.username}
             class="block w-full border py-1.5" />
 
-          {#if $errors.email}<span class="text-red-500">{$errors.email}</span>{/if}
+          {#if $errors.username}<span class="text-red-500">{$errors.username}</span>{/if}
         </div>
       </div>
       <div>

@@ -6,8 +6,7 @@
   "license": "UNLICENSED",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./repository": "./src/repository/index.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "clean": "del .turbo coverage",

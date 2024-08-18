@@ -1,8 +1,6 @@
+import { StatusCodes } from 'http-status-codes'
 import { fail, message, setError, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
-
-import { lucia } from '@packages/auth-lucia'
-import { createUser } from '@packages/auth-lucia/repository'
 
 import { signupSchema } from '$lib/schemas'
 
@@ -14,33 +12,19 @@ export const load = (async () => {
 }) satisfies PageServerLoad
 
 export const actions = {
-  default: async ({ cookies, request }) => {
+  default: async ({ locals: { api }, request }) => {
     const form = await superValidate(request, zod(signupSchema))
+    if (!form.valid) return fail(StatusCodes.BAD_REQUEST, { form })
 
-    if (!form.valid) {
-      return fail(400, { form })
-    }
+    const resp = await api.accounts.signup.$post({
+      json: {
+        password: form.data.password,
+        username: form.data.username,
+      },
+    })
 
-    const { data: formData } = form
-
-    try {
-      const userId = await createUser({ password: formData.password, username: formData.email })
-      if (userId) {
-        const session = await lucia.createSession(userId, {})
-        const sessionCookie = lucia.createSessionCookie(session.id)
-        cookies.set(sessionCookie.name, sessionCookie.value, {
-          path: '.',
-          ...sessionCookie.attributes,
-        })
-        return message(form, 'Form posted successfully!')
-      } else {
-        return message(form, 'User was not returned!')
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        return setError(form, 'email', 'E-mail already exists.')
-      }
-      throw error
-    }
+    return resp.ok
+      ? message(form, await resp.json())
+      : setError(form, 'username', await resp.text())
   },
 } satisfies Actions

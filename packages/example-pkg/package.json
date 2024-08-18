@@ -17,7 +17,6 @@
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
-    "@toolchain/vitest-config": "workspace:*",
-    "@types/node": "22.3.0"
+    "@toolchain/vitest-config": "workspace:*"
   }
 }

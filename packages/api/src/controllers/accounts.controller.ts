@@ -5,7 +5,7 @@ import { z } from 'zod'
 
 import { lucia } from '@packages/auth-lucia'
 
-import type { HonoVariables } from '../types/index.js'
+import type { HonoTypes } from '../types/index.js'
 
 import { createUser } from '../services/account.services.js'
 
@@ -18,7 +18,7 @@ const signupSchema = z.object({
 
 export type SignupSchema = z.infer<typeof signupSchema>
 
-const app = new Hono<HonoVariables>()
+const app = new Hono<HonoTypes>()
   .basePath('/accounts')
   .get('/user', (c) => {
     const user = c.var.user

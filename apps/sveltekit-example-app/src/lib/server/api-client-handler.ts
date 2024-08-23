@@ -7,6 +7,7 @@ export const apiClientHandler: Handle = ({ event, resolve }) => {
   const { api } = apiClient('/', {
     fetch: event.fetch,
     headers: {
+      // TODO: Set access token here from cookie value
       host: event.request.headers.get('host') ?? '',
       'x-forwarded-for': event.getClientAddress(),
     },

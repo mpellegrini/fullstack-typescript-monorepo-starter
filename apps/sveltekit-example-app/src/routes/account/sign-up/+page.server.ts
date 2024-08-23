@@ -12,7 +12,7 @@ export const load = (async () => {
 }) satisfies PageServerLoad
 
 export const actions = {
-  default: async ({ locals: { api }, request }) => {
+  default: async ({ cookies, locals: { api }, request }) => {
     const form = await superValidate(request, zod(signupSchema))
     if (!form.valid) return fail(StatusCodes.BAD_REQUEST, { form })
 
@@ -23,8 +23,18 @@ export const actions = {
       },
     })
 
-    return resp.ok
-      ? message(form, await resp.json())
-      : setError(form, 'username', await resp.text())
+    if (resp.ok) {
+      const result = await resp.json()
+      cookies.set('auth_session', result.accessToken.id, {
+        httpOnly: true,
+        maxAge: 7200,
+        path: '/',
+        sameSite: 'lax',
+        secure: false,
+      })
+      return message(form, result.message)
+    } else {
+      return setError(form, 'username', await resp.text())
+    }
   },
 } satisfies Actions

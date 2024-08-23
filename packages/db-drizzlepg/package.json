@@ -29,7 +29,7 @@
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "@types/pg": "8.11.6",
-    "drizzle-kit": "0.24.0",
+    "drizzle-kit": "0.24.1",
     "tsx": "4.17.0"
   }
 }

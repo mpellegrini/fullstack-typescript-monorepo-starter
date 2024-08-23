@@ -1,6 +1,5 @@
 import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
-import { setCookie } from 'hono/cookie'
 import { z } from 'zod'
 
 import { lucia } from '@packages/auth-lucia'
@@ -30,15 +29,14 @@ const app = new Hono<HonoTypes>()
       const userId = await createUser({ password, username })
       if (userId) {
         const session = await lucia.createSession(userId, {})
-        const sessionCookie = lucia.createSessionCookie(session.id)
-        setCookie(c, sessionCookie.name, sessionCookie.value, {
-          path: '.',
-          ...sessionCookie.attributes,
+        console.log('**  ', session.expiresAt)
+        return c.json({
+          accessToken: session,
+          message: `Verification email sent to ${username}`,
         })
       }
-      return c.json({
-        message: `Verification email sent to ${username}`,
-      })
+      c.status(400)
+      return c.text('createUser failed')
     } catch (error) {
       if (error instanceof Error) {
         c.status(400)

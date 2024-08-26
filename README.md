@@ -69,7 +69,7 @@ pnpm run -w typecheck
 
 ## Building Docker Image
 ```shell
-docker build . -t sveltekit-example-app
+docker build . -t sveltekit-example-app --build-arg="APP_NAME=sveltekit-example-app"
 ```
 ```shell
 docker run --rm --name=sveltekit-example-app -p 8080:3000 sveltekit-example-app

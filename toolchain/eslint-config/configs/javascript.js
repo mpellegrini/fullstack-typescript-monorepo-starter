@@ -45,6 +45,8 @@ export default defineFlatConfig([
       'prefer-arrow-callback': 'error',
 
       'no-duplicate-imports': 'error',
+
+      'prefer-const': ['error', { destructuring: 'all' }],
     },
   },
   importConfig,

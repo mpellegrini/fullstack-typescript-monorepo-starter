@@ -29,13 +29,13 @@
     "@toolchain/vitest-config": "workspace:*",
     "autoprefixer": "10.4.20",
     "http-status-codes": "2.3.0",
-    "postcss": "8.4.41",
-    "svelte": "5.0.0-next.240",
-    "svelte-check": "3.8.6",
+    "postcss": "8.4.44",
+    "svelte": "5.0.0-next.243",
+    "svelte-check": "4.0.0",
     "sveltekit-superforms": "2.17.0",
     "tailwindcss": "3.4.10",
     "tslib": "2.7.0",
-    "vite": "5.4.2",
+    "vite": "5.4.3",
     "zod": "3.23.8"
   }
 }

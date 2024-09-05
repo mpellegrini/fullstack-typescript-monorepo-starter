@@ -5,7 +5,7 @@ import { createMiddleware } from 'hono/factory'
 
 import { type Session, type User, lucia } from '@packages/auth-lucia'
 
-import type { HonoTypes } from '../types/index.js'
+import type { CustomEnv } from '../types/index.js'
 
 type ValidatedAuthSession =
   | {
@@ -19,7 +19,7 @@ type ValidatedAuthSession =
 
 const AUTHORIZATION = 'Authorization'
 
-export const validateAuthSession: MiddlewareHandler<HonoTypes> = createMiddleware(
+export const validateAuthSession: MiddlewareHandler<CustomEnv> = createMiddleware(
   async (c, next) => {
     let validatedAuthSession: ValidatedAuthSession = {
       session: null,

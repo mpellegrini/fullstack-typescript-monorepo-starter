@@ -1,5 +1,5 @@
 import type { RequestHandler } from '@sveltejs/kit'
 
-import api from '@packages/api'
+import app from '@packages/api'
 
-export const fallback: RequestHandler = ({ request }) => api.fetch(request)
+export const fallback: RequestHandler = ({ request }) => app.fetch(request)

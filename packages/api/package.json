@@ -19,7 +19,7 @@
     "@hono/zod-validator": "0.2.2",
     "@packages/auth-lucia": "workspace:*",
     "@packages/db-drizzlepg": "workspace:*",
-    "hono": "4.5.11",
+    "hono": "4.6.1",
     "oslo": "1.2.1",
     "zod": "3.23.8"
   },

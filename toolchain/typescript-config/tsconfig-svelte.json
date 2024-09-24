@@ -21,5 +21,5 @@
     /* Type Checking */
     "exactOptionalPropertyTypes": false              /* Interpret optional property types as written, rather than adding 'undefined'. */
   },
-  "include": ["../../../src/**/*.ts", "../../../src/**/*.svelte"],
+  "include": ["${configDir}/src/**/*.ts", "${configDir}/src/**/*.svelte"],
 }

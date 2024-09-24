@@ -23,11 +23,11 @@
         <label class="block" for="username">Email</label>
         <div class="mt-2">
           <input
-            aria-invalid={$errors.username ? 'true' : undefined}
-            bind:value={$formData.username}
-            data-invalid={$errors.username ? 'true' : undefined}
             name="username"
+            aria-invalid={$errors.username ? 'true' : undefined}
+            data-invalid={$errors.username ? 'true' : undefined}
             type="email"
+            bind:value={$formData.username}
             {...$constraints.username}
             class="block w-full border py-1.5" />
 
@@ -38,11 +38,11 @@
         <label class="block" for="password">Password</label>
         <div class="mt-2">
           <input
-            aria-invalid={$errors.password ? 'true' : undefined}
-            bind:value={$formData.password}
-            data-invalid={$errors.password ? 'true' : undefined}
             name="password"
+            aria-invalid={$errors.password ? 'true' : undefined}
+            data-invalid={$errors.password ? 'true' : undefined}
             type="password"
+            bind:value={$formData.password}
             {...$constraints.password}
             class="block w-full border py-1.5" />
           {#if $errors.password}<span class="text-red-500">{$errors.password}</span>{/if}
@@ -52,11 +52,11 @@
         <label for="password_confirm">Confirm Password</label>
         <div class="mt-2">
           <input
-            aria-invalid={$errors.password_confirm ? 'true' : undefined}
-            bind:value={$formData.password_confirm}
-            data-invalid={$errors.password_confirm ? 'true' : undefined}
             name="password_confirm"
+            aria-invalid={$errors.password_confirm ? 'true' : undefined}
+            data-invalid={$errors.password_confirm ? 'true' : undefined}
             type="password"
+            bind:value={$formData.password_confirm}
             {...$constraints.password_confirm}
             class="block w-full border py-1.5" />
           {#if $errors.password_confirm}<span class="text-red-500">{$errors.password_confirm}</span

@@ -166,16 +166,6 @@ export default defineFlatConfig({
         type: sortingMethodType,
       },
     ],
-    'perfectionist/sort-svelte-attributes': [
-      'error',
-      {
-        customGroups: {},
-        groups: [],
-        ignoreCase: true,
-        order: 'asc',
-        type: sortingMethodType,
-      },
-    ],
     'perfectionist/sort-switch-case': [
       'error',
       {

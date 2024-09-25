@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@packages/api": "workspace:*",
-    "@sveltejs/adapter-node": "5.2.3",
+    "@sveltejs/adapter-node": "5.2.4",
     "@sveltejs/kit": "2.5.28",
     "@sveltejs/vite-plugin-svelte": "4.0.0-next.7",
     "@toolchain/eslint-config": "workspace:*",
@@ -30,12 +30,12 @@
     "autoprefixer": "10.4.20",
     "http-status-codes": "2.3.0",
     "postcss": "8.4.47",
-    "svelte": "5.0.0-next.250",
+    "svelte": "5.0.0-next.259",
     "svelte-check": "4.0.2",
     "sveltekit-superforms": "2.19.0",
-    "tailwindcss": "3.4.12",
+    "tailwindcss": "3.4.13",
     "tslib": "2.7.0",
-    "vite": "5.4.6",
+    "vite": "5.4.8",
     "zod": "3.23.8"
   }
 }

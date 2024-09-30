@@ -1,4 +1,4 @@
-name: One-Version Conformance Check
+name: one-version-conformance-check
 on:
   pull_request:
 

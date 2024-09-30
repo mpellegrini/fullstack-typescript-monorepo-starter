@@ -1,9 +1,11 @@
 import { sveltekit } from '@sveltejs/kit/vite'
+import { createRequire } from 'node:module'
 import { defineConfig, mergeConfig } from 'vite'
 
 import vitestSharedConfig from '@toolchain/vitest-config'
 
-import packageJson from './package.json'
+const require = createRequire(import.meta.url)
+const packageJson = require('./package.json')
 
 export default mergeConfig(
   vitestSharedConfig,

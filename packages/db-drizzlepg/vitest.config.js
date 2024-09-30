@@ -1,6 +1,9 @@
+import { createRequire } from 'node:module'
+
 import sharedConfig, { defineConfig, mergeConfig } from '@toolchain/vitest-config'
 
-import packageJson from './package.json'
+const require = createRequire(import.meta.url)
+const packageJson = require('./package.json')
 
 export default mergeConfig(
   sharedConfig,

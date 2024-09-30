@@ -2,48 +2,48 @@ name: code-quality
 on:
   push:
     branches:
-      - 'main'
+      - main
   pull_request:
 
 jobs:
   lint:
-    name: 'ESLint'
+    name: ESLint
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Install
-        uses: ./.github/composite-actions/install
+      - name: Prepare
+        uses: ./.github/composite-actions/prepare
 
       - name: Run ESLint check
         run: pnpm run lint
 
   type-check:
-    name: 'Type Check'
+    name: Type Check
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Install
-        uses: ./.github/composite-actions/install
+      - name: Prepare
+        uses: ./.github/composite-actions/prepare
 
       - name: Run type checks
         run: pnpm run typecheck
 
   test:
-    name: 'Unit Test'
+    name: Unit Test
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Install
-        uses: ./.github/composite-actions/install
+      - name: Prepare
+        uses: ./.github/composite-actions/prepare
 
-      - name: Run unit test
+      - name: Run unit tests
         run: pnpm run test

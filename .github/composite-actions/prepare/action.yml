@@ -1,5 +1,5 @@
-name: 'Install'
-description: 'Sets up Node, and installs dependencies'
+name: Prepare
+description: Prepares the repo for a typical CI job
 
 runs:
   using: composite

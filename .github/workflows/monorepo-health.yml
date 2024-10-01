@@ -1,4 +1,4 @@
-name: one-version-conformance-check
+name: monorepo-health
 on:
   pull_request:
 

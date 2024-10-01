@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@hono/zod-validator": "0.2.2",
+    "@hono/zod-validator": "0.3.0",
     "@packages/auth-lucia": "workspace:*",
     "@packages/db-drizzlepg": "workspace:*",
     "hono": "4.6.3",

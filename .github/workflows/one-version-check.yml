@@ -14,5 +14,5 @@ jobs:
       - name: Prepare
         uses: ./.github/composite-actions/prepare
 
-      - name: Run one version check
-        run: pnpm run lint
+      - name: Run One Version check
+        run: pnpm run one-version:check

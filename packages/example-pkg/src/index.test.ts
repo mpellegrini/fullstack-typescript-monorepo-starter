@@ -12,7 +12,7 @@ describe('greet user tests', () => {
     expect.assertions(1)
 
     user.is_admin = true
-    expect(greetUser(user)).toBe('Hello, Bob Loblaw! You are an admin.')
+    expect(greetUser(user)).toBe(`Hello, ${user.first_name} ${user.last_name}! You are an admin.`)
   })
 
   it('should greet user as a non-admin', () => {

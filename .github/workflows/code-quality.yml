@@ -17,6 +17,9 @@ jobs:
       - name: Prepare
         uses: ./.github/composite-actions/prepare
 
+      - name: Affected
+        run: pnpm exec turbo run lint --affected
+
       - name: Run ESLint check
         run: pnpm run lint
 

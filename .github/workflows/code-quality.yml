@@ -5,6 +5,9 @@ on:
       - main
   pull_request:
 
+env:
+  DO_NOT_TRACK=1
+
 jobs:
   lint:
     name: ESLint

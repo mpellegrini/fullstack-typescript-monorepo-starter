@@ -12,11 +12,14 @@ jobs:
   lint:
     name: ESLint
     runs-on: ubuntu-latest
+    env:
+      TURBO_SCM_BASE: origin/${{ github.base_ref }}
 
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref }} ${{ github.head_ref }} ${{ github.ref_name }}."
+      - run: echo "🔎 The name of your base_ref is ${{ github.base_ref }}
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
       - name: Get base depth
         id: base-depth

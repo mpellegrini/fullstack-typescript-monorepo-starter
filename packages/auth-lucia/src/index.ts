@@ -25,7 +25,7 @@ export type { Session, User } from 'lucia'
 
 declare module 'lucia' {
   interface Register {
-    DatabaseUserAttributes: { username: string }
+    DatabaseUserAttributes: { password: string; username: string }
     Lucia: typeof lucia
   }
 }

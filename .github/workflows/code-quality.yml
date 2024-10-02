@@ -13,7 +13,8 @@ jobs:
     name: ESLint
     runs-on: ubuntu-latest
     env:
-      TURBO_SCM_BASE: 'chore/test_turbo_affected'
+      TURBO_SCM_HEAD: 'chore/test_turbo_affected'
+      TURBO_SCM_BASE: ${{ github.event.repository.default_branch }}
 
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."

@@ -36,7 +36,7 @@ jobs:
         run: pnpm exec turbo ls --affected
 
       - name: Run ESLint check
-        run: pnpm exec turno run lint --affected
+        run: pnpm exec turbo run lint --affected
 
   type-check:
     name: Type Check

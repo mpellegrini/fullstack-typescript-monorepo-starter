@@ -68,9 +68,11 @@ pnpm run -w typecheck
 ```
 
 ## Building Docker Image
+
 ```shell
 docker build . -t sveltekit-example-app --build-arg="APP_NAME=sveltekit-example-app"
 ```
+
 ```shell
 docker run --rm --name=sveltekit-example-app -p 8080:3000 sveltekit-example-app
 ```
@@ -105,7 +107,7 @@ Each commit message consists of a header, a body, and a footer.
 | perf     | Performance Improvements | A code change that improves performance                                                                |
 | test     | Tests                    | Adding missing tests or correcting existing tests                                                      |
 | build    | Builds                   | Changes that affect the build system or external dependencies (example scopes: turborepo, pnpm)        |
-| ci       | Continuous Integrations  | Changes to our CI config­uration files and scripts (example scopes: gh-actions)                        |
+| ci       | Continuous Integrations  | Changes to our CI configuration files and scripts (example scopes: gh-actions)                         |
 | chore    | Chores                   | Other changes that don't modify source or test files                                                   |
 | revert   | Reverts                  | Reverts a previous commit                                                                              |
 |
@@ -154,7 +156,7 @@ that this commit refers to.
   feat: remove ticket list endpoint
   
   refers to JIRA-1337
-  BREAKING CHANGES: ticket enpoints no longer supports list all entites.
+  BREAKING CHANGES: ticket endpoints no longer supports list all entities.
   ```
 * ```
   fix: add missing parameter to service call

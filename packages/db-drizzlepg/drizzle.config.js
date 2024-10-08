@@ -42,4 +42,9 @@ export default defineConfig({
   dbCredentials: {
     url: process.env.DB_CONNECTION_STRING,
   },
+
+  /**
+   * https://orm.drizzle.team/kit-docs/config-reference#casing
+   */
+  casing: 'snake_case',
 })

@@ -41,6 +41,7 @@ if (DB_LOGGING_ENABLED) {
 }
 
 export const db = drizzle(connection, {
+  casing: 'snake_case',
   logger: DB_LOGGING_ENABLED ? new QueryLogger() : false,
   schema,
 })

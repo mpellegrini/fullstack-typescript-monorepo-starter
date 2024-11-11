@@ -32,6 +32,6 @@
     "vite": "5.4.11"
   },
   "peerDependencies": {
-    "svelte": "5.0.4"
+    "svelte": "5.1.15"
   }
 }

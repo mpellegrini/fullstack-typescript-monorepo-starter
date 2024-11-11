@@ -16,13 +16,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@hono/node-server": "1.13.2",
+    "@hono/node-server": "1.13.6",
     "@hono/swagger-ui": "0.4.1",
-    "@hono/zod-openapi": "0.16.4",
+    "@hono/zod-openapi": "0.17.0",
     "@hono/zod-validator": "0.4.1",
-    "@scalar/hono-api-reference": "0.5.156",
+    "@scalar/hono-api-reference": "0.5.159",
     "dotenv": "16.4.5",
-    "hono": "4.6.5",
+    "hono": "4.6.9",
     "http-status-codes": "2.3.0",
     "zod": "3.23.8"
   },
@@ -30,6 +30,6 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "tsx": "4.19.1"
+    "tsx": "4.19.2"
   }
 }

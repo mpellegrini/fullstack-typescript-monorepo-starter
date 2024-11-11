@@ -17,25 +17,25 @@
   },
   "dependencies": {
     "oslo": "1.2.1",
-    "pg": "8.13.0"
+    "pg": "8.13.1"
   },
   "devDependencies": {
     "@packages/api": "workspace:*",
-    "@sveltejs/adapter-node": "5.2.8",
-    "@sveltejs/kit": "2.7.2",
+    "@sveltejs/adapter-node": "5.2.9",
+    "@sveltejs/kit": "2.8.0",
     "@sveltejs/vite-plugin-svelte": "4.0.0",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "autoprefixer": "10.4.20",
     "http-status-codes": "2.3.0",
-    "postcss": "8.4.47",
-    "svelte": "5.0.4",
-    "svelte-check": "4.0.5",
+    "postcss": "8.4.49",
+    "svelte": "5.1.15",
+    "svelte-check": "4.0.7",
     "sveltekit-superforms": "2.20.0",
     "tailwindcss": "3.4.14",
-    "tslib": "2.8.0",
-    "vite": "5.4.9",
+    "tslib": "2.8.1",
+    "vite": "5.4.11",
     "zod": "3.23.8"
   }
 }

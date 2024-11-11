@@ -4,9 +4,7 @@ export interface TagContainer<Token> {
   readonly [tag]: Token
 }
 
-type Tag<Token extends PropertyKey, TagMetadata> = TagContainer<{
-  [K in Token]: TagMetadata
-}>
+type Tag<Token extends PropertyKey, TagMetadata> = TagContainer<Record<Token, TagMetadata>>
 
 export type Tagged<Type, TagName extends PropertyKey, TagMetadata = never> = Tag<
   TagName,

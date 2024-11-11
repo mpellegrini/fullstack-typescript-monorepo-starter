@@ -13,9 +13,7 @@ const users = authSchema.table(
     hashedPassword: t.text().notNull(),
     username: citext().notNull(),
   }),
-  (t) => ({
-    uk1: namedUnique(t.username),
-  }),
+  (t) => [namedUnique(t.username)],
 )
 
 export default users

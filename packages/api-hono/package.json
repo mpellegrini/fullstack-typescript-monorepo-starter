@@ -16,13 +16,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@hono/node-server": "1.13.6",
+    "@hono/node-server": "1.13.7",
     "@hono/swagger-ui": "0.4.1",
-    "@hono/zod-openapi": "0.17.0",
+    "@hono/zod-openapi": "0.18.0",
     "@hono/zod-validator": "0.4.1",
-    "@scalar/hono-api-reference": "0.5.159",
+    "@scalar/hono-api-reference": "0.5.160",
     "dotenv": "16.4.5",
-    "hono": "4.6.9",
+    "hono": "4.6.11",
     "http-status-codes": "2.3.0",
     "zod": "3.23.8"
   },

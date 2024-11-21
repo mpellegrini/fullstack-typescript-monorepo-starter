@@ -21,17 +21,17 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "3.3.1",
-    "@sveltejs/kit": "2.8.0",
-    "@sveltejs/vite-plugin-svelte": "4.0.0",
+    "@sveltejs/kit": "2.8.1",
+    "@sveltejs/vite-plugin-svelte": "4.0.1",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "svelte": "5.1.15",
-    "svelte-check": "4.0.7",
+    "svelte": "5.2.7",
+    "svelte-check": "4.0.9",
     "tslib": "2.8.1",
     "vite": "5.4.11"
   },
   "peerDependencies": {
-    "svelte": "5.1.15"
+    "svelte": "5.2.7"
   }
 }

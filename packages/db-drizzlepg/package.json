@@ -20,9 +20,9 @@
   },
   "dependencies": {
     "dotenv": "16.4.5",
-    "drizzle-orm": "0.36.1",
+    "drizzle-orm": "0.36.3",
     "pg": "8.13.1",
-    "sql-formatter": "15.4.5",
+    "sql-formatter": "15.4.6",
     "zod": "3.23.8"
   },
   "devDependencies": {
@@ -30,7 +30,7 @@
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "@types/pg": "8.11.10",
-    "drizzle-kit": "0.28.0",
+    "drizzle-kit": "0.28.1",
     "tsx": "4.19.2"
   }
 }

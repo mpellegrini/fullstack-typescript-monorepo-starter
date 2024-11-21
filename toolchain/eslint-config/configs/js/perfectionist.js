@@ -17,7 +17,7 @@ export default defineFlatConfig({
     'perfectionist/sort-classes': [
       'error',
       {
-        customGroups: {},
+        customGroups: [],
         groups: [
           'index-signature',
           'static-property',
@@ -60,10 +60,10 @@ export default defineFlatConfig({
       {
         customGroups: {
           type: {
-            'ts-paths': ['$lib/**'],
+            'ts-paths': ['$lib/*'],
           },
           value: {
-            'ts-paths': ['$lib/**'],
+            'ts-paths': ['$lib/*'],
           },
         },
         environment: 'node',
@@ -83,7 +83,7 @@ export default defineFlatConfig({
           'unknown',
         ],
         ignoreCase: true,
-        internalPattern: ['@{apps,packages,toolchain}/**'],
+        internalPattern: ['@{apps,packages,toolchain}/*'],
         maxLineLength: undefined,
         newlinesBetween: 'always',
         order: 'asc',

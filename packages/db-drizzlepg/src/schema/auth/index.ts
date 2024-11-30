@@ -1,5 +1,5 @@
 export { authSchema } from './schema.js'
 
-export { type Session, default as sessionsTable, sessionRelations } from './sessions.js'
+export { type Session, sessionRelations, default as sessionsTable } from './sessions.js'
 
-export { type User, default as usersTable, userRelations } from './users.js'
+export { type User, userRelations, default as usersTable } from './users.js'

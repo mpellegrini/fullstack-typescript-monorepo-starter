@@ -17,7 +17,7 @@ export default defineFlatConfig({
     'perfectionist/sort-classes': [
       'error',
       {
-        customGroups: {},
+        customGroups: [],
         groups: [
           'index-signature',
           'static-property',
@@ -59,11 +59,8 @@ export default defineFlatConfig({
       'error',
       {
         customGroups: {
-          type: {
-            'ts-paths': ['$lib/**'],
-          },
           value: {
-            'ts-paths': ['$lib/**'],
+            'ts-paths': [String.raw`^\$lib/.*`],
           },
         },
         environment: 'node',
@@ -83,7 +80,7 @@ export default defineFlatConfig({
           'unknown',
         ],
         ignoreCase: true,
-        internalPattern: ['@{apps,packages,toolchain}/**'],
+        internalPattern: ['^@(apps|packages|toolchain)/.*'],
         maxLineLength: undefined,
         newlinesBetween: 'always',
         order: 'asc',
@@ -123,7 +120,7 @@ export default defineFlatConfig({
     'perfectionist/sort-named-exports': [
       'error',
       {
-        groupKind: 'types-first',
+        // groupKind: 'types-first',
         ignoreCase: true,
         order: 'asc',
         type: sortingMethodType,
@@ -154,9 +151,12 @@ export default defineFlatConfig({
     'perfectionist/sort-objects': [
       'error',
       {
-        customGroups: { top: ['id'] },
-        destructureOnly: false,
-        groups: ['top'],
+        customGroups: {
+          top: ['^id$'],
+        },
+        groups: ['top', 'unknown'],
+        // customGroups: { top: ['id'] },
+        // groups: ['top'],
         ignoreCase: true,
         ignorePattern: [],
         order: 'asc',

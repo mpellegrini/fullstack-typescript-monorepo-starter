@@ -4,25 +4,23 @@ import { text, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { namedForeignKey } from '../utils.js'
 
 import { authSchema } from './schema.js'
-import users from './users.js'
+import { usersTable } from './users.js'
 
-export const sessions = authSchema.table(
+export const sessionsTable = authSchema.table(
   'sessions',
   {
     id: text().primaryKey(),
     expiresAt: timestamp({ mode: 'date', withTimezone: true }).notNull(),
     userId: uuid().notNull(),
   },
-  (t) => [namedForeignKey(t.userId, users.id)],
+  (t) => [namedForeignKey(t.userId, usersTable.id)],
 )
 
-export default sessions
-
-export const sessionRelations = relations(sessions, ({ one }) => ({
-  user: one(users, {
-    fields: [sessions.userId],
-    references: [users.id],
+export const sessionRelations = relations(sessionsTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [sessionsTable.userId],
+    references: [usersTable.id],
   }),
 }))
 
-export type Session = typeof sessions.$inferSelect
+export type Session = typeof sessionsTable.$inferSelect

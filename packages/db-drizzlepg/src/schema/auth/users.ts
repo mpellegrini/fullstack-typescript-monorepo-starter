@@ -4,9 +4,9 @@ import { citext } from '../custom-types.js'
 import { namedUnique } from '../utils.js'
 
 import { authSchema } from './schema.js'
-import sessions from './sessions.js'
+import { sessionsTable } from './sessions.js'
 
-const users = authSchema.table(
+export const usersTable = authSchema.table(
   'users',
   (t) => ({
     id: t.uuid().primaryKey().defaultRandom(),
@@ -16,10 +16,8 @@ const users = authSchema.table(
   (t) => [namedUnique(t.username)],
 )
 
-export default users
-
-export const userRelations = relations(users, ({ many }) => ({
-  sessions: many(sessions),
+export const userRelations = relations(usersTable, ({ many }) => ({
+  sessions: many(sessionsTable),
 }))
 
-export type User = typeof users.$inferSelect
+export type User = typeof usersTable.$inferSelect

@@ -30,12 +30,12 @@
     "autoprefixer": "10.4.20",
     "http-status-codes": "2.3.0",
     "postcss": "8.4.49",
-    "svelte": "5.4.0",
-    "svelte-check": "4.1.0",
-    "sveltekit-superforms": "2.21.0",
-    "tailwindcss": "3.4.15",
+    "svelte": "5.10.0",
+    "svelte-check": "4.1.1",
+    "sveltekit-superforms": "2.21.1",
+    "tailwindcss": "3.4.16",
     "tslib": "2.8.1",
-    "vite": "6.0.2",
+    "vite": "6.0.3",
     "zod": "3.23.8"
   }
 }

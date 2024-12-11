@@ -24,7 +24,7 @@
     "dotenv": "16.4.7",
     "hono": "4.6.13",
     "http-status-codes": "2.3.0",
-    "zod": "3.23.8"
+    "zod": "3.24.0"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

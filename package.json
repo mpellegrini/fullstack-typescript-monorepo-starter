@@ -17,7 +17,7 @@
     "@commitlint/config-conventional": "19.6.0",
     "del-cli": "6.0.0",
     "husky": "9.1.7",
-    "lint-staged": "15.2.10",
+    "lint-staged": "15.2.11",
     "one-version": "0.2.0",
     "prettier": "3.4.2",
     "prettier-plugin-packagejson": "2.5.6",

@@ -15,6 +15,7 @@
   "devDependencies": {
     "@commitlint/cli": "19.6.0",
     "@commitlint/config-conventional": "19.6.0",
+    "@tailwindcss/language-server": "0.0.27",
     "del-cli": "6.0.0",
     "husky": "9.1.7",
     "lint-staged": "15.2.11",

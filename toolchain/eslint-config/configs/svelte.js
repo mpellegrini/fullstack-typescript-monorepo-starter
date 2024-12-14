@@ -4,7 +4,6 @@ import plugin from 'eslint-plugin-svelte'
 import svelteParser from 'svelte-eslint-parser'
 
 import baseTypeScriptConfig from './ts/base.js'
-import deprecationConfig from './ts/deprecation.js'
 import typescriptImportConfig from './ts/import.js'
 
 const SVELTE_FILES = ['**/*.svelte']
@@ -18,11 +17,6 @@ export default defineFlatConfig([
   {
     files: SVELTE_FILES,
     ...typescriptImportConfig,
-  },
-
-  {
-    files: SVELTE_FILES,
-    ...deprecationConfig,
   },
 
   {

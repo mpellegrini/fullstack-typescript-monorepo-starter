@@ -16,3 +16,17 @@ jobs:
 
       - name: Run One Version check
         run: pnpm run one-version:check
+
+  duplicate-dependencies-check:
+    name: Duplicate Dependencies Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        uses: ./.github/composite-actions/prepare
+
+      - name: Check for Duplicate Dependencies
+        run: pnpm dedupe --check

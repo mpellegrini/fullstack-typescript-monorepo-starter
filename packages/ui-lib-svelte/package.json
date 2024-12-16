@@ -26,11 +26,11 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "svelte": "5.12.0",
+    "svelte": "5.14.0",
     "svelte-check": "4.1.1",
     "vite": "6.0.3"
   },
   "peerDependencies": {
-    "svelte": "5.12.0"
+    "svelte": "5.14.0"
   }
 }

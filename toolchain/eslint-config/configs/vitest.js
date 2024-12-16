@@ -1,5 +1,5 @@
+import plugin from '@vitest/eslint-plugin'
 import { defineFlatConfig } from 'eslint-define-config'
-import plugin from 'eslint-plugin-vitest'
 
 /**
  * eslint-plugin-vitest configuration
@@ -20,62 +20,6 @@ export default defineFlatConfig([
     },
     rules: {
       /**
-       * Enforce having expectation in test body.
-       *
-       * 🚫 Not fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/expect-expect.md
-       */
-      'vitest/expect-expect': 'error',
-
-      /**
-       * Disallow identical titles.
-       *
-       * 🔧 Fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/no-identical-title.md
-       */
-      'vitest/no-identical-title': 'error',
-
-      /**
-       * Disallow commented out tests
-       *
-       * 🚫 Not fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/no-commented-out-tests.md
-       */
-      'vitest/no-commented-out-tests': 'error',
-
-      /**
-       * Enforce valid titles.
-       *
-       * 🔧 Fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/valid-title.md
-       */
-      'vitest/valid-title': 'error',
-
-      /**
-       * Enforce valid expect() usage.
-       *
-       * 🚫 Not fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/valid-expect.md
-       */
-      'vitest/valid-expect': ['error', { alwaysAwait: true }],
-
-      /**
-       * Enforce valid describe callback.
-       *
-       * 🚫 Not fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/valid-describe-callback.md
-       */
-      'vitest/valid-describe-callback': 'error',
-
-      /**
-       * Require local Test Context for concurrent snapshot tests.
-       *
-       * 🚫 Not fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/require-local-test-context-for-concurrent-snapshots.md
-       */
-      'vitest/require-local-test-context-for-concurrent-snapshots': 'error',
-
-      /**
-       * Disallow importing node:test.
-       *
-       * 🔧 Fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/no-import-node-test.md
-       */
-      'vitest/no-import-node-test': 'error',
-
-      /**
        * Disallow .spec test file pattern.
        *
        * 🚫 Not fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/consistent-test-filename.md
@@ -88,6 +32,13 @@ export default defineFlatConfig([
        * 🔧 Fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/no-import-node-test.md
        */
       'vitest/consistent-test-it': ['error', { fn: 'test', withinDescribe: 'it' }],
+
+      /**
+       * Enforce having expectation in test body.
+       *
+       * 🚫 Not fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/expect-expect.md
+       */
+      'vitest/expect-expect': 'error',
 
       /**
        * Enforce a maximum number of expect per test.
@@ -109,6 +60,13 @@ export default defineFlatConfig([
        * 🔧 Fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/no-alias-methods.md
        */
       'vitest/no-alias-methods': 'error',
+
+      /**
+       * Disallow commented out tests
+       *
+       * 🚫 Not fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/no-commented-out-tests.md
+       */
+      'vitest/no-commented-out-tests': 'error',
 
       /**
        * Disallow conditional expects
@@ -158,6 +116,20 @@ export default defineFlatConfig([
        * 🚫 Not fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/no-hooks.md
        */
       'vitest/no-hooks': 'off',
+
+      /**
+       * Disallow identical titles.
+       *
+       * 🔧 Fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/no-identical-title.md
+       */
+      'vitest/no-identical-title': 'error',
+
+      /**
+       * Disallow importing node:test.
+       *
+       * 🔧 Fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/no-import-node-test.md
+       */
+      'vitest/no-import-node-test': 'error',
 
       /**
        * Disallow string interpolation in snapshots.
@@ -356,11 +328,25 @@ export default defineFlatConfig([
       'vitest/prefer-todo': 'error',
 
       /**
+       * Prefer vi.mocked() over fn as Mock
+       *
+       * 🔧 Fixable - https://github.com/vitest-dev/eslint-plugin-vitest/blob/main/docs/rules/prefer-vi-mocked.md
+       */
+      'vitest/prefer-vi-mocked': 'error',
+
+      /**
        * Require setup and teardown to be within a hook.
        *
        * 🚫 Not fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/require-hook.md
        */
       'vitest/require-hook': 'error',
+
+      /**
+       * Require local Test Context for concurrent snapshot tests.
+       *
+       * 🚫 Not fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/require-local-test-context-for-concurrent-snapshots.md
+       */
+      'vitest/require-local-test-context-for-concurrent-snapshots': 'error',
 
       /**
        * Require toThrow() to be called with an error message.
@@ -375,6 +361,39 @@ export default defineFlatConfig([
        * 🚫 Not fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/require-top-level-describe.md
        */
       'vitest/require-top-level-describe': 'error',
+
+      /**
+       * Enforce valid describe callback.
+       *
+       * 🚫 Not fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/valid-describe-callback.md
+       */
+      'vitest/valid-describe-callback': 'error',
+
+      /**
+       * Enforce valid expect() usage.
+       *
+       * 🚫 Not fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/valid-expect.md
+       */
+      'vitest/valid-expect': ['error', { alwaysAwait: true }],
+
+      /**
+       * Enforce valid titles.
+       *
+       * 🔧 Fixable - https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/valid-title.md
+       */
+      'vitest/valid-title': 'error',
+
+      /**
+       * Require promises that have expectations in their chain to be valid
+       *
+       * 🚫 Not fixable - https://github.com/vitest-dev/eslint-plugin-vitest/blob/main/docs/rules/valid-expect-in-promise.md
+       */
+      'vitest/valid-expect-in-promise': 'error',
+    },
+    settings: {
+      vitest: {
+        typecheck: true,
+      },
     },
   },
 ])

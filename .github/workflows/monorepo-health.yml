@@ -16,3 +16,6 @@ jobs:
 
       - name: Run One Version check
         run: pnpm run one-version:check
+
+      - name: Check for Duplicate Dependencies
+        run: pnpm dedupe --check

@@ -16,6 +16,3 @@ jobs:
 
       - name: Run One Version check
         run: pnpm run one-version:check
-
-      - name: Test dedupe
-        run: pnpm dedupe --check

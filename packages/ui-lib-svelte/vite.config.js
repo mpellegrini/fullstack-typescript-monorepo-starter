@@ -1,5 +1,4 @@
 import { sveltekit } from '@sveltejs/kit/vite'
-import tailwindcss from '@tailwindcss/vite'
 import { createRequire } from 'node:module'
 import { defineConfig, mergeConfig } from 'vite'
 

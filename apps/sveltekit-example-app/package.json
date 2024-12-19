@@ -24,7 +24,7 @@
     "@sveltejs/adapter-node": "5.2.11",
     "@sveltejs/kit": "2.12.2",
     "@sveltejs/vite-plugin-svelte": "5.0.3",
-    "@tailwindcss/vite": "4.0.0-beta.7",
+    "@tailwindcss/vite": "4.0.0-beta.8",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
@@ -32,7 +32,7 @@
     "svelte": "5.14.4",
     "svelte-check": "4.1.1",
     "sveltekit-superforms": "2.22.1",
-    "tailwindcss": "4.0.0-beta.7",
+    "tailwindcss": "4.0.0-beta.8",
     "vite": "6.0.4",
     "zod": "3.24.1"
   }

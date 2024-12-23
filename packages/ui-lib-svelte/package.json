@@ -27,8 +27,12 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
+    "bits-ui": "1.0.0-next.74",
+    "clsx": "2.1.1",
     "svelte": "5.15.0",
     "svelte-check": "4.1.1",
+    "tailwind-merge": "2.6.0",
+    "tailwind-variants": "0.3.0",
     "tailwindcss": "4.0.0-beta.8",
     "vite": "6.0.5"
   },

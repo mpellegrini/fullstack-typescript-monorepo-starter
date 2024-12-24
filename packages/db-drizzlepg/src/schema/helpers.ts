@@ -6,6 +6,9 @@ import {
   type UniqueConstraintBuilder,
   foreignKey,
   index,
+  integer,
+  text,
+  timestamp,
   unique,
 } from 'drizzle-orm/pg-core'
 
@@ -26,4 +29,12 @@ export const namedIndex = (...columns: [PgColumn, ...PgColumn[]]): IndexBuilder 
   const tableName = getTableName(columns[0].table)
   const name = `${tableName}_idx_${columns.map((col) => col.name).join('_')}`
   return index(name).on(...columns)
+}
+
+export const auditMetadata = {
+  createdAt: timestamp('created_at', { mode: 'string', withTimezone: true }).notNull().defaultNow(),
+  createdBy: text('created_by').notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true }).notNull().defaultNow(),
+  updatedBy: text('updated_by').notNull(),
+  version: integer('version').notNull().default(0),
 }

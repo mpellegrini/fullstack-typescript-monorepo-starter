@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm'
 import { text, timestamp, uuid } from 'drizzle-orm/pg-core'
 
-import { namedForeignKey } from '../utils.js'
+import { namedForeignKey } from '../helpers.js'
 
 import { authSchema } from './schema.js'
 import { usersTable } from './users.js'

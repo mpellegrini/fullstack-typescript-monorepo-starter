@@ -1,18 +1,19 @@
 import { relations } from 'drizzle-orm'
+import { text, uuid } from 'drizzle-orm/pg-core'
 
 import { citext } from '../custom-types.js'
-import { namedUnique } from '../utils.js'
+import { namedUnique } from '../helpers.js'
 
 import { authSchema } from './schema.js'
 import { sessionsTable } from './sessions.js'
 
 export const usersTable = authSchema.table(
   'users',
-  (t) => ({
-    id: t.uuid().primaryKey().defaultRandom(),
-    hashedPassword: t.text().notNull(),
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    hashedPassword: text().notNull(),
     username: citext().notNull(),
-  }),
+  },
   (t) => [namedUnique(t.username)],
 )
 

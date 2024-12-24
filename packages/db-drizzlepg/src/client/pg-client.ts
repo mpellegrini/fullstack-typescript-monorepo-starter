@@ -1,5 +1,5 @@
 import { drizzle } from 'drizzle-orm/node-postgres'
-import pg from 'pg'
+import { Pool } from 'pg'
 
 import * as schema from '../schema/index.js'
 
@@ -14,7 +14,7 @@ const {
   DB_MAX_CONNECTIONS,
 } = env
 
-export const connection = new pg.Pool({
+export const connection = new Pool({
   connectionString: DB_CONNECTION_STRING,
 
   application_name: DB_APPLICATION_NAME,

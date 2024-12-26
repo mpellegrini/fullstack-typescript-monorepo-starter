@@ -11,9 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
       - name: Prepare
         uses: ./.github/composite-actions/prepare
 
@@ -25,9 +22,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
       - name: Prepare
         uses: ./.github/composite-actions/prepare
 
@@ -39,9 +33,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
       - name: Prepare
         uses: ./.github/composite-actions/prepare
 

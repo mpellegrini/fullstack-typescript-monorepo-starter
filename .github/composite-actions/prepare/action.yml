@@ -1,9 +1,20 @@
 name: Prepare
 description: Prepares the repo for a typical CI job
 
+inputs:
+  fetch-depth:
+    description: Number of commits to fetch. 0 indicates all history for all branches and tags.
+    required: true
+    default: 1
+
 runs:
   using: composite
   steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: ${{ inputs.fetch-depth }}
+
     - name: Install pnpm package manager
       uses: pnpm/action-setup@v4
 

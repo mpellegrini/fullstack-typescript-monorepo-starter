@@ -1,0 +1,22 @@
+{
+  "name": "@{{package-type}}/{{kebabCase package-name}}",
+  "version": "0.0.0",
+  "private": true,
+  "description": "{{sentenceCase package-description}}",
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "clean": "del .turbo coverage",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@toolchain/eslint-config": "workspace:*",
+    "@toolchain/typescript-config": "workspace:*",
+    "@toolchain/vitest-config": "workspace:*"
+  }
+}

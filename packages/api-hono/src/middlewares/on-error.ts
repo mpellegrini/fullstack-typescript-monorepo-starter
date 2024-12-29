@@ -1,5 +1,5 @@
 import type { ErrorHandler } from 'hono'
-import type { StatusCode } from 'hono/utils/http-status'
+import type { ContentfulStatusCode } from 'hono/utils/http-status'
 
 import { StatusCodes } from 'http-status-codes'
 import * as process from 'node:process'
@@ -9,8 +9,9 @@ export const onError: ErrorHandler = (err, c) => {
   const statusCode =
     currentStatus === StatusCodes.OK
       ? StatusCodes.INTERNAL_SERVER_ERROR
-      : (currentStatus as StatusCode)
+      : (currentStatus as ContentfulStatusCode)
   const env = process.env?.['NODE_ENV']
+
   return c.json(
     {
       message: err.message,

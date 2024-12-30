@@ -1,7 +1,7 @@
 import { PlopTypes } from '@turbo/gen'
 
 export default function generator(plop: PlopTypes.NodePlopAPI): void {
-  plop.setGenerator('new-package', {
+  plop.setGenerator('create-package', {
     description: 'Creates a new @packages workspace',
     prompts: [
       {
@@ -28,7 +28,7 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
         {
           type: 'add',
           path: `${workspacePath}/src/index.ts`,
-          templateFile: 'templates/create-package/package-index.ts.hbs',
+          templateFile: 'templates/create-package/src-index.ts.hbs',
           skipIfExists: true,
         },
         {

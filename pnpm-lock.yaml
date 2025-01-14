@@ -220,6 +220,9 @@ importers:
         specifier: 3.24.1
         version: 3.24.1
     devDependencies:
+      '@softwaretechnik/dbml-renderer':
+        specifier: 1.0.30
+        version: 1.0.30
       '@toolchain/eslint-config':
         specifier: workspace:*
         version: link:../../toolchain/eslint-config
@@ -232,6 +235,9 @@ importers:
       '@types/pg':
         specifier: 8.11.10
         version: 8.11.10
+      drizzle-dbml-generator:
+        specifier: 0.10.0
+        version: 0.10.0(drizzle-orm@0.38.3(@types/pg@8.11.10)(pg@8.13.1))
       drizzle-kit:
         specifier: 0.30.1
         version: 0.30.1
@@ -385,6 +391,9 @@ importers:
         version: 2.1.8(@types/node@22.9.1)(jsdom@25.0.1)(lightningcss@1.28.2)
 
 packages:
+
+  '@aduh95/viz.js@3.4.0':
+    resolution: {integrity: sha512-KI2nVf9JdwWCXqK6RVf+9/096G7VWN4Z84mnynlyZKao2xQENW8WNEjLmvdlxS5X8PNWXFC1zqwm7tveOXw/4A==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -1775,6 +1784,10 @@ packages:
     resolution: {integrity: sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==}
     engines: {node: '>=18'}
 
+  '@softwaretechnik/dbml-renderer@1.0.30':
+    resolution: {integrity: sha512-cGSeiZg5/IsW76mfKXAV39hveGnOOosLJLyIbFi/EcbUz/wqBlnPYnAgF/0d5lW+4AtzoBSMA8SNHkDMxCu/5Q==}
+    hasBin: true
+
   '@sveltejs/adapter-auto@3.3.1':
     resolution: {integrity: sha512-5Sc7WAxYdL6q9j/+D0jJKjGREGlfIevDyHSQ2eNETHcB1TKlQWHcAo8AS8H1QdjNvSXpvOwNjykDUHPEAyGgdQ==}
     peerDependencies:
@@ -2606,6 +2619,11 @@ packages:
   dotenv@16.4.7:
     resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
     engines: {node: '>=12'}
+
+  drizzle-dbml-generator@0.10.0:
+    resolution: {integrity: sha512-cMZq9E3U3RlmE0uBeXyc6oWJ0royOkC6HiTlc9LDeMe+W87poZTzKoNYUyAxZrs4Q1RQtob+cGKiefV4ZoI8HA==}
+    peerDependencies:
+      drizzle-orm: '>=0.36.0'
 
   drizzle-kit@0.30.1:
     resolution: {integrity: sha512-HmA/NeewvHywhJ2ENXD3KvOuM/+K2dGLJfxVfIHsGwaqKICJnS+Ke2L6UcSrSrtMJLJaT0Im1Qv4TFXfaZShyw==}
@@ -5303,6 +5321,8 @@ packages:
 
 snapshots:
 
+  '@aduh95/viz.js@3.4.0': {}
+
   '@ampproject/remapping@2.3.0':
     dependencies:
       '@jridgewell/gen-mapping': 0.3.5
@@ -6309,6 +6329,12 @@ snapshots:
 
   '@sindresorhus/merge-streams@2.3.0': {}
 
+  '@softwaretechnik/dbml-renderer@1.0.30':
+    dependencies:
+      '@aduh95/viz.js': 3.4.0
+      yargs: 17.7.2
+      zod: 3.24.1
+
   '@sveltejs/adapter-auto@3.3.1(@sveltejs/kit@2.15.2(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.17.3)(vite@6.0.7(@types/node@22.9.1)(jiti@2.4.1)(lightningcss@1.28.2)(tsx@4.19.2)(yaml@2.6.1)))(svelte@5.17.3)(vite@6.0.7(@types/node@22.9.1)(jiti@2.4.1)(lightningcss@1.28.2)(tsx@4.19.2)(yaml@2.6.1)))':
     dependencies:
       '@sveltejs/kit': 2.15.2(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.17.3)(vite@6.0.7(@types/node@22.9.1)(jiti@2.4.1)(lightningcss@1.28.2)(tsx@4.19.2)(yaml@2.6.1)))(svelte@5.17.3)(vite@6.0.7(@types/node@22.9.1)(jiti@2.4.1)(lightningcss@1.28.2)(tsx@4.19.2)(yaml@2.6.1))
@@ -7244,6 +7270,10 @@ snapshots:
       is-obj: 2.0.0
 
   dotenv@16.4.7: {}
+
+  drizzle-dbml-generator@0.10.0(drizzle-orm@0.38.3(@types/pg@8.11.10)(pg@8.13.1)):
+    dependencies:
+      drizzle-orm: 0.38.3(@types/pg@8.11.10)(pg@8.13.1)
 
   drizzle-kit@0.30.1:
     dependencies:

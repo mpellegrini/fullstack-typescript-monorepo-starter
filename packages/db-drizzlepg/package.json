@@ -10,7 +10,6 @@
     "./schema": "./src/schema/index.ts"
   },
   "scripts": {
-    "build": "pnpm run db:dbml",
     "clean": "del .turbo coverage",
     "db:dbml": "node --import=tsx  ./src/generate-dbml.ts",
     "db:dbml-render": "dbml-renderer -i schema.dbml -o schema.svg",

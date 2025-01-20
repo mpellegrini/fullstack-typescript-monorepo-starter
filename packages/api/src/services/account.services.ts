@@ -1,13 +1,13 @@
 import { Argon2id } from 'oslo/password'
 
 import { db } from '@packages/db-drizzlepg/client'
-import { type User, usersTable } from '@packages/db-drizzlepg/schema'
+import { type UserEntity, type UserEntityInsert, usersTable } from '@packages/db-drizzlepg/schema'
 
-export type NewUser = Omit<User, 'hashedPassword' | 'id'> & {
+export type NewUser = Omit<UserEntityInsert, 'hashedPassword'> & {
   password: string
 }
 
-export const findByUsername = async (username: string): Promise<User | undefined> =>
+export const findByUsername = async (username: string): Promise<UserEntity | undefined> =>
   db.query.usersTable.findFirst({
     columns: { id: true, hashedPassword: true, username: true },
     where: (col, { eq }) => eq(col.username, username),

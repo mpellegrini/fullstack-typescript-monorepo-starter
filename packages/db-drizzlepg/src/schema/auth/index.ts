@@ -1,5 +1,10 @@
 export { authSchema } from './schema.js'
 
-export { type Session, sessionRelations, sessionsTable } from './sessions.js'
+export {
+  type SessionEntity,
+  type SessionEntityInsert,
+  sessionRelations,
+  sessionsTable,
+} from './sessions.js'
 
-export { type User, userRelations, usersTable } from './users.js'
+export { type UserEntity, type UserEntityInsert, userRelations, usersTable } from './users.js'

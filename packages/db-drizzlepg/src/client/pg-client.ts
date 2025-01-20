@@ -4,7 +4,7 @@ import { Pool } from 'pg'
 import * as schema from '../schema/index.js'
 
 import env from './env-config.js'
-import { QueryLogger } from './utils.js'
+import { QueryLogger } from './query-logger.js'
 
 const {
   DB_APPLICATION_NAME,

@@ -23,4 +23,5 @@ export const sessionRelations = relations(sessionsTable, ({ one }) => ({
   }),
 }))
 
-export type Session = typeof sessionsTable.$inferSelect
+export type SessionEntity = typeof sessionsTable.$inferSelect
+export type SessionEntityInsert = typeof sessionsTable.$inferSelect

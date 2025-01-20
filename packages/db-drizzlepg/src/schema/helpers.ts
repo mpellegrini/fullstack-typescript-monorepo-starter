@@ -11,6 +11,7 @@ import {
   text,
   timestamp,
   unique,
+  uuid,
 } from 'drizzle-orm/pg-core'
 
 /*
@@ -39,10 +40,14 @@ export const namedIndex = (...columns: [PgColumn, ...PgColumn[]]): IndexBuilder 
   return index(name).on(...columns)
 }
 
-export const auditMetadata = {
-  createdAt: timestamp('created_at', { mode: 'string', withTimezone: true }).notNull().defaultNow(),
-  createdBy: text('created_by').notNull(),
-  updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true }).notNull().defaultNow(),
-  updatedBy: text('updated_by').notNull(),
-  version: integer('version').notNull().default(0),
+export const withSurrogateId = {
+  id: uuid().primaryKey().defaultRandom(),
+}
+
+export const withAuditMetadata = {
+  createdAt: timestamp({ mode: 'string', withTimezone: true }).notNull().defaultNow(),
+  createdBy: text().notNull(),
+  updatedAt: timestamp({ mode: 'string', withTimezone: true }).notNull().defaultNow(),
+  updatedBy: text().notNull(),
+  version: integer().notNull().default(0),
 }

@@ -1,8 +1,8 @@
 import { relations } from 'drizzle-orm'
-import { text, uuid } from 'drizzle-orm/pg-core'
+import { text } from 'drizzle-orm/pg-core'
 
 import { citext } from '../custom-types.js'
-import { namedUnique } from '../helpers.js'
+import { namedUnique, withSurrogateId } from '../helpers.js'
 
 import { authSchema } from './schema.js'
 import { sessionsTable } from './sessions.js'
@@ -10,7 +10,7 @@ import { sessionsTable } from './sessions.js'
 export const usersTable = authSchema.table(
   'users',
   {
-    id: uuid().primaryKey().defaultRandom(),
+    ...withSurrogateId,
     hashedPassword: text().notNull(),
     username: citext().notNull(),
   },
@@ -21,4 +21,5 @@ export const userRelations = relations(usersTable, ({ many }) => ({
   sessions: many(sessionsTable),
 }))
 
-export type User = typeof usersTable.$inferSelect
+export type UserEntity = Omit<typeof usersTable.$inferSelect, 'hashedPassword'>
+export type UserEntityInsert = typeof usersTable.$inferInsert

@@ -1,0 +1,6 @@
+{
+  "extends": "./node_modules/@toolchain/typescript-config/tsconfig-node20.json",
+  "compilerOptions": {
+    "types": ["vitest/globals"]
+  }
+}

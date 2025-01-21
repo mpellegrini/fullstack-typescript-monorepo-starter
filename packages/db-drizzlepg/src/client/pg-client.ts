@@ -1,5 +1,5 @@
 import { drizzle } from 'drizzle-orm/node-postgres'
-import { Pool } from 'pg'
+import pg from 'pg'
 
 import * as schema from '../schema/index.js'
 
@@ -14,7 +14,7 @@ const {
   DB_MAX_CONNECTIONS,
 } = env
 
-export const connection = new Pool({
+const connection = new pg.Pool({
   connectionString: DB_CONNECTION_STRING,
 
   application_name: DB_APPLICATION_NAME,
@@ -40,8 +40,9 @@ if (DB_LOGGING_ENABLED) {
   connection.on('remove', () => console.debug('Removed the connection from the pool'))
 }
 
-export const db = drizzle(connection, {
+export const db = drizzle({
   casing: 'snake_case',
+  client: connection,
   logger: DB_LOGGING_ENABLED ? new QueryLogger() : false,
   schema,
 })

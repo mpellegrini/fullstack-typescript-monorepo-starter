@@ -29,14 +29,14 @@
     "@toolchain/vitest-config": "workspace:*",
     "bits-ui": "1.0.0-next.77",
     "clsx": "2.1.1",
-    "svelte": "5.19.5",
+    "svelte": "5.19.6",
     "svelte-check": "4.1.4",
-    "tailwind-merge": "2.6.0",
+    "tailwind-merge": "3.0.1",
     "tailwind-variants": "0.3.1",
     "tailwindcss": "4.0.1",
     "vite": "6.0.11"
   },
   "peerDependencies": {
-    "svelte": "5.19.5"
+    "svelte": "5.19.6"
   }
 }

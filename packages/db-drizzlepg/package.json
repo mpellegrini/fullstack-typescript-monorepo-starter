@@ -23,9 +23,9 @@
   },
   "dependencies": {
     "dotenv": "16.4.7",
-    "drizzle-orm": "0.38.4",
+    "drizzle-orm": "0.39.1",
     "pg": "8.13.1",
-    "sql-formatter": "15.4.9",
+    "sql-formatter": "15.4.10",
     "zod": "3.24.1"
   },
   "devDependencies": {
@@ -33,9 +33,9 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/pg": "8.11.10",
+    "@types/pg": "8.11.11",
     "drizzle-dbml-generator": "0.10.0",
-    "drizzle-kit": "0.30.2",
+    "drizzle-kit": "0.30.4",
     "tsx": "4.19.2"
   }
 }

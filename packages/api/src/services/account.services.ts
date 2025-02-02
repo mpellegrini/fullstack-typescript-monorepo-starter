@@ -1,4 +1,4 @@
-import { Argon2id } from 'oslo/password'
+import { hash } from '@node-rs/argon2'
 
 import { db } from '@packages/db-drizzlepg/client'
 import { type UserEntity, type UserEntityInsert, usersTable } from '@packages/db-drizzlepg/schema'
@@ -14,7 +14,7 @@ export const findByUsername = async (username: string): Promise<UserEntity | und
   })
 
 export const createUser = async (user: NewUser): Promise<string | undefined> => {
-  const hashedPassword = await new Argon2id().hash(user.password)
+  const hashedPassword = await hash(user.password)
 
   return db
     .insert(usersTable)

@@ -4,7 +4,9 @@
 
   import { signupSchema } from '$lib/schemas/index.js'
 
-  const { data } = $props()
+  import type { PageProps } from './$types.js'
+
+  const { data }: PageProps = $props()
 
   const form = superForm(data.form, {
     validationMethod: 'auto',

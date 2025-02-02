@@ -1,5 +1,7 @@
 <script lang="ts">
-  const { data } = $props()
+  import type { PageProps } from './$types.js'
+
+  const { data }: PageProps = $props()
 </script>
 
 <div class="space-y-1">

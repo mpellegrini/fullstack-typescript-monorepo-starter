@@ -16,7 +16,7 @@
     "typecheck": "svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "oslo": "1.2.1",
+    "@node-rs/argon2": "2.0.2",
     "pg": "8.13.1"
   },
   "devDependencies": {

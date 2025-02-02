@@ -1,6 +1,6 @@
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle'
+import { hash } from '@node-rs/argon2'
 import { Lucia } from 'lucia'
-import { Argon2id } from 'oslo/password'
 
 import { db } from '@packages/db-drizzlepg/client'
 import { sessionsTable, usersTable } from '@packages/db-drizzlepg/schema'
@@ -18,8 +18,7 @@ export const lucia = new Lucia(adapter, {
   },
 })
 
-export const hashPassword = async (password: string): Promise<string> =>
-  new Argon2id().hash(password)
+export const hashPassword = async (password: string): Promise<string> => hash(password)
 
 export type { Session, User } from 'lucia'
 

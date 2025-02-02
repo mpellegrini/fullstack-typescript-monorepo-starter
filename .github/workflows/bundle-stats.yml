@@ -1,0 +1,28 @@
+name: webapps
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  bundle-stats:
+    name: Bundle Stats
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        uses: ./.github/composite-actions/prepare
+
+      - name: Run One Version check
+        uses: vio/bundle-stats-action@v1
+        with:
+          webpack-stats-path: 'static/webpack-stats.json'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+

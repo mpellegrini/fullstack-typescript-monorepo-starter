@@ -13,9 +13,9 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "@commitlint/cli": "19.6.1",
-    "@commitlint/config-conventional": "19.6.0",
-    "@tailwindcss/language-server": "0.14.2",
+    "@commitlint/cli": "19.7.1",
+    "@commitlint/config-conventional": "19.7.1",
+    "@tailwindcss/language-server": "0.14.3",
     "@turbo/gen": "2.4.0",
     "del-cli": "6.0.0",
     "husky": "9.1.7",

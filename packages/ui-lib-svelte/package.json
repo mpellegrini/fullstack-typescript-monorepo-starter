@@ -21,22 +21,22 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "4.0.0",
-    "@sveltejs/kit": "2.16.1",
+    "@sveltejs/kit": "2.17.1",
     "@sveltejs/vite-plugin-svelte": "5.0.3",
-    "@tailwindcss/vite": "4.0.3",
+    "@tailwindcss/vite": "4.0.5",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "bits-ui": "1.0.0-next.77",
     "clsx": "2.1.1",
-    "svelte": "5.19.6",
+    "svelte": "5.19.9",
     "svelte-check": "4.1.4",
     "tailwind-merge": "3.0.1",
     "tailwind-variants": "0.3.1",
-    "tailwindcss": "4.0.3",
-    "vite": "6.0.11"
+    "tailwindcss": "4.0.5",
+    "vite": "6.1.0"
   },
   "peerDependencies": {
-    "svelte": "5.19.6"
+    "svelte": "5.19.9"
   }
 }

@@ -10,7 +10,7 @@ const config = {
     adapter: adapter(),
     typescript: {
       config: (config) => {
-        config['extends'] = './../node_modules/@toolchain/typescript-config/tsconfig-svelte.json'
+        config['extends'] = '@toolchain/typescript-config/tsconfig-svelte.json'
         return config
       },
     },

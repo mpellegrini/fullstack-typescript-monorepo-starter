@@ -15,20 +15,20 @@
   "devDependencies": {
     "@commitlint/cli": "19.7.1",
     "@commitlint/config-conventional": "19.7.1",
-    "@tailwindcss/language-server": "0.14.3",
-    "@turbo/gen": "2.4.0",
+    "@tailwindcss/language-server": "0.14.4",
+    "@turbo/gen": "2.4.1",
     "del-cli": "6.0.0",
     "husky": "9.1.7",
     "lint-staged": "15.4.3",
     "one-version": "0.2.0",
-    "prettier": "3.4.2",
+    "prettier": "3.5.0",
     "prettier-plugin-packagejson": "2.5.8",
     "prettier-plugin-svelte": "3.3.3",
     "prettier-plugin-tailwindcss": "0.6.11",
-    "turbo": "2.4.0"
+    "turbo": "2.4.1"
   },
-  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0",
+  "packageManager": "pnpm@10.3.0+sha512.ee592eda8815a8a293c206bb0917c4bb0ff274c50def7cbc17be05ec641fc2d1b02490ce660061356bd0d126a4d7eb2ec8830e6959fb8a447571c631d5a2442d",
   "engines": {
-    "node": ">= 22.12.x < 23.x.x"
+    "node": ">= 22.14.x < 23.x.x"
   }
 }

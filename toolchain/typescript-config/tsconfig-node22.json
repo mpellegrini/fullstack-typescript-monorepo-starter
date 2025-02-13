@@ -1,7 +1,7 @@
 // prettier-ignore
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Node 20 + ESM + Strictest",
+  "display": "Node 22 + ESM + Strictest",
   "extends": "./base/tsconfig-base.json",
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */

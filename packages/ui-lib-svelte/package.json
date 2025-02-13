@@ -27,9 +27,9 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "bits-ui": "1.0.0-next.77",
+    "bits-ui": "1.1.0",
     "clsx": "2.1.1",
-    "svelte": "5.19.10",
+    "svelte": "5.20.0",
     "svelte-check": "4.1.4",
     "tailwind-merge": "3.0.1",
     "tailwind-variants": "0.3.1",
@@ -37,6 +37,6 @@
     "vite": "6.1.0"
   },
   "peerDependencies": {
-    "svelte": "5.19.10"
+    "svelte": "5.20.0"
   }
 }

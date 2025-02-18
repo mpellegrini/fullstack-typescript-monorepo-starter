@@ -2,7 +2,6 @@ import type { Handle } from '@sveltejs/kit'
 
 import { apiClient } from '@packages/api/client'
 
-// eslint-disable-next-line @typescript-eslint/unbound-method -- false positive
 export const apiClientHandler: Handle = ({ event, resolve }) => {
   const { api } = apiClient('/', {
     fetch: event.fetch,

@@ -22,9 +22,9 @@
   "devDependencies": {
     "@packages/api": "workspace:*",
     "@sveltejs/adapter-node": "5.2.12",
-    "@sveltejs/kit": "2.17.2",
+    "@sveltejs/kit": "2.17.3",
     "@sveltejs/vite-plugin-svelte": "5.0.3",
-    "@tailwindcss/vite": "4.0.8",
+    "@tailwindcss/vite": "4.0.9",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
@@ -32,7 +32,7 @@
     "svelte": "5.20.4",
     "svelte-check": "4.1.4",
     "sveltekit-superforms": "2.23.1",
-    "tailwindcss": "4.0.8",
+    "tailwindcss": "4.0.9",
     "vite": "6.2.0",
     "zod": "3.24.2"
   }

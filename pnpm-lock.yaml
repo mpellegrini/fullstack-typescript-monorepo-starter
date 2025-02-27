@@ -1613,9 +1613,6 @@ packages:
   '@types/minimatch@5.1.2':
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
 
-  '@types/node@22.13.2':
-    resolution: {integrity: sha512-Z+r8y3XL9ZpI2EY52YYygAFmo2/oWfNSj4BCpAXE2McAexDk8VcnBMGC9Djn9gTKt4d2T/hhXqmPzo4hfIXtTg==}
-
   '@types/node@22.13.5':
     resolution: {integrity: sha512-+lTU0PxZXn0Dr1NBtC7Y8cR21AJr87dLLU953CWA6pMxxv/UDc7jYAY90upcrie1nRcD6XNG5HOYEDtgW5TxAg==}
 
@@ -5924,7 +5921,7 @@ snapshots:
 
   '@types/conventional-commits-parser@5.0.1':
     dependencies:
-      '@types/node': 22.13.2
+      '@types/node': 22.13.5
 
   '@types/cookie@0.6.0': {}
 
@@ -5951,10 +5948,6 @@ snapshots:
 
   '@types/minimatch@5.1.2': {}
 
-  '@types/node@22.13.2':
-    dependencies:
-      undici-types: 6.20.0
-
   '@types/node@22.13.5':
     dependencies:
       undici-types: 6.20.0
@@ -5963,7 +5956,7 @@ snapshots:
 
   '@types/pg@8.11.11':
     dependencies:
-      '@types/node': 22.13.2
+      '@types/node': 22.13.5
       pg-protocol: 1.7.1
       pg-types: 4.0.2
 

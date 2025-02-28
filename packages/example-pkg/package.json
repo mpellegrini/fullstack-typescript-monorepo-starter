@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@toolchain/eslint-config": "workspace:*",
+    "@toolchain/eslint-config-new": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*"
   }

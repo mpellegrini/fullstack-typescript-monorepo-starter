@@ -21,7 +21,7 @@
     "lucia": "3.2.2"
   },
   "devDependencies": {
-    "@toolchain/eslint-config": "workspace:*",
+    "@toolchain/eslint-config-new": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*"
   }

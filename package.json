@@ -20,8 +20,8 @@
     "husky": "9.1.7",
     "lint-staged": "15.4.3",
     "one-version": "0.2.0",
-    "prettier": "3.5.2",
-    "prettier-plugin-packagejson": "2.5.9",
+    "prettier": "3.5.3",
+    "prettier-plugin-packagejson": "2.5.10",
     "prettier-plugin-svelte": "3.3.3",
     "prettier-plugin-tailwindcss": "0.6.11",
     "turbo": "2.4.4"

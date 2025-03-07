@@ -19,7 +19,7 @@ export const configureOpenAPI = (app: AppOpenApi): void => {
     apiReference({
       defaultHttpClient: {
         clientKey: 'fetch',
-        targetKey: 'javascript',
+        targetKey: 'node',
       },
       layout: 'classic',
       spec: {

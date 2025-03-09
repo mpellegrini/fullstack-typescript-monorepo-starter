@@ -1,9 +1,6 @@
-import globals from 'globals'
 import { config } from 'typescript-eslint'
 
 import eslintCommentsConfig from './js/eslint-comments.js'
-
-const { builtin } = globals
 
 export default config(
   {
@@ -11,9 +8,6 @@ export default config(
 
     languageOptions: {
       ecmaVersion: 2025,
-      globals: {
-        ...builtin,
-      },
       parserOptions: {
         ecmaVersion: 2025,
         sourceType: 'module',

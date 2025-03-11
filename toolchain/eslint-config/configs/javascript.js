@@ -1,5 +1,5 @@
 import js from '@eslint/js'
-import { defineFlatConfig } from 'eslint-define-config'
+import { config } from 'typescript-eslint'
 
 import importConfig from './js/import.js'
 import perfectionistConfig from './js/perfectionist.js'
@@ -7,24 +7,18 @@ import preferArrowConfig from './js/prefer-arrow.js'
 import promiseConfig from './js/promise.js'
 import unicornConfig from './js/unicorn.js'
 
-export default defineFlatConfig([
+export default config(
+  js.configs.recommended,
+  //
   importConfig,
   perfectionistConfig,
   preferArrowConfig,
   promiseConfig,
   unicornConfig,
   {
-    languageOptions: {
-      ecmaVersion: 'latest',
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-      },
-      sourceType: 'module',
-    },
-    rules: {
-      ...js.configs.recommended.rules,
+    name: 'eslint-config:config:javascript',
 
+    rules: {
       /**
        * Disallow empty functions.
        *
@@ -54,4 +48,4 @@ export default defineFlatConfig([
       'prefer-const': ['error', { destructuring: 'all' }],
     },
   },
-])
+)

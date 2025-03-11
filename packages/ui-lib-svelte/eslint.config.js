@@ -1,4 +1,4 @@
-import config from '@toolchain/eslint-config-new/profile/svelte'
+import config from '@toolchain/eslint-config/profile/svelte'
 
 import svelteConfig from './svelte.config.js'
 

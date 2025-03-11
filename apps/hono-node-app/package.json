@@ -19,7 +19,7 @@
     "zod": "3.24.2"
   },
   "devDependencies": {
-    "@toolchain/eslint-config-new": "workspace:*",
+    "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "tsx": "4.19.3"

@@ -3798,9 +3798,6 @@ packages:
     peerDependencies:
       pg: '>=8.0'
 
-  pg-protocol@1.7.1:
-    resolution: {integrity: sha512-gjTHWGYWsEgy9MsY0Gp6ZJxV24IjDqdpTW7Eh0x+WfJLFsm/TJx1MzL6T0D88mBvkpxotCQ6TwW6N+Kko7lhgQ==}
-
   pg-protocol@1.8.0:
     resolution: {integrity: sha512-jvuYlEkL03NRvOoyoRktBK7+qU5kOvlAwvmrH8sr3wbLrOdVWsRxQfz8mMy9sZFsqJ1hEWNfdWKI4SAmoL+j7g==}
 
@@ -5978,7 +5975,7 @@ snapshots:
   '@types/pg@8.11.11':
     dependencies:
       '@types/node': 22.13.10
-      pg-protocol: 1.7.1
+      pg-protocol: 1.8.0
       pg-types: 4.0.2
 
   '@types/resolve@1.20.2': {}
@@ -8348,8 +8345,6 @@ snapshots:
   pg-pool@3.8.0(pg@8.14.0):
     dependencies:
       pg: 8.14.0
-
-  pg-protocol@1.7.1: {}
 
   pg-protocol@1.8.0: {}
 

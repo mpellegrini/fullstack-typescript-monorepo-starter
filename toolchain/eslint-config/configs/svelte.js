@@ -3,13 +3,19 @@ import { config, parser } from 'typescript-eslint'
 
 import typescriptConfig from './typescript.js'
 
+/**
+ * eslint-plugin-svelte
+ *
+ * ESLint plugin for Svelte using AST
+ * https://github.com/sveltejs/eslint-plugin-svelte
+ */
 export default config(
+  ...plugin.configs.recommended,
   {
     extends: [typescriptConfig],
     files: ['**/*.svelte'],
     rules: {
       'svelte/block-lang': ['error', { script: 'ts', style: ['postcss', 'css'] }],
-      'svelte/max-attributes-per-line': 'error',
       'svelte/sort-attributes': 'error',
     },
   },
@@ -17,11 +23,11 @@ export default config(
     files: ['**/*.svelte', '**/*.svelte.ts'],
     languageOptions: {
       parserOptions: {
-        extraFileExtensions: ['.svelte'], // Add support for additional file extensions, such as .svelte
+        extraFileExtensions: ['.svelte'],
         parser: parser,
         projectService: true,
       },
     },
   },
-  ...plugin.configs.recommended,
+  ...plugin.configs.prettier,
 )

@@ -1,5 +1,5 @@
-import { defineFlatConfig } from 'eslint-define-config'
 import plugin from 'eslint-plugin-import'
+import { config } from 'typescript-eslint'
 
 /**
  * eslint-plugin-import configuration
@@ -7,13 +7,10 @@ import plugin from 'eslint-plugin-import'
  * ESLint plugin with rules that help validate proper imports.
  * https://github.com/import-js/eslint-plugin-import
  */
-export default defineFlatConfig({
-  plugins: {
-    import: plugin,
-  },
-  rules: {
-    ...plugin.configs.recommended.rules,
+export default config(plugin.flatConfigs.recommended, {
+  name: 'eslint-config:config:js:import',
 
+  rules: {
     /**
      * Disallow non-import statements appearing before import statements.
      *
@@ -76,17 +73,5 @@ export default defineFlatConfig({
      * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-useless-path-segments.md
      */
     'import/no-useless-path-segments': ['error'],
-  },
-  settings: {
-    // see https://github.com/import-js/eslint-plugin-import/issues/2556#issuecomment-1419518561
-    'import/parsers': {
-      espree: ['.js', '.cjs', '.mjs', '.jsx'],
-    },
-    'import/resolver': {
-      node: {
-        extensions: ['.js', '.cjs', '.mjs', '.jsx'],
-      },
-      typescript: true,
-    },
   },
 })

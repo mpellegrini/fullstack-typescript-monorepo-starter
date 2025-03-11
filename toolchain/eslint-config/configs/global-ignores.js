@@ -1,7 +1,9 @@
-import { defineFlatConfig } from 'eslint-define-config'
+import { config } from 'typescript-eslint'
 
-export default defineFlatConfig([
+export default config([
   {
-    ignores: ['coverage'],
+    name: 'eslint-config:config:global-ignores',
+
+    ignores: ['coverage', '.svelte-kit', 'build'],
   },
 ])

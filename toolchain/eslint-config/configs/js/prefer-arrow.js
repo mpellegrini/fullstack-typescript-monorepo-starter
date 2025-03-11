@@ -1,13 +1,15 @@
-import { defineFlatConfig } from 'eslint-define-config'
 import plugin from 'eslint-plugin-prefer-arrow'
+import { config } from 'typescript-eslint'
 
 /**
- * eslint-plugin-promise configuration
+ * eslint-plugin-prefer-arrow configuration
  *
- * Enforce best practices for JavaScript promises.
- * https://github.com/eslint-community/eslint-plugin-promise
+ * ESLint plugin to prefer arrow functions.
+ * https://github.com/TristonJ/eslint-plugin-prefer-arrow
  */
-export default defineFlatConfig({
+export default config({
+  name: 'eslint-config:config:js:prefer-arrow',
+
   plugins: {
     'prefer-arrow': plugin,
   },

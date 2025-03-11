@@ -1,5 +1,5 @@
-import { defineFlatConfig } from 'eslint-define-config'
 import plugin from 'eslint-plugin-perfectionist'
+import { config } from 'typescript-eslint'
 
 const sortingMethodType = 'natural'
 
@@ -9,7 +9,9 @@ const sortingMethodType = 'natural'
  * ESLint plugin with rules that take your code to a beauty salon.
  * https://github.com/azat-io/eslint-plugin-perfectionist
  */
-export default defineFlatConfig({
+export default config({
+  name: 'eslint-config:config:js:perfectionist',
+
   plugins: {
     perfectionist: plugin,
   },

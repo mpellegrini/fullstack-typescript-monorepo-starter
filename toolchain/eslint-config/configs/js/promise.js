@@ -1,5 +1,5 @@
-import { defineFlatConfig } from 'eslint-define-config'
 import plugin from 'eslint-plugin-promise'
+import { config } from 'typescript-eslint'
 
 /**
  * eslint-plugin-promise configuration
@@ -7,11 +7,4 @@ import plugin from 'eslint-plugin-promise'
  * Enforce best practices for JavaScript promises.
  * https://github.com/eslint-community/eslint-plugin-promise
  */
-export default defineFlatConfig({
-  plugins: {
-    promise: plugin,
-  },
-  rules: {
-    ...plugin.configs.recommended.rules,
-  },
-})
+export default config(plugin.configs['flat/recommended'])

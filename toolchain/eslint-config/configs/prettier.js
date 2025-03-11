@@ -1,6 +1,6 @@
 import prettierPlugin from 'eslint-config-prettier'
-import { defineFlatConfig } from 'eslint-define-config'
 import sveltePlugin from 'eslint-plugin-svelte'
+import { config } from 'typescript-eslint'
 
 /**
  * eslint-config-prettier configuration
@@ -10,11 +10,4 @@ import sveltePlugin from 'eslint-plugin-svelte'
  *
  * !IMPORTANT!: This configuration MUST always appear last in any ESLint profile definition.
  */
-export default defineFlatConfig([
-  {
-    rules: {
-      ...sveltePlugin.configs.prettier.rules,
-      ...prettierPlugin.rules,
-    },
-  },
-])
+export default config(prettierPlugin, ...sveltePlugin.configs.prettier)

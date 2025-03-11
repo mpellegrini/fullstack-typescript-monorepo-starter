@@ -1,1 +1,1 @@
-export { default } from './profile/node.js'
+export { default } from './profile/node-profile.js'

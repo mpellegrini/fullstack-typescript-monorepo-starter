@@ -4,6 +4,6 @@ export default config([
   {
     name: 'eslint-config:config:global-ignores',
 
-    ignores: ['coverage'],
+    ignores: ['coverage', '.svelte-kit', 'build'],
   },
 ])

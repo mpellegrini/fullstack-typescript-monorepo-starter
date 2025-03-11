@@ -1,4 +1,5 @@
 import prettierPlugin from 'eslint-config-prettier'
+import sveltePlugin from 'eslint-plugin-svelte'
 import { config } from 'typescript-eslint'
 
 /**
@@ -9,4 +10,4 @@ import { config } from 'typescript-eslint'
  *
  * !IMPORTANT!: This configuration MUST always appear last in any ESLint profile definition.
  */
-export default config(prettierPlugin)
+export default config(prettierPlugin, ...sveltePlugin.configs.prettier)

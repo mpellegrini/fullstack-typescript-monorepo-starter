@@ -12,6 +12,7 @@ export default config(
     files: ['**/*.ts', '**/*.cts', '**/*.mts', '**/*.tsx'],
     languageOptions: {
       parserOptions: {
+        extraFileExtensions: ['.svelte'],
         projectService: true,
       },
     },

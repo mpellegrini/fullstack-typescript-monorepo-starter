@@ -15,17 +15,15 @@ export const configureOpenAPI = (app: AppOpenApi): void => {
   app.get('/ui-swagger', swaggerUI({ url: '/openapi.json' }))
 
   app.get(
-    'ui-scalar',
+    '/ui-scalar',
     apiReference({
       defaultHttpClient: {
         clientKey: 'fetch',
         targetKey: 'node',
       },
       layout: 'classic',
-      spec: {
-        url: '/openapi.json',
-      },
       theme: 'kepler',
+      url: '/openapi.json',
     }),
   )
 }

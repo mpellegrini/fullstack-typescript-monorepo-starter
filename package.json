@@ -18,7 +18,7 @@
     "@turbo/gen": "2.4.4",
     "del-cli": "6.0.0",
     "husky": "9.1.7",
-    "lint-staged": "15.4.3",
+    "lint-staged": "15.5.0",
     "one-version": "0.2.0",
     "prettier": "3.5.3",
     "prettier-plugin-packagejson": "2.5.10",

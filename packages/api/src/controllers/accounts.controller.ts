@@ -2,8 +2,6 @@ import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
 import { z } from 'zod'
 
-import { lucia } from '@packages/auth-lucia'
-
 import type { CustomEnv } from '../types/index.js'
 
 import { createUser } from '../services/account.services.js'
@@ -15,7 +13,7 @@ const signupSchema = z.object({
   username: z.string().email(),
 })
 
-export type SignupSchema = z.infer<typeof signupSchema>
+// type SignupSchema = z.infer<typeof signupSchema>
 
 const app = new Hono<CustomEnv>()
   .basePath('/accounts')
@@ -28,10 +26,8 @@ const app = new Hono<CustomEnv>()
     try {
       const userId = await createUser({ password, username })
       if (userId) {
-        const session = await lucia.createSession(userId, {})
-        console.log('**  ', session.expiresAt)
         return c.json({
-          accessToken: session,
+          accessToken: 'session-12345',
           message: `Verification email sent to ${username}`,
         })
       }

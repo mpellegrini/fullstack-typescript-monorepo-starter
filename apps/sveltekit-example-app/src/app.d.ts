@@ -8,7 +8,7 @@ declare global {
     // interface Error {}
     interface Locals {
       api: ApiClient['api']
-      getAuthedUser: () => Promise<null | { id: string; username: string }>
+      getAuthedUser: () => Promise<string | null>
     }
     // interface PageData {}
     // interface PageState {}

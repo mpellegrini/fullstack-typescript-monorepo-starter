@@ -1,7 +1,4 @@
 <script lang="ts">
-  import type { PageProps } from './$types.js'
-
-  const { data }: PageProps = $props()
 </script>
 
 <div class="space-y-1">
@@ -10,5 +7,4 @@
     Visit <a class="text-blue-600 hover:underline" href="https://kit.svelte.dev">kit.svelte.dev</a> to
     read the documentation
   </p>
-  <p>Your are logged in as <span class="text-blue-600">{data.authedUser?.username}</span></p>
 </div>

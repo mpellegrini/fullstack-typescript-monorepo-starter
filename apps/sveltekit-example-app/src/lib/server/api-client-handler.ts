@@ -12,7 +12,7 @@ export const apiClientHandler: Handle = ({ event, resolve }) => {
     },
   })
 
-  const getAuthedUser = async (): Promise<null | { id: string; username: string }> => {
+  const getAuthedUser = async (): Promise<string | null> => {
     const resp = await api.accounts.user.$get()
     if (resp.ok) {
       const { user } = await resp.json()

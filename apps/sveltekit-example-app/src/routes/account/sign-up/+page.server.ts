@@ -25,7 +25,7 @@ export const actions = {
 
     if (resp.ok) {
       const result = await resp.json()
-      cookies.set('auth_session', result.accessToken.id, {
+      cookies.set('auth_session', 'result.accessToken.id', {
         httpOnly: true,
         maxAge: 7200,
         path: '/',

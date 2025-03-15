@@ -233,18 +233,6 @@ importers:
         specifier: 4.19.3
         version: 4.19.3
 
-  packages/domain:
-    devDependencies:
-      '@toolchain/eslint-config':
-        specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
-        specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
-        specifier: workspace:*
-        version: link:../../toolchain/vitest-config
-
   packages/example-pkg:
     devDependencies:
       '@toolchain/eslint-config':

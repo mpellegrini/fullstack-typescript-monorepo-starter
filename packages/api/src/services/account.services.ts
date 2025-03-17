@@ -10,7 +10,7 @@ export type NewUser = Omit<UserEntityInsert, 'hashedPassword'> & {
 export const findByUsername = async (username: string): Promise<UserEntity | undefined> =>
   db.query.usersTable.findFirst({
     columns: { id: true, hashedPassword: true, username: true },
-    where: (col, { eq }) => eq(col.username, username),
+    where: { username },
   })
 
 export const createUser = async (user: NewUser): Promise<string | undefined> => {

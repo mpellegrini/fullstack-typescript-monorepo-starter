@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "dotenv": "16.4.7",
-    "drizzle-orm": "0.40.0",
+    "drizzle-orm": "1.0.0-beta.1-af4c434",
     "pg": "8.14.0",
     "sql-formatter": "15.4.11",
     "zod": "3.24.2"
@@ -35,7 +35,7 @@
     "@toolchain/vitest-config": "workspace:*",
     "@types/pg": "8.11.11",
     "drizzle-dbml-generator": "0.10.0",
-    "drizzle-kit": "0.30.5",
+    "drizzle-kit": "1.0.0-beta.1-af4c434",
     "tsx": "4.19.3"
   }
 }

@@ -24,7 +24,7 @@
   "dependencies": {
     "dotenv": "16.4.7",
     "drizzle-orm": "1.0.0-beta.1-af4c434",
-    "pg": "8.14.0",
+    "pg": "8.14.1",
     "sql-formatter": "15.4.11",
     "zod": "3.24.2"
   },

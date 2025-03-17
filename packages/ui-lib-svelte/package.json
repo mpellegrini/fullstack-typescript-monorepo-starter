@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "4.0.0",
-    "@sveltejs/kit": "2.19.2",
+    "@sveltejs/kit": "2.20.0",
     "@sveltejs/vite-plugin-svelte": "5.0.3",
     "@tailwindcss/vite": "4.0.14",
     "@toolchain/eslint-config": "workspace:*",

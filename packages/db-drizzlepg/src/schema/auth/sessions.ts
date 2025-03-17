@@ -1,4 +1,3 @@
-import { relations } from 'drizzle-orm'
 import { text, timestamp, uuid } from 'drizzle-orm/pg-core'
 
 import { namedForeignKey } from '../helpers.js'
@@ -16,12 +15,5 @@ export const sessionsTable = authSchema.table(
   (t) => [namedForeignKey(t.userId, usersTable.id)],
 )
 
-export const sessionRelations = relations(sessionsTable, ({ one }) => ({
-  user: one(usersTable, {
-    fields: [sessionsTable.userId],
-    references: [usersTable.id],
-  }),
-}))
-
 export type SessionEntity = typeof sessionsTable.$inferSelect
-export type SessionEntityInsert = typeof sessionsTable.$inferSelect
+export type SessionEntityInsert = typeof sessionsTable.$inferInsert

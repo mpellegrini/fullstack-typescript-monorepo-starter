@@ -196,8 +196,8 @@ importers:
         specifier: 16.4.7
         version: 16.4.7
       drizzle-orm:
-        specifier: 0.40.0
-        version: 0.40.0(@types/pg@8.11.11)(gel@2.0.0)(pg@8.14.0)
+        specifier: 1.0.0-beta.1-af4c434
+        version: 1.0.0-beta.1-af4c434(@types/pg@8.11.11)(gel@2.0.0)(pg@8.14.0)
       pg:
         specifier: 8.14.0
         version: 8.14.0
@@ -225,10 +225,10 @@ importers:
         version: 8.11.11
       drizzle-dbml-generator:
         specifier: 0.10.0
-        version: 0.10.0(drizzle-orm@0.40.0(@types/pg@8.11.11)(gel@2.0.0)(pg@8.14.0))
+        version: 0.10.0(drizzle-orm@1.0.0-beta.1-af4c434(@types/pg@8.11.11)(gel@2.0.0)(pg@8.14.0))
       drizzle-kit:
-        specifier: 0.30.5
-        version: 0.30.5
+        specifier: 1.0.0-beta.1-af4c434
+        version: 1.0.0-beta.1-af4c434
       tsx:
         specifier: 4.19.3
         version: 4.19.3
@@ -2279,12 +2279,12 @@ packages:
     peerDependencies:
       drizzle-orm: '>=0.36.0'
 
-  drizzle-kit@0.30.5:
-    resolution: {integrity: sha512-l6dMSE100u7sDaTbLczibrQZjA35jLsHNqIV+jmhNVO3O8jzM6kywMOmV9uOz9ZVSCMPQhAZEFjL/qDPVrqpUA==}
+  drizzle-kit@1.0.0-beta.1-af4c434:
+    resolution: {integrity: sha512-d0/dEvYXjRaA2Kr75TUiqFZUsfa0w7tnUAS+hRWYvg6Ew6lbwgiliKjDBi49YcrIVjaoDvrEhxcO0oQHukEteg==}
     hasBin: true
 
-  drizzle-orm@0.40.0:
-    resolution: {integrity: sha512-7ptk/HQiMSrEZHnAsSlBESXWj52VwgMmyTEfoNmpNN2ZXpcz13LwHfXTIghsAEud7Z5UJhDOp8U07ujcqme7wg==}
+  drizzle-orm@1.0.0-beta.1-af4c434:
+    resolution: {integrity: sha512-zQfFaZ5cAYCu6oOMRy3NNSPVD48C1a9LVV4ynuszzeQlPc+WdXkeH/y6MhMykDiu2GUPZd6VtU73mFbL7LXyyg==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=4'
@@ -2302,7 +2302,7 @@ packages:
       '@types/sql.js': '*'
       '@vercel/postgres': '>=0.8.0'
       '@xata.io/client': '*'
-      better-sqlite3: '>=7'
+      better-sqlite3: '>=9.3.0'
       bun-types: '*'
       expo-sqlite: '>=14.0.0'
       gel: '>=2'
@@ -6720,11 +6720,11 @@ snapshots:
 
   dotenv@16.4.7: {}
 
-  drizzle-dbml-generator@0.10.0(drizzle-orm@0.40.0(@types/pg@8.11.11)(gel@2.0.0)(pg@8.14.0)):
+  drizzle-dbml-generator@0.10.0(drizzle-orm@1.0.0-beta.1-af4c434(@types/pg@8.11.11)(gel@2.0.0)(pg@8.14.0)):
     dependencies:
-      drizzle-orm: 0.40.0(@types/pg@8.11.11)(gel@2.0.0)(pg@8.14.0)
+      drizzle-orm: 1.0.0-beta.1-af4c434(@types/pg@8.11.11)(gel@2.0.0)(pg@8.14.0)
 
-  drizzle-kit@0.30.5:
+  drizzle-kit@1.0.0-beta.1-af4c434:
     dependencies:
       '@drizzle-team/brocli': 0.10.2
       '@esbuild-kit/esm-loader': 2.6.5
@@ -6734,7 +6734,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.40.0(@types/pg@8.11.11)(gel@2.0.0)(pg@8.14.0):
+  drizzle-orm@1.0.0-beta.1-af4c434(@types/pg@8.11.11)(gel@2.0.0)(pg@8.14.0):
     optionalDependencies:
       '@types/pg': 8.11.11
       gel: 2.0.0

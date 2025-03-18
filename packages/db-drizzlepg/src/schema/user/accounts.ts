@@ -3,9 +3,9 @@ import { text } from 'drizzle-orm/pg-core'
 import { citext } from '../custom-types.js'
 import { namedUnique, withSurrogateId } from '../helpers.js'
 
-import { authSchema } from './schema.js'
+import { userSchema } from './schema.js'
 
-export const usersTable = authSchema.table(
+export const userAccountsTable = userSchema.table(
   'users',
   {
     ...withSurrogateId,
@@ -15,5 +15,5 @@ export const usersTable = authSchema.table(
   (t) => [namedUnique(t.username)],
 )
 
-export type UserEntity = Omit<typeof usersTable.$inferSelect, 'hashedPassword'>
-export type UserEntityInsert = typeof usersTable.$inferInsert
+export type UserEntity = Omit<typeof userAccountsTable.$inferSelect, 'hashedPassword'>
+export type UserEntityInsert = typeof userAccountsTable.$inferInsert

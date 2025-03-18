@@ -18,7 +18,7 @@ export const validateAuthSession: MiddlewareHandler<CustomEnv> = createMiddlewar
     const access_token = cookie_token ?? bearer_token
 
     if (access_token) {
-      // Validate auth session
+      // Validate user session
       // TODO: Need to implement the ability to refresh/extend access tokens when
       //       api is not running in the SvelteKit context
       // if (session?.fresh) {

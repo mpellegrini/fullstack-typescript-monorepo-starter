@@ -26,9 +26,9 @@ const app = new Hono<CustomEnv>()
     try {
       const userId = await createUser({
         id: '',
-        firstName: null,
-        lastName: null,
+        givenName: null,
         password,
+        surname: null,
         username,
       })
       if (userId) {

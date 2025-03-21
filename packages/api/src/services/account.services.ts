@@ -11,10 +11,10 @@ export const findByUsername = async (username: string): Promise<UserAccountEntit
   db.query.userAccountsTable.findFirst({
     columns: {
       id: true,
-      firstName: true,
+      givenName: true,
       hashedPassword: true,
-      lastName: true,
       status: true,
+      surname: true,
       username: true,
     },
     where: { username },

@@ -11,10 +11,10 @@ export const userAccountsTable = pgTable(
   'user_accounts',
   {
     ...withSurrogateId,
-    firstName: text(),
+    givenName: text(),
     hashedPassword: text().notNull(),
-    lastName: text(),
     status: text().$type<AccountStatus>().notNull().default('inactive'),
+    surname: text(),
     username: citext().notNull(),
   },
   (t) => [

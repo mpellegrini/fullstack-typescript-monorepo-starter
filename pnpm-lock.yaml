@@ -45,6 +45,48 @@ importers:
         specifier: 2.4.4
         version: 2.4.4
 
+  apps/ha-dashboard:
+    devDependencies:
+      '@packages/api':
+        specifier: workspace:*
+        version: link:../../packages/api
+      '@sveltejs/adapter-static':
+        specifier: 3.0.8
+        version: 3.0.8(@sveltejs/kit@2.20.2(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.25.0)(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.0)))(svelte@5.25.0)(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.0)))
+      '@sveltejs/kit':
+        specifier: 2.20.2
+        version: 2.20.2(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.25.0)(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.0)))(svelte@5.25.0)(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.0))
+      '@sveltejs/vite-plugin-svelte':
+        specifier: 5.0.3
+        version: 5.0.3(svelte@5.25.0)(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.0))
+      '@tailwindcss/vite':
+        specifier: 4.0.15
+        version: 4.0.15(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.0))
+      '@toolchain/eslint-config':
+        specifier: workspace:*
+        version: link:../../toolchain/eslint-config
+      '@toolchain/typescript-config':
+        specifier: workspace:*
+        version: link:../../toolchain/typescript-config
+      '@toolchain/vitest-config':
+        specifier: workspace:*
+        version: link:../../toolchain/vitest-config
+      home-assistant-js-websocket:
+        specifier: 9.4.0
+        version: 9.4.0
+      svelte:
+        specifier: 5.25.0
+        version: 5.25.0
+      svelte-check:
+        specifier: 4.1.5
+        version: 4.1.5(picomatch@4.0.2)(svelte@5.25.0)(typescript@5.8.2)
+      tailwindcss:
+        specifier: 4.0.15
+        version: 4.0.15
+      vite:
+        specifier: 6.2.2
+        version: 6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.0)
+
   apps/hono-node-app:
     dependencies:
       '@hono/node-server':
@@ -1396,6 +1438,11 @@ packages:
     resolution: {integrity: sha512-0bp4Yb3jKIEcZWVcJC/L1xXp9zzJS4hDwfb4VITAkfT4OVdkspSHsx7YhqJDbb2hgLl6R9Vs7VQR+fqIVOxPUQ==}
     peerDependencies:
       '@sveltejs/kit': ^2.4.0
+
+  '@sveltejs/adapter-static@3.0.8':
+    resolution: {integrity: sha512-YaDrquRpZwfcXbnlDsSrBQNCChVOT9MGuSg+dMAyfsAa1SmiAhrA5jUYUiIMC59G92kIbY/AaQOWcBdq+lh+zg==}
+    peerDependencies:
+      '@sveltejs/kit': ^2.0.0
 
   '@sveltejs/kit@2.20.2':
     resolution: {integrity: sha512-Dv8TOAZC9vyfcAB9TMsvUEJsRbklRTeNfcYBPaeH6KnABJ99i3CvCB2eNx8fiiliIqe+9GIchBg4RodRH5p1BQ==}
@@ -2911,6 +2958,9 @@ packages:
 
   header-case@1.0.1:
     resolution: {integrity: sha512-i0q9mkOeSuhXw6bGgiQCCBgY/jlZuV/7dZXyZ9c6LcBrqwvT8eT719E9uxE5LiZftdl+z81Ugbg/VvXV4OJOeQ==}
+
+  home-assistant-js-websocket@9.4.0:
+    resolution: {integrity: sha512-312TuI63IfKf8G+iWvKmPYIdxWMNojwVk03o9OSpQFFDjSCNAYdCUfuPCFs73SuJ1Xpd4D1Eo11CB33MGMqZ+Q==}
 
   hono@4.7.5:
     resolution: {integrity: sha512-fDOK5W2C1vZACsgLONigdZTRZxuBqFtcKh7bUQ5cVSbwI2RWjloJDcgFOVzbQrlI6pCmhlTsVYZ7zpLj4m4qMQ==}
@@ -5753,6 +5803,10 @@ snapshots:
       '@sveltejs/kit': 2.20.2(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.25.0)(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.0)))(svelte@5.25.0)(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.0))
       rollup: 4.35.0
 
+  '@sveltejs/adapter-static@3.0.8(@sveltejs/kit@2.20.2(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.25.0)(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.0)))(svelte@5.25.0)(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.0)))':
+    dependencies:
+      '@sveltejs/kit': 2.20.2(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.25.0)(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.0)))(svelte@5.25.0)(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.0))
+
   '@sveltejs/kit@2.20.2(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.25.0)(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.0)))(svelte@5.25.0)(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.0))':
     dependencies:
       '@sveltejs/vite-plugin-svelte': 5.0.3(svelte@5.25.0)(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.0))
@@ -7487,6 +7541,8 @@ snapshots:
     dependencies:
       no-case: 2.3.2
       upper-case: 1.1.3
+
+  home-assistant-js-websocket@9.4.0: {}
 
   hono@4.7.5: {}
 

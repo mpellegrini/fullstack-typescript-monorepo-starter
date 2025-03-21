@@ -2,22 +2,25 @@ import { hash } from '@node-rs/argon2'
 
 import { db } from '@packages/db-drizzlepg/client'
 import {
-  type UserEntity,
-  type UserEntityInsert,
+  type NewUserAccountEntity,
+  type UserAccountEntity,
   userAccountsTable,
 } from '@packages/db-drizzlepg/schema'
 
-export type NewUser = Omit<UserEntityInsert, 'hashedPassword'> & {
-  password: string
-}
-
-export const findByUsername = async (username: string): Promise<UserEntity | undefined> =>
+export const findByUsername = async (username: string): Promise<UserAccountEntity | undefined> =>
   db.query.userAccountsTable.findFirst({
-    columns: { id: true, hashedPassword: true, username: true },
+    columns: {
+      id: true,
+      firstName: true,
+      hashedPassword: true,
+      lastName: true,
+      status: true,
+      username: true,
+    },
     where: { username },
   })
 
-export const createUser = async (user: NewUser): Promise<string | undefined> => {
+export const createUser = async (user: NewUserAccountEntity): Promise<string | undefined> => {
   const hashedPassword = await hash(user.password)
 
   return db

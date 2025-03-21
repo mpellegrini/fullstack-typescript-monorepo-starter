@@ -1,12 +1,11 @@
-import { timestamp, uuid } from 'drizzle-orm/pg-core'
+import { pgTable, timestamp, uuid } from 'drizzle-orm/pg-core'
 
 import { namedForeignKey, withSurrogateId } from '../helpers.js'
 
 import { userAccountsTable } from './accounts.js'
-import { userSchema } from './schema.js'
 
-export const userSessionsTable = userSchema.table(
-  'sessions',
+export const userSessionsTable = pgTable(
+  'user_sessions',
   {
     ...withSurrogateId,
     expiresAt: timestamp({ mode: 'date', withTimezone: true }).notNull(),
@@ -15,5 +14,5 @@ export const userSessionsTable = userSchema.table(
   (t) => [namedForeignKey(t.userId, userAccountsTable.id).onDelete('cascade')],
 )
 
-export type SessionEntity = typeof userSessionsTable.$inferSelect
-export type SessionEntityInsert = typeof userSessionsTable.$inferInsert
+export type UserSessionEntity = typeof userSessionsTable.$inferSelect
+export type NewUserSessionEntity = typeof userSessionsTable.$inferInsert

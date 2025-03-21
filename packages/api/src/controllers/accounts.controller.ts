@@ -24,7 +24,13 @@ const app = new Hono<CustomEnv>()
   .post('/signup', zValidator('json', signupSchema), async (c) => {
     const { password, username } = c.req.valid('json')
     try {
-      const userId = await createUser({ password, username })
+      const userId = await createUser({
+        id: '',
+        firstName: null,
+        lastName: null,
+        password,
+        username,
+      })
       if (userId) {
         return c.json({
           accessToken: 'session-12345',

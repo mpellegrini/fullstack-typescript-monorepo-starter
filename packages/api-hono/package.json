@@ -15,7 +15,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@hono/swagger-ui": "0.5.1",
     "@hono/zod-openapi": "0.19.2",
     "@hono/zod-validator": "0.4.3",
     "@scalar/hono-api-reference": "0.7.2",

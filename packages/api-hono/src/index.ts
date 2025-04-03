@@ -1,15 +1,12 @@
 import { configureOpenAPI } from './lib/configure-openapi.js'
 import { createApp } from './lib/create-app.js'
-import indexRoute from './routes/index.route.js'
-import tasks from './routes/tasks/tasks.index.js'
+import taskRoutes from './routes/tasks/tasks.index.js'
 
-const app = createApp()
+const app = createApp('/api') //
+  .route('/', taskRoutes)
+
 configureOpenAPI(app)
 
-const routes = [indexRoute, tasks]
-
-for (const route of routes) {
-  app.route('/', route)
-}
+export type AppType = typeof app
 
 export default app

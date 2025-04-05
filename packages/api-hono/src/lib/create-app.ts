@@ -12,11 +12,10 @@ export const createRouter = (): AppOpenApi =>
 export const createApp = (basePath = '/'): AppOpenApi => {
   const app = createRouter().basePath(basePath)
 
-  app.use(logger())
-
   app.notFound(notFound)
-
   app.onError(onError)
+
+  app.use('*', logger())
 
   return app
 }

@@ -6,7 +6,7 @@ import { StatusCodes } from 'http-status-codes'
 import type { CustomEnv } from '../lib/types.js'
 
 export const defaultHook: Hook<unknown, CustomEnv, never, unknown> = (result, _ctx) => {
-  console.error('Global defaultHook', JSON.stringify(result, null, 2))
+  console.error('Global HonoZodOpenApiHook', JSON.stringify(result, null, 2))
 
   if (result.success) {
     return
@@ -16,12 +16,4 @@ export const defaultHook: Hook<unknown, CustomEnv, never, unknown> = (result, _c
     cause: result.error.errors,
     message: 'Validation failed',
   })
-
-  // return c.json(
-  //   {
-  //     error: result.error,
-  //     success: false,
-  //   },
-  //   StatusCodes.UNPROCESSABLE_ENTITY,
-  // )
 }

@@ -1,4 +1,4 @@
-import { apiReference } from '@scalar/hono-api-reference'
+import { Scalar } from '@scalar/hono-api-reference'
 
 import type { AppOpenApi } from './types.js'
 
@@ -13,7 +13,7 @@ export const configureOpenAPI = (app: AppOpenApi): void => {
 
   app.get(
     '/reference',
-    apiReference({
+    Scalar({
       content: openAPI31Document,
       defaultHttpClient: {
         clientKey: 'fetch',

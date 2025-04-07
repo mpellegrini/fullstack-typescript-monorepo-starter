@@ -1,6 +1,8 @@
 import { type ClientRequestOptions, hc } from 'hono/client'
 
-import type { AppType } from '../index.js'
+import type app from '../index.js'
+
+type AppType = typeof app
 
 export type ApiClient = ReturnType<typeof hc<AppType>>
 

@@ -1,0 +1,29 @@
+{
+  "name": "@packages/learn-effect",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Learn effect",
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "clean": "del .turbo coverage",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "drizzle-orm": "1.0.0-beta.1-af4c434",
+    "effect": "3.14.7",
+    "pg": "8.14.1",
+    "pg-error-enum": "1.0.2"
+  },
+  "devDependencies": {
+    "@toolchain/eslint-config": "workspace:*",
+    "@toolchain/typescript-config": "workspace:*",
+    "@toolchain/vitest-config": "workspace:*",
+    "@types/pg": "8.11.11"
+  }
+}

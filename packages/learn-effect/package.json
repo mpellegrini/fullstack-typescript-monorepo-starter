@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "drizzle-orm": "1.0.0-beta.1-af4c434",
-    "effect": "3.14.7",
+    "effect": "3.14.8",
     "pg": "8.14.1",
     "pg-error-enum": "1.0.2"
   },
@@ -24,6 +24,6 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/pg": "8.11.11"
+    "@types/pg": "8.11.12"
   }
 }

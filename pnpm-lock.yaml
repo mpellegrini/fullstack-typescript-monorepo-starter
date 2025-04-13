@@ -239,6 +239,34 @@ importers:
         specifier: workspace:*
         version: link:../../toolchain/vitest-config
 
+  packages/learn-effect:
+    dependencies:
+      drizzle-orm:
+        specifier: 1.0.0-beta.1-af4c434
+        version: 1.0.0-beta.1-af4c434(@types/pg@8.11.11)(gel@2.0.0)(pg@8.14.1)
+      effect:
+        specifier: 3.14.7
+        version: 3.14.7
+      pg:
+        specifier: 8.14.1
+        version: 8.14.1
+      pg-error-enum:
+        specifier: 1.0.2
+        version: 1.0.2
+    devDependencies:
+      '@toolchain/eslint-config':
+        specifier: workspace:*
+        version: link:../../toolchain/eslint-config
+      '@toolchain/typescript-config':
+        specifier: workspace:*
+        version: link:../../toolchain/typescript-config
+      '@toolchain/vitest-config':
+        specifier: workspace:*
+        version: link:../../toolchain/vitest-config
+      '@types/pg':
+        specifier: 8.11.11
+        version: 8.11.11
+
   packages/ui-lib-svelte:
     devDependencies:
       '@sveltejs/adapter-auto':
@@ -2392,8 +2420,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  effect@3.14.6:
-    resolution: {integrity: sha512-/QMsBfMw2Gt10x3y2jVqDanLpKFrhc4L/3vqjrD36GWeuOcjN+1mvsvw9+RseAq9hmmkc3MFvLznfiEopqcPuw==}
+  effect@3.14.7:
+    resolution: {integrity: sha512-vAev6B05EYMhh1fpCKsiUdVKmT0ph3TjTTfPno384dLL39tI88OIV2QNkNby506NY1L/w1NIaxcaKGfEw3rPhw==}
 
   electron-to-chromium@1.5.128:
     resolution: {integrity: sha512-bo1A4HH/NS522Ws0QNFIzyPcyUUNV/yyy70Ho1xqfGYzPUme2F/xr4tlEOuM6/A538U1vDA7a4XfCd1CKRegKQ==}
@@ -3782,6 +3810,10 @@ packages:
 
   pg-connection-string@2.7.0:
     resolution: {integrity: sha512-PI2W9mv53rXJQEOb8xNR8lH7Hr+EKa6oJa38zsK0S/ky2er16ios1wLKhZyxzD7jUReiWokc9WK5nxSnC7W1TA==}
+
+  pg-error-enum@1.0.2:
+    resolution: {integrity: sha512-zcMbZwFtsyUhLeY7r9SY24gjJ+7dlpyp1GmcPCwsiwgnh2iEjr2K7FYEqZOLjI1+6DEW0yne01VzP+Irnhd2Yg==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >23.0.0}
 
   pg-int8@1.0.1:
     resolution: {integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==}
@@ -5752,8 +5784,7 @@ snapshots:
       yargs: 17.7.2
       zod: 3.24.2
 
-  '@standard-schema/spec@1.0.0':
-    optional: true
+  '@standard-schema/spec@1.0.0': {}
 
   '@sveltejs/acorn-typescript@1.0.5(acorn@8.14.1)':
     dependencies:
@@ -6771,11 +6802,10 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  effect@3.14.6:
+  effect@3.14.7:
     dependencies:
       '@standard-schema/spec': 1.0.0
       fast-check: 3.23.2
-    optional: true
 
   electron-to-chromium@1.5.128: {}
 
@@ -7235,7 +7265,6 @@ snapshots:
   fast-check@3.23.2:
     dependencies:
       pure-rand: 6.1.0
-    optional: true
 
   fast-deep-equal@3.1.3: {}
 
@@ -8362,6 +8391,8 @@ snapshots:
 
   pg-connection-string@2.7.0: {}
 
+  pg-error-enum@1.0.2: {}
+
   pg-int8@1.0.1: {}
 
   pg-numeric@1.0.2: {}
@@ -8509,8 +8540,7 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  pure-rand@6.1.0:
-    optional: true
+  pure-rand@6.1.0: {}
 
   queue-microtask@1.2.3: {}
 
@@ -8971,7 +9001,7 @@ snapshots:
       '@vinejs/vine': 3.0.1
       arktype: 2.1.18
       class-validator: 0.14.1
-      effect: 3.14.6
+      effect: 3.14.7
       joi: 17.13.3
       json-schema-to-ts: 3.1.1
       superstruct: 2.0.2

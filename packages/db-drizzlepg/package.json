@@ -22,7 +22,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "dotenv": "16.4.7",
+    "dotenv": "16.5.0",
     "drizzle-orm": "1.0.0-beta.1-af4c434",
     "pg": "8.14.1",
     "sql-formatter": "15.5.2",
@@ -33,7 +33,7 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/pg": "8.11.11",
+    "@types/pg": "8.11.12",
     "drizzle-dbml-generator": "0.10.0",
     "drizzle-kit": "1.0.0-beta.1-af4c434",
     "tsx": "4.19.3"

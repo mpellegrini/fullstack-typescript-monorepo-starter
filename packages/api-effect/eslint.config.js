@@ -9,8 +9,6 @@ export default [
       },
     },
     rules: {
-      'unicorn/no-array-callback-reference': 'off',
-      'unicorn/no-array-method-this-argument': 'off',
       'unicorn/throw-new-error': 'off',
     },
   },

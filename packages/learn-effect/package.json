@@ -1,0 +1,29 @@
+{
+  "name": "@packages/learn-effect",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Learn effect",
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "clean": "del .turbo coverage",
+    "dev": "tsx --env-file=.env  --watch src/index.ts",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "effect": "3.14.11"
+  },
+  "devDependencies": {
+    "@toolchain/eslint-config": "workspace:*",
+    "@toolchain/typescript-config": "workspace:*",
+    "@toolchain/vitest-config": "workspace:*",
+    "@types/node": "22.14.1",
+    "msw": "2.7.5",
+    "tsx": "4.19.3"
+  }
+}

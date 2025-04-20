@@ -29,11 +29,11 @@
     "@toolchain/vitest-config": "workspace:*",
     "bits-ui": "1.3.19",
     "clsx": "2.1.1",
-    "svelte": "5.27.0",
+    "svelte": "5.28.1",
     "svelte-check": "4.1.6",
     "tailwind-merge": "3.2.0",
     "tailwind-variants": "1.0.0",
     "tailwindcss": "4.1.4",
-    "vite": "6.3.0"
+    "vite": "6.3.2"
   }
 }

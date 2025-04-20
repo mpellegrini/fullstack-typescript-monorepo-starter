@@ -1,4 +1,4 @@
-FROM node:20.17.0-bookworm-slim AS builder
+FROM node:22.14.0-bookworm-slim AS builder
 
 ARG APP_NAME
 
@@ -12,9 +12,9 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 RUN pnpm exec turbo build --filter=@apps/$APP_NAME^...
 
 RUN pnpm --filter=@apps/$APP_NAME exec vite build
-RUN pnpm --filter=@apps/$APP_NAME deploy --prod out
+RUN pnpm --filter=@apps/$APP_NAME deploy --legacy --prod out
 
-FROM gcr.io/distroless/nodejs20-debian12 AS deployer
+FROM gcr.io/distroless/nodejs22-debian12 AS deployer
 
 ENV NODE_ENV=production
 ENV ORIGIN=http://localhost:8080

@@ -25,7 +25,7 @@
     "dotenv": "16.5.0",
     "drizzle-orm": "1.0.0-beta.1-5e64efc",
     "pg": "8.14.1",
-    "sql-formatter": "15.5.2",
+    "sql-formatter": "15.6.0",
     "zod": "3.24.3"
   },
   "devDependencies": {

@@ -6,7 +6,7 @@
   "type": "module",
   "exports": "./index.js",
   "dependencies": {
-    "@vitest/coverage-v8": "3.1.1",
-    "vitest": "3.1.1"
+    "@vitest/coverage-v8": "3.1.2",
+    "vitest": "3.1.2"
   }
 }

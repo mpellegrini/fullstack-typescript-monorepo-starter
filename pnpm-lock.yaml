@@ -45,6 +45,34 @@ importers:
         specifier: 2.5.1
         version: 2.5.1
 
+  apps/effect-node-app:
+    dependencies:
+      '@effect/platform':
+        specifier: 0.80.13
+        version: 0.80.13(effect@3.14.13)
+      '@effect/platform-node':
+        specifier: 0.77.1
+        version: 0.77.1(@effect/cluster@0.29.21(@effect/platform@0.80.13(effect@3.14.13))(@effect/rpc@0.55.16(@effect/platform@0.80.13(effect@3.14.13))(effect@3.14.13))(@effect/sql@0.33.11(@effect/experimental@0.44.11(@effect/platform@0.80.13(effect@3.14.13))(effect@3.14.13))(@effect/platform@0.80.13(effect@3.14.13))(effect@3.14.13))(effect@3.14.13))(@effect/platform@0.80.13(effect@3.14.13))(@effect/rpc@0.55.16(@effect/platform@0.80.13(effect@3.14.13))(effect@3.14.13))(@effect/sql@0.33.11(@effect/experimental@0.44.11(@effect/platform@0.80.13(effect@3.14.13))(effect@3.14.13))(@effect/platform@0.80.13(effect@3.14.13))(effect@3.14.13))(effect@3.14.13)
+      '@packages/api-effect':
+        specifier: workspace:*
+        version: link:../../packages/api-effect
+      effect:
+        specifier: 3.14.13
+        version: 3.14.13
+    devDependencies:
+      '@toolchain/eslint-config':
+        specifier: workspace:*
+        version: link:../../toolchain/eslint-config
+      '@toolchain/typescript-config':
+        specifier: workspace:*
+        version: link:../../toolchain/typescript-config
+      '@toolchain/vitest-config':
+        specifier: workspace:*
+        version: link:../../toolchain/vitest-config
+      tsx:
+        specifier: 4.19.3
+        version: 4.19.3
+
   apps/hono-node-app:
     dependencies:
       '@hono/node-server':
@@ -161,9 +189,6 @@ importers:
       '@effect/platform':
         specifier: 0.80.13
         version: 0.80.13(effect@3.14.13)
-      '@effect/platform-node':
-        specifier: 0.77.1
-        version: 0.77.1(@effect/cluster@0.29.21(@effect/platform@0.80.13(effect@3.14.13))(@effect/rpc@0.55.16(@effect/platform@0.80.13(effect@3.14.13))(effect@3.14.13))(@effect/sql@0.33.11(@effect/experimental@0.44.11(@effect/platform@0.80.13(effect@3.14.13))(effect@3.14.13))(@effect/platform@0.80.13(effect@3.14.13))(effect@3.14.13))(effect@3.14.13))(@effect/platform@0.80.13(effect@3.14.13))(@effect/rpc@0.55.16(@effect/platform@0.80.13(effect@3.14.13))(effect@3.14.13))(@effect/sql@0.33.11(@effect/experimental@0.44.11(@effect/platform@0.80.13(effect@3.14.13))(effect@3.14.13))(@effect/platform@0.80.13(effect@3.14.13))(effect@3.14.13))(effect@3.14.13)
       effect:
         specifier: 3.14.13
         version: 3.14.13

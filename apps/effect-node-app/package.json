@@ -1,23 +1,25 @@
 {
-  "name": "@packages/api-effect",
+  "name": "@apps/effect-node-app",
   "version": "0.0.0",
   "private": true,
-  "description": "Api using effect platform http api",
+  "description": "Effect Node App",
   "license": "UNLICENSED",
   "type": "module",
   "exports": {
-    "./server": "./src/server/index.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "clean": "del .turbo coverage",
-    "lint": "eslint .",
+    "dev": "tsx --watch src/index.ts",
+    "lint": "eslint ",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@effect/platform": "0.80.13",
-    "effect": "3.14.13",
-    "http-status-codes": "2.3.0"
+    "@effect/platform-node": "0.77.1",
+    "@packages/api-effect": "workspace:*",
+    "effect": "3.14.13"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

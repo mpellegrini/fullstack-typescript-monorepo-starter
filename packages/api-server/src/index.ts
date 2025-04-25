@@ -1,8 +1,8 @@
 import { HttpApiBuilder, HttpApiScalar } from '@effect/platform'
 import { Layer } from 'effect'
 
-import { taskGroupLive } from '../impl/index.js'
-import { PlatformApi } from '../platform-api.js'
+import { PlatformApi } from '@packages/api'
+import { taskGroupLive } from '@packages/api-impl'
 
 export const platformApiLive = HttpApiBuilder.api(PlatformApi).pipe(Layer.provide(taskGroupLive))
 

@@ -3,7 +3,7 @@ import { NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { Layer } from 'effect'
 import { createServer } from 'node:http'
 
-import { openApiDocLayer, platformApiLive } from '@packages/api-effect/server'
+import { openApiDocLayer, platformApiLive } from '@packages/api-server'
 
 const HttpLive = HttpApiBuilder.serve().pipe(
   Layer.provide(platformApiLive),

@@ -1,5 +1,9 @@
 import type { RequestHandler } from '@sveltejs/kit'
 
-import app from '@packages/api'
-
-export const fallback: RequestHandler = ({ request }) => app.fetch(request)
+export const fallback: RequestHandler = () =>
+  new Response(JSON.stringify({ success: true }), {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    status: 200,
+  })

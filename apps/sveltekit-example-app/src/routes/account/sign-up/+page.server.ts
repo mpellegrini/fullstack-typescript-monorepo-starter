@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
-import { fail, message, setError, superValidate } from 'sveltekit-superforms'
+import { fail, message, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
 
 import { signupSchema } from '$lib/schemas'
@@ -12,10 +12,12 @@ export const load = (async () => {
 }) satisfies PageServerLoad
 
 export const actions = {
-  default: async ({ cookies, locals: { api }, request }) => {
+  //   default: async ({ cookies, locals: { api }, request }) => {
+  default: async ({ request }) => {
     const form = await superValidate(request, zod(signupSchema))
     if (!form.valid) return fail(StatusCodes.BAD_REQUEST, { form })
 
+    /*
     const resp = await api.accounts.signup.$post({
       json: {
         password: form.data.password,
@@ -36,5 +38,7 @@ export const actions = {
     } else {
       return setError(form, 'username', await resp.text())
     }
+    */
+    return message(form, 'Signup Completed')
   },
 } satisfies Actions

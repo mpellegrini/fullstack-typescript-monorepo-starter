@@ -1,8 +1,8 @@
 {
-  "name": "@apps/effect-node-app",
+  "name": "@packages/api-server",
   "version": "0.0.0",
   "private": true,
-  "description": "Effect Node App",
+  "description": "Api server",
   "license": "UNLICENSED",
   "type": "module",
   "exports": {
@@ -10,21 +10,20 @@
   },
   "scripts": {
     "clean": "del .turbo coverage",
-    "dev": "tsx --watch src/index.ts",
-    "lint": "eslint ",
+    "lint": "eslint .",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@effect/platform": "0.80.13",
     "@effect/platform-node": "0.77.1",
-    "@packages/api-server": "workspace:*",
+    "@packages/api": "workspace:*",
+    "@packages/api-impl": "workspace:*",
     "effect": "3.14.13"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
-    "@toolchain/vitest-config": "workspace:*",
-    "tsx": "4.19.3"
+    "@toolchain/vitest-config": "workspace:*"
   }
 }

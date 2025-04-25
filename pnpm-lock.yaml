@@ -110,9 +110,6 @@ importers:
         specifier: 8.15.5
         version: 8.15.5
     devDependencies:
-      '@packages/api':
-        specifier: workspace:*
-        version: link:../../packages/api
       '@sveltejs/adapter-node':
         specifier: 5.2.12
         version: 5.2.12(@sveltejs/kit@2.20.7(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.28.2)(vite@6.3.2(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.1)))(svelte@5.28.2)(vite@6.3.2(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.3)(yaml@2.7.1)))
@@ -155,34 +152,6 @@ importers:
       zod:
         specifier: 3.24.3
         version: 3.24.3
-
-  packages/api:
-    dependencies:
-      '@hono/zod-validator':
-        specifier: 0.4.3
-        version: 0.4.3(hono@4.7.7)(zod@3.24.3)
-      '@node-rs/argon2':
-        specifier: 2.0.2
-        version: 2.0.2
-      '@packages/db-drizzlepg':
-        specifier: workspace:*
-        version: link:../db-drizzlepg
-      hono:
-        specifier: 4.7.7
-        version: 4.7.7
-      zod:
-        specifier: 3.24.3
-        version: 3.24.3
-    devDependencies:
-      '@toolchain/eslint-config':
-        specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
-        specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
-        specifier: workspace:*
-        version: link:../../toolchain/vitest-config
 
   packages/api-effect:
     dependencies:

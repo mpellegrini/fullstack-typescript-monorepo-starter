@@ -1,9 +1,9 @@
 import { HttpApiBuilder } from '@effect/platform'
 import { Effect } from 'effect'
 
-import { PlatformApi, TodoId } from '@packages/api'
+import { Api, TodoId } from '@packages/api'
 
-export const taskGroupLive = HttpApiBuilder.group(PlatformApi, 'tasks', (handlers) =>
+export const taskGroupLive = HttpApiBuilder.group(Api, 'tasks', (handlers) =>
   handlers.handle('getTaskById', ({ path }) =>
     Effect.succeed({
       id: TodoId.make(path.id),

@@ -1,4 +1,10 @@
-import { HttpApiEndpoint, HttpApiError, HttpApiGroup, HttpApiSchema } from '@effect/platform'
+import {
+  HttpApiEndpoint,
+  HttpApiError,
+  HttpApiGroup,
+  HttpApiSchema,
+  OpenApi,
+} from '@effect/platform'
 import { Schema } from 'effect'
 
 import * as CustomHttpApiError from '../custom-httpapi-error.js'
@@ -20,4 +26,10 @@ export class ApiGroup extends HttpApiGroup.make('tasks') //
       .addError(HttpApiError.HttpApiDecodeError)
       .addError(CustomHttpApiError.NotFound),
   )
-  .prefix('/tasks') {}
+  .prefix('/tasks')
+  .annotateContext(
+    OpenApi.annotations({
+      description: 'API for managing tasks',
+      title: 'Tasks',
+    }),
+  ) {}

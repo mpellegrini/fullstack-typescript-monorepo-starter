@@ -16,10 +16,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.80.13",
-    "@effect/platform-node": "0.77.1",
+    "@effect/platform": "0.80.14",
+    "@effect/platform-node": "0.77.2",
     "@packages/api-server": "workspace:*",
-    "effect": "3.14.13"
+    "effect": "3.14.14"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

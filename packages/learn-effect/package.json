@@ -16,13 +16,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "effect": "3.14.13"
+    "effect": "3.14.14"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/node": "22.14.1",
+    "@types/node": "22.15.2",
     "msw": "2.7.5",
     "tsx": "4.19.3"
   }

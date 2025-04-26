@@ -231,34 +231,6 @@ importers:
         specifier: workspace:*
         version: link:../../toolchain/vitest-config
 
-  packages/api-server:
-    dependencies:
-      '@effect/platform':
-        specifier: 0.80.14
-        version: 0.80.14(effect@3.14.14)
-      '@effect/platform-node':
-        specifier: 0.77.2
-        version: 0.77.2(@effect/cluster@0.29.21(@effect/platform@0.80.14(effect@3.14.14))(@effect/rpc@0.55.16(@effect/platform@0.80.14(effect@3.14.14))(effect@3.14.14))(@effect/sql@0.33.11(@effect/experimental@0.44.11(@effect/platform@0.80.14(effect@3.14.14))(effect@3.14.14))(@effect/platform@0.80.14(effect@3.14.14))(effect@3.14.14))(effect@3.14.14))(@effect/platform@0.80.14(effect@3.14.14))(@effect/rpc@0.55.16(@effect/platform@0.80.14(effect@3.14.14))(effect@3.14.14))(@effect/sql@0.33.11(@effect/experimental@0.44.11(@effect/platform@0.80.14(effect@3.14.14))(effect@3.14.14))(@effect/platform@0.80.14(effect@3.14.14))(effect@3.14.14))(effect@3.14.14)
-      '@packages/api':
-        specifier: workspace:*
-        version: link:../api
-      '@packages/api-impl':
-        specifier: workspace:*
-        version: link:../api-impl
-      effect:
-        specifier: 3.14.14
-        version: 3.14.14
-    devDependencies:
-      '@toolchain/eslint-config':
-        specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
-        specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
-        specifier: workspace:*
-        version: link:../../toolchain/vitest-config
-
   packages/db-drizzlepg:
     dependencies:
       dotenv:

@@ -6,12 +6,7 @@ import { createServer } from 'node:http'
 import { ApiLive } from '@packages/api-impl'
 
 HttpApiBuilder.serve(HttpMiddleware.logger).pipe(
-  Layer.provide(
-    HttpApiScalar.layer({
-      path: '/api/docs',
-      scalar: { layout: 'modern', theme: 'kepler' },
-    }),
-  ),
+  Layer.provide(HttpApiScalar.layer({ scalar: { layout: 'modern', theme: 'kepler' } })),
   Layer.provide(HttpApiBuilder.middlewareOpenApi()),
   Layer.provide(ApiLive),
   HttpServer.withLogAddress,

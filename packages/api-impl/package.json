@@ -15,8 +15,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.80.14",
-    "effect": "3.14.14"
+    "@effect/platform": "0.80.15",
+    "effect": "3.14.15"
   },
   "devDependencies": {
     "@packages/api": "workspace:*",

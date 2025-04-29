@@ -36,6 +36,6 @@
     "@types/pg": "8.11.14",
     "drizzle-dbml-generator": "0.10.0",
     "drizzle-kit": "1.0.0-beta.1-5e64efc",
-    "tsx": "4.19.3"
+    "tsx": "4.19.4"
   }
 }

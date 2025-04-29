@@ -45,7 +45,7 @@ importers:
         specifier: 2.5.2
         version: 2.5.2
 
-  apps/effect-node-app:
+  apps/effect-api-server:
     dependencies:
       '@effect/platform':
         specifier: 0.80.14

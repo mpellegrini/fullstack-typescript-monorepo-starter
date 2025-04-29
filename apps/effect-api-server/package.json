@@ -1,13 +1,10 @@
 {
-  "name": "@apps/effect-node-app",
+  "name": "@apps/effect-api-server",
   "version": "0.0.0",
   "private": true,
-  "description": "Effect Node App",
+  "description": "Effect Node API Server",
   "license": "UNLICENSED",
   "type": "module",
-  "exports": {
-    ".": "./src/index.ts"
-  },
   "scripts": {
     "clean": "del .turbo coverage",
     "dev": "tsx --watch src/index.ts",

@@ -21,7 +21,7 @@ export const userAccountsTable = pgTable(
     namedUnique(t.username),
     check(
       'user_accounts_chk_status',
-      sql`${t.status} in ${sql.raw(`'${accountStatus.join("','")}'`)}`,
+      sql`${t.status} in ${sql.raw(`('${accountStatus.join("','")}')`)}`,
     ),
   ],
 )

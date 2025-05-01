@@ -6,7 +6,8 @@
   "license": "UNLICENSED",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./services": "./src/services/index.ts"
   },
   "scripts": {
     "clean": "del .turbo coverage",
@@ -16,6 +17,7 @@
   },
   "dependencies": {
     "@effect/platform": "0.80.15",
+    "@packages/db-drizzlepg": "workspace:*",
     "effect": "3.14.15"
   },
   "devDependencies": {

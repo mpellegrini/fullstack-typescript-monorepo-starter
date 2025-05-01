@@ -7,7 +7,8 @@
   "type": "module",
   "exports": {
     "./client": "./src/client/index.ts",
-    "./schema": "./src/schema/index.ts"
+    "./schema": "./src/schema/index.ts",
+    "./effect-client": "./src/effect-client/index.ts"
   },
   "scripts": {
     "clean": "del .turbo coverage",
@@ -23,8 +24,10 @@
   },
   "dependencies": {
     "dotenv": "16.5.0",
-    "drizzle-orm": "1.0.0-beta.1-5e64efc",
+    "drizzle-orm": "1.0.0-beta.1-c0277c0",
+    "effect": "3.14.15",
     "pg": "8.15.6",
+    "pg-error-enum": "1.0.2",
     "sql-formatter": "15.6.1",
     "zod": "3.24.3"
   },
@@ -35,7 +38,7 @@
     "@toolchain/vitest-config": "workspace:*",
     "@types/pg": "8.11.14",
     "drizzle-dbml-generator": "0.10.0",
-    "drizzle-kit": "1.0.0-beta.1-5e64efc",
+    "drizzle-kit": "1.0.0-beta.1-c0277c0",
     "tsx": "4.19.4"
   }
 }

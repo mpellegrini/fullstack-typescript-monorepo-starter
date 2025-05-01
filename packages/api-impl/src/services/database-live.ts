@@ -6,7 +6,7 @@ import { EnvVars } from './env-vars.js'
 
 export const DatabaseLive = Layer.unwrapEffect(
   EnvVars.pipe(
-    Effect.map((envVars) =>
+    Effect.andThen((envVars) =>
       Database.layer({
         connectionString: envVars.DB_CONNECTION_STRING,
         loggingEnabled: envVars.DB_LOGGING_ENABLED,

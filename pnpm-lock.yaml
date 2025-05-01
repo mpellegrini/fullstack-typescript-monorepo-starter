@@ -59,6 +59,9 @@ importers:
       '@packages/api-impl':
         specifier: workspace:*
         version: link:../../packages/api-impl
+      '@packages/db-drizzlepg':
+        specifier: workspace:*
+        version: link:../../packages/db-drizzlepg
       effect:
         specifier: 3.14.15
         version: 3.14.15

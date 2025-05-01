@@ -5,7 +5,7 @@ export class EnvVars extends Effect.Service<EnvVars>()('EnvVars', {
   effect: Effect.gen(function* () {
     return {
       CI: yield* Config.boolean('CI').pipe(Config.withDefault(false)),
-      DB_CONNECTION_STRING: yield* Config.redacted('DATABASE_URL'),
+      DB_CONNECTION_STRING: yield* Config.redacted('DB_CONNECTION_STRING'),
       DB_IDLE_TIMEOUT_MILLIS: yield* Config.integer('DB_IDLE_TIMEOUT_MILLIS').pipe(
         Config.withDefault(10_000),
       ),

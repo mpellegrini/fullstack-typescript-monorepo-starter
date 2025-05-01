@@ -186,6 +186,9 @@ importers:
       '@effect/platform':
         specifier: 0.80.15
         version: 0.80.15(effect@3.14.15)
+      '@packages/db-drizzlepg':
+        specifier: workspace:*
+        version: link:../db-drizzlepg
       effect:
         specifier: 3.14.15
         version: 3.14.15

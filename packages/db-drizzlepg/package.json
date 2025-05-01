@@ -7,7 +7,8 @@
   "type": "module",
   "exports": {
     "./client": "./src/client/index.ts",
-    "./schema": "./src/schema/index.ts"
+    "./schema": "./src/schema/index.ts",
+    "./effect-client": "./src/effect-client/index.ts"
   },
   "scripts": {
     "clean": "del .turbo coverage",

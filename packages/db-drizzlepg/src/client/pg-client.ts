@@ -1,10 +1,10 @@
 import { drizzle } from 'drizzle-orm/node-postgres'
 import pg from 'pg'
 
+import { QueryLogger } from '../query-logger.js'
 import { relations } from '../schema/realtions.js'
 
 import env from './env-config.js'
-import { QueryLogger } from './query-logger.js'
 
 const {
   DB_APPLICATION_NAME,

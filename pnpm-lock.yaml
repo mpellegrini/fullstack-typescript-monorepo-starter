@@ -112,6 +112,9 @@ importers:
       http-status-codes:
         specifier: 2.3.0
         version: 2.3.0
+      mode-watcher:
+        specifier: 1.0.6
+        version: 1.0.6(svelte@5.28.2)
       svelte:
         specifier: 5.28.2
         version: 5.28.2
@@ -3815,6 +3818,11 @@ packages:
     resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
     hasBin: true
 
+  mode-watcher@1.0.6:
+    resolution: {integrity: sha512-6bG6KfPPaZoaw523rLR3z8dlCK/dskIBv7z7qdRPizD5b5BDYyCCLQ33FSCRTd7Ai3i7FWIBuXCZaF5IVVC3GQ==}
+    peerDependencies:
+      svelte: ^5.27.0
+
   moo@0.5.2:
     resolution: {integrity: sha512-iSAJLHYKnX41mKcJKjqvnAN9sf0LMDTXDEvFv+ffuRR9a1MIuXLjMNL6EsnDHSkKLTWNqQQ5uo61P4EbU4NU+Q==}
 
@@ -4489,6 +4497,11 @@ packages:
 
   runed@0.23.4:
     resolution: {integrity: sha512-9q8oUiBYeXIDLWNK5DfCWlkL0EW3oGbk845VdKlPeia28l751VpfesaB/+7pI6rnbx1I6rqoZ2fZxptOJLxILA==}
+    peerDependencies:
+      svelte: ^5.7.0
+
+  runed@0.25.0:
+    resolution: {integrity: sha512-7+ma4AG9FT2sWQEA0Egf6mb7PBT2vHyuHail1ie8ropfSjvZGtEAx8YTmUjv/APCsdRRxEVvArNjALk9zFSOrg==}
     peerDependencies:
       svelte: ^5.7.0
 
@@ -8763,6 +8776,12 @@ snapshots:
     dependencies:
       minimist: 1.2.8
 
+  mode-watcher@1.0.6(svelte@5.28.2):
+    dependencies:
+      runed: 0.25.0(svelte@5.28.2)
+      svelte: 5.28.2
+      svelte-toolbelt: 0.7.1(svelte@5.28.2)
+
   moo@0.5.2: {}
 
   mri@1.2.0: {}
@@ -9399,6 +9418,11 @@ snapshots:
       queue-microtask: 1.2.3
 
   runed@0.23.4(svelte@5.28.2):
+    dependencies:
+      esm-env: 1.2.2
+      svelte: 5.28.2
+
+  runed@0.25.0(svelte@5.28.2):
     dependencies:
       esm-env: 1.2.2
       svelte: 5.28.2

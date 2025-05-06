@@ -298,6 +298,31 @@ importers:
         specifier: 4.19.4
         version: 4.19.4
 
+  packages/learn-effect-platform:
+    dependencies:
+      '@effect/platform':
+        specifier: 0.80.20
+        version: 0.80.20(effect@3.14.20)
+      '@effect/platform-node':
+        specifier: 0.77.10
+        version: 0.77.10(@effect/cluster@0.29.21(@effect/platform@0.80.20(effect@3.14.20))(@effect/rpc@0.55.16(@effect/platform@0.80.20(effect@3.14.20))(effect@3.14.20))(@effect/sql@0.33.11(@effect/experimental@0.44.11(@effect/platform@0.80.20(effect@3.14.20))(effect@3.14.20))(@effect/platform@0.80.20(effect@3.14.20))(effect@3.14.20))(effect@3.14.20))(@effect/platform@0.80.20(effect@3.14.20))(@effect/rpc@0.55.16(@effect/platform@0.80.20(effect@3.14.20))(effect@3.14.20))(@effect/sql@0.33.11(@effect/experimental@0.44.11(@effect/platform@0.80.20(effect@3.14.20))(effect@3.14.20))(@effect/platform@0.80.20(effect@3.14.20))(effect@3.14.20))(effect@3.14.20)
+      effect:
+        specifier: 3.14.20
+        version: 3.14.20
+    devDependencies:
+      '@toolchain/eslint-config':
+        specifier: workspace:*
+        version: link:../../toolchain/eslint-config
+      '@toolchain/typescript-config':
+        specifier: workspace:*
+        version: link:../../toolchain/typescript-config
+      '@toolchain/vitest-config':
+        specifier: workspace:*
+        version: link:../../toolchain/vitest-config
+      tsx:
+        specifier: 4.19.4
+        version: 4.19.4
+
   packages/ui-lib-svelte:
     devDependencies:
       '@sveltejs/adapter-auto':

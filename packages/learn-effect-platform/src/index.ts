@@ -69,14 +69,30 @@ class MyApi extends HttpApi.make('api').add(TasksApi) {}
 // implementation
 // ------------------------------------------------
 
+export class TasksRepository extends Effect.Service<TasksRepository>()('TasksRepository', {
+  effect: Effect.gen(function* () {
+    yield* Effect.logInfo('Constructed Tasks Repository')
+    const findById = //
+      Effect.fn('TasksRepository.findById')(function* (id: number) {
+        const currentUser = yield* CurrentUser
+        yield* Effect.logInfo('TasksRepository.findById', currentUser)
+        return Task.make({ id, done: false, name: 'Learn Effect' })
+      })
+    return {
+      findById,
+    }
+  }),
+}) {}
+
 export class TasksService extends Effect.Service<TasksService>()('TasksService', {
   effect: Effect.gen(function* () {
     yield* Effect.logInfo('Constructed Tasks Service')
     const findById = //
       Effect.fn('TasksService.findById')(function* (id: number) {
         const currentUser = yield* CurrentUser
-        yield* Effect.logInfo('findById', currentUser)
-        return Task.make({ id, done: true, name: 'Learn Effect' })
+        const repository = yield* TasksRepository
+        yield* Effect.logInfo('TasksService.findById', currentUser)
+        return yield* repository.findById(id)
       })
 
     return {
@@ -88,17 +104,17 @@ export class TasksService extends Effect.Service<TasksService>()('TasksService',
 const AuthenticationLive = Layer.succeed(
   Authentication,
   Authentication.of({
-    apiKey: (key) =>
+    apiKey: (apiKey) =>
       Effect.gen(function* () {
-        yield* Effect.logInfo('Authentication Middleware - checking bearer token')
+        yield* Effect.logInfo('Authentication Middleware - checking api key')
 
-        if (Redacted.value(key) !== 'sk_opensaysme') {
+        if (Redacted.value(apiKey) !== 'sk_opensaysme') {
           return yield* Effect.fail(new Unauthorized())
         }
 
         return User.make({
           id: 1000,
-          name: `Authenticated with ${Redacted.value(key)}`,
+          name: `Authenticated with ${Redacted.value(apiKey)}`,
         })
       }),
   }),
@@ -113,7 +129,10 @@ const TasksLive = HttpApiBuilder.group(MyApi, 'tasks', (handlers) =>
         return yield* service.findById(path.id)
       }),
     ),
-).pipe(Layer.provide(AuthenticationLive), Layer.provide(TasksService.Default))
+).pipe(
+  Layer.provide(AuthenticationLive),
+  Layer.provide([TasksService.Default, TasksRepository.Default]),
+)
 
 const ApiLive = HttpApiBuilder.api(MyApi)
   //

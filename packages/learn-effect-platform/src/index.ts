@@ -21,24 +21,18 @@ import { Unauthorized } from '@effect/platform/HttpApiError'
 import { Context, Effect, Layer, Redacted, Schema } from 'effect'
 import { createServer } from 'node:http'
 
-class User extends Schema.Class<User>('User')({
+class Caller extends Schema.Class<Caller>('Caller')({
   id: Schema.Number,
   name: Schema.String,
 }) {}
 
-class CurrentUser extends Context.Tag('CurrentUser')<CurrentUser, User>() {}
+class CallerContext extends Context.Tag('CurrentUser')<CallerContext, Caller>() {}
 
-export class Authentication extends HttpApiMiddleware.Tag<Authentication>()('Authentication', {
+export class Authorization extends HttpApiMiddleware.Tag<Authorization>()('Authorization', {
   failure: Unauthorized,
-  provides: CurrentUser,
+  provides: CallerContext,
   security: {
-    apiKey: HttpApiSecurity.apiKey({ in: 'header', key: 'X-API-Key' }).pipe(
-      HttpApiSecurity.annotateContext(
-        OpenApi.annotations({
-          description: 'My Security Description',
-        }),
-      ),
-    ),
+    apiKey: HttpApiSecurity.apiKey({ in: 'header', key: 'X-API-Key' }),
   },
 }) {}
 
@@ -54,7 +48,7 @@ class TasksApi extends HttpApiGroup.make('tasks')
       'findById',
     )`/${HttpApiSchema.param('id', Schema.NumberFromString)}`.addSuccess(Task),
   )
-  .middleware(Authentication)
+  .middleware(Authorization)
   .prefix('/tasks')
   .annotateContext(
     OpenApi.annotations({
@@ -74,8 +68,8 @@ export class TasksRepository extends Effect.Service<TasksRepository>()('TasksRep
     yield* Effect.logInfo('Constructed Tasks Repository')
     const findById = //
       Effect.fn('TasksRepository.findById')(function* (id: number) {
-        const currentUser = yield* CurrentUser
-        yield* Effect.logInfo('TasksRepository.findById', currentUser)
+        const callerContext = yield* CallerContext
+        yield* Effect.logInfo('TasksRepository.findById', callerContext)
         return Task.make({ id, done: false, name: 'Learn Effect' })
       })
     return {
@@ -89,9 +83,9 @@ export class TasksService extends Effect.Service<TasksService>()('TasksService',
     yield* Effect.logInfo('Constructed Tasks Service')
     const findById = //
       Effect.fn('TasksService.findById')(function* (id: number) {
-        const currentUser = yield* CurrentUser
+        const callerContext = yield* CallerContext
         const repository = yield* TasksRepository
-        yield* Effect.logInfo('TasksService.findById', currentUser)
+        yield* Effect.logInfo('TasksService.findById', callerContext)
         return yield* repository.findById(id)
       })
 
@@ -101,22 +95,25 @@ export class TasksService extends Effect.Service<TasksService>()('TasksService',
   }),
 }) {}
 
-const AuthenticationLive = Layer.succeed(
-  Authentication,
-  Authentication.of({
-    apiKey: (apiKey) =>
-      Effect.gen(function* () {
-        yield* Effect.logInfo('Authentication Middleware - checking api key')
+const AuthorizationLive = Layer.effect(
+  Authorization,
+  // eslint-disable-next-line require-yield -- todo
+  Effect.gen(function* () {
+    return Authorization.of({
+      apiKey: (apiKey) =>
+        Effect.gen(function* () {
+          yield* Effect.logInfo('Authentication Middleware - checking api key')
 
-        if (Redacted.value(apiKey) !== 'sk_opensaysme') {
-          return yield* Effect.fail(new Unauthorized())
-        }
+          if (Redacted.value(apiKey) !== 'sk_opensaysme') {
+            return yield* Effect.fail(new Unauthorized())
+          }
 
-        return User.make({
-          id: 1000,
-          name: `Authenticated with ${Redacted.value(apiKey)}`,
-        })
-      }),
+          return Caller.make({
+            id: 1000,
+            name: `Authenticated with ${Redacted.value(apiKey)}`,
+          })
+        }),
+    })
   }),
 )
 
@@ -130,7 +127,7 @@ const TasksLive = HttpApiBuilder.group(MyApi, 'tasks', (handlers) =>
       }),
     ),
 ).pipe(
-  Layer.provide(AuthenticationLive),
+  Layer.provide(AuthorizationLive),
   Layer.provide([TasksService.Default, TasksRepository.Default]),
 )
 

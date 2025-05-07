@@ -1,0 +1,29 @@
+{
+  "name": "@packages/learn-effect-platform",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Learn effect platform",
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "clean": "del .turbo coverage",
+    "dev": "tsx --watch src/index.ts",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@effect/platform": "0.80.20",
+    "@effect/platform-node": "0.77.10",
+    "effect": "3.14.20"
+  },
+  "devDependencies": {
+    "@toolchain/eslint-config": "workspace:*",
+    "@toolchain/typescript-config": "workspace:*",
+    "@toolchain/vitest-config": "workspace:*",
+    "tsx": "4.19.4"
+  }
+}

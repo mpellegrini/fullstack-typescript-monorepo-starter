@@ -21,24 +21,18 @@ import { Unauthorized } from '@effect/platform/HttpApiError'
 import { Context, Effect, Layer, Redacted, Schema } from 'effect'
 import { createServer } from 'node:http'
 
-class User extends Schema.Class<User>('User')({
+class Caller extends Schema.Class<Caller>('Caller')({
   id: Schema.Number,
   name: Schema.String,
 }) {}
 
-class CurrentUser extends Context.Tag('CurrentUser')<CurrentUser, User>() {}
+class CallerContext extends Context.Tag('CurrentUser')<CallerContext, Caller>() {}
 
-export class Authentication extends HttpApiMiddleware.Tag<Authentication>()('Authentication', {
+export class Authorization extends HttpApiMiddleware.Tag<Authorization>()('Authorization', {
   failure: Unauthorized,
-  provides: CurrentUser,
+  provides: CallerContext,
   security: {
-    apiKey: HttpApiSecurity.apiKey({ in: 'header', key: 'X-API-Key' }).pipe(
-      HttpApiSecurity.annotateContext(
-        OpenApi.annotations({
-          description: 'My Security Description',
-        }),
-      ),
-    ),
+    apiKey: HttpApiSecurity.apiKey({ in: 'header', key: 'X-API-Key' }),
   },
 }) {}
 
@@ -54,7 +48,7 @@ class TasksApi extends HttpApiGroup.make('tasks')
       'findById',
     )`/${HttpApiSchema.param('id', Schema.NumberFromString)}`.addSuccess(Task),
   )
-  .middleware(Authentication)
+  .middleware(Authorization)
   .prefix('/tasks')
   .annotateContext(
     OpenApi.annotations({
@@ -69,14 +63,30 @@ class MyApi extends HttpApi.make('api').add(TasksApi) {}
 // implementation
 // ------------------------------------------------
 
+export class TasksRepository extends Effect.Service<TasksRepository>()('TasksRepository', {
+  effect: Effect.gen(function* () {
+    yield* Effect.logInfo('Constructed Tasks Repository')
+    const findById = //
+      Effect.fn('TasksRepository.findById')(function* (id: number) {
+        const callerContext = yield* CallerContext
+        yield* Effect.logInfo('TasksRepository.findById', callerContext)
+        return Task.make({ id, done: false, name: 'Learn Effect' })
+      })
+    return {
+      findById,
+    }
+  }),
+}) {}
+
 export class TasksService extends Effect.Service<TasksService>()('TasksService', {
   effect: Effect.gen(function* () {
     yield* Effect.logInfo('Constructed Tasks Service')
     const findById = //
       Effect.fn('TasksService.findById')(function* (id: number) {
-        const currentUser = yield* CurrentUser
-        yield* Effect.logInfo('findById', currentUser)
-        return Task.make({ id, done: true, name: 'Learn Effect' })
+        const callerContext = yield* CallerContext
+        const repository = yield* TasksRepository
+        yield* Effect.logInfo('TasksService.findById', callerContext)
+        return yield* repository.findById(id)
       })
 
     return {
@@ -85,22 +95,25 @@ export class TasksService extends Effect.Service<TasksService>()('TasksService',
   }),
 }) {}
 
-const AuthenticationLive = Layer.succeed(
-  Authentication,
-  Authentication.of({
-    apiKey: (key) =>
-      Effect.gen(function* () {
-        yield* Effect.logInfo('Authentication Middleware - checking bearer token')
+const AuthorizationLive = Layer.effect(
+  Authorization,
+  // eslint-disable-next-line require-yield -- todo
+  Effect.gen(function* () {
+    return Authorization.of({
+      apiKey: (apiKey) =>
+        Effect.gen(function* () {
+          yield* Effect.logInfo('Authentication Middleware - checking api key')
 
-        if (Redacted.value(key) !== 'sk_opensaysme') {
-          return yield* Effect.fail(new Unauthorized())
-        }
+          if (Redacted.value(apiKey) !== 'sk_opensaysme') {
+            return yield* Effect.fail(new Unauthorized())
+          }
 
-        return User.make({
-          id: 1000,
-          name: `Authenticated with ${Redacted.value(key)}`,
-        })
-      }),
+          return Caller.make({
+            id: 1000,
+            name: `Authenticated with ${Redacted.value(apiKey)}`,
+          })
+        }),
+    })
   }),
 )
 
@@ -113,7 +126,10 @@ const TasksLive = HttpApiBuilder.group(MyApi, 'tasks', (handlers) =>
         return yield* service.findById(path.id)
       }),
     ),
-).pipe(Layer.provide(AuthenticationLive), Layer.provide(TasksService.Default))
+).pipe(
+  Layer.provide(AuthorizationLive),
+  Layer.provide([TasksService.Default, TasksRepository.Default]),
+)
 
 const ApiLive = HttpApiBuilder.api(MyApi)
   //

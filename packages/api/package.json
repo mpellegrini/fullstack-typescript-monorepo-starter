@@ -15,8 +15,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.80.20",
-    "effect": "3.14.20",
+    "@effect/platform": "0.80.21",
+    "effect": "3.14.21",
     "http-status-codes": "2.3.0"
   },
   "devDependencies": {

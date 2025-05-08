@@ -100,19 +100,15 @@ const AuthorizationLive = Layer.effect(
   // eslint-disable-next-line require-yield -- todo
   Effect.gen(function* () {
     return Authorization.of({
-      apiKey: (apiKey) =>
-        Effect.gen(function* () {
-          yield* Effect.logInfo('Authentication Middleware - checking api key')
+      apiKey: Effect.fn(function* (apiKey) {
+        yield* Effect.logInfo('Authentication Middleware - checking api key')
 
-          if (Redacted.value(apiKey) !== 'sk_opensaysme') {
-            return yield* Effect.fail(new Unauthorized())
-          }
-
-          return Caller.make({
-            id: 1000,
-            name: `Authenticated with ${Redacted.value(apiKey)}`,
-          })
-        }),
+        return yield* Redacted.value(apiKey) === 'sk_opensaysme'
+          ? Effect.succeed(
+              Caller.make({ id: 1000, name: `Authenticated with ${Redacted.value(apiKey)}` }),
+            )
+          : Effect.fail(new Unauthorized())
+      }),
     })
   }),
 )

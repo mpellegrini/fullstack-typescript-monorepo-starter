@@ -107,7 +107,7 @@ const AuthorizationLive = Layer.effect(
           ? Effect.succeed(
               Caller.make({ id: 1000, name: `Authenticated with ${Redacted.value(apiKey)}` }),
             )
-          : Effect.fail(new Unauthorized())
+          : yield* new Unauthorized()
       }),
     })
   }),

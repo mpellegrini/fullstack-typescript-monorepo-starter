@@ -103,10 +103,8 @@ const AuthorizationLive = Layer.effect(
       apiKey: Effect.fn(function* (apiKey) {
         yield* Effect.logInfo('Authentication Middleware - checking api key')
 
-        return yield* Redacted.value(apiKey) === 'sk_opensaysme'
-          ? Effect.succeed(
-              Caller.make({ id: 1000, name: `Authenticated with ${Redacted.value(apiKey)}` }),
-            )
+        return Redacted.value(apiKey) === 'sk_opensaysme'
+          ? Caller.make({ id: 1000, name: `Authenticated with ${Redacted.value(apiKey)}` })
           : yield* new Unauthorized()
       }),
     })

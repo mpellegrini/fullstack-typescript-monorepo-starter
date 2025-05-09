@@ -14,6 +14,9 @@ importers:
       '@commitlint/config-conventional':
         specifier: 19.8.1
         version: 19.8.1
+      '@effect/language-service':
+        specifier: 0.11.0
+        version: 0.11.0
       '@turbo/gen':
         specifier: 2.5.3
         version: 2.5.3(@types/node@22.15.17)(typescript@5.8.3)
@@ -621,6 +624,9 @@ packages:
         optional: true
       lmdb:
         optional: true
+
+  '@effect/language-service@0.11.0':
+    resolution: {integrity: sha512-srm9Kr/1cvURcQ3qCDuolKiwG2MfYtLrOZJ8nZv1NIRk3n4PE+bBaDs5vqUf8GLjy/BCULrlITr9bnBOJ5vtuw==}
 
   '@effect/platform-node-shared@0.31.11':
     resolution: {integrity: sha512-xkTyMfM9Ah5puIj7o1vf+7NaReEoJ92/YyRJM8T/29dtedHF2AjJC3R1u6e6LTitGX2yHKWdonFYqwxQ1cE0ww==}
@@ -5614,6 +5620,8 @@ snapshots:
       '@effect/platform': 0.80.21(effect@3.14.21)
       effect: 3.14.21
       uuid: 11.1.0
+
+  '@effect/language-service@0.11.0': {}
 
   '@effect/platform-node-shared@0.31.11(@effect/cluster@0.29.21(@effect/platform@0.80.21(effect@3.14.21))(@effect/rpc@0.55.16(@effect/platform@0.80.21(effect@3.14.21))(effect@3.14.21))(@effect/sql@0.33.11(@effect/experimental@0.44.11(@effect/platform@0.80.21(effect@3.14.21))(effect@3.14.21))(@effect/platform@0.80.21(effect@3.14.21))(effect@3.14.21))(effect@3.14.21))(@effect/platform@0.80.21(effect@3.14.21))(@effect/rpc@0.55.16(@effect/platform@0.80.21(effect@3.14.21))(effect@3.14.21))(@effect/sql@0.33.11(@effect/experimental@0.44.11(@effect/platform@0.80.21(effect@3.14.21))(effect@3.14.21))(@effect/platform@0.80.21(effect@3.14.21))(effect@3.14.21))(effect@3.14.21)':
     dependencies:

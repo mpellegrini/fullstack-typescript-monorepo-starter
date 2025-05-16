@@ -20,20 +20,20 @@
     "typecheck": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
-    "@sveltejs/adapter-auto": "6.0.0",
-    "@sveltejs/kit": "2.20.8",
+    "@sveltejs/adapter-auto": "6.0.1",
+    "@sveltejs/kit": "2.21.0",
     "@sveltejs/vite-plugin-svelte": "5.0.3",
-    "@tailwindcss/vite": "4.1.5",
+    "@tailwindcss/vite": "4.1.7",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "bits-ui": "1.4.7",
+    "bits-ui": "1.4.8",
     "clsx": "2.1.1",
-    "svelte": "5.28.2",
-    "svelte-check": "4.1.7",
-    "tailwind-merge": "3.2.0",
+    "svelte": "5.30.1",
+    "svelte-check": "4.2.1",
+    "tailwind-merge": "3.3.0",
     "tailwind-variants": "1.0.0",
-    "tailwindcss": "4.1.5",
+    "tailwindcss": "4.1.7",
     "vite": "6.3.5"
   }
 }

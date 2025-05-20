@@ -8,6 +8,7 @@
   "exports": {
     "./client": "./src/client/index.ts",
     "./schema": "./src/schema/index.ts",
+    "./helpers": "./src/helpers/index.ts",
     "./effect-client": "./src/effect-client/index.ts"
   },
   "scripts": {

@@ -22,8 +22,8 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/node": "22.15.18",
-    "msw": "2.8.3",
+    "@types/node": "22.15.21",
+    "msw": "2.8.4",
     "tsx": "4.19.4"
   }
 }

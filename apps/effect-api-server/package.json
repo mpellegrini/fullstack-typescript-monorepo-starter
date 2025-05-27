@@ -13,12 +13,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.82.4",
-    "@effect/platform-node": "0.81.1",
+    "@effect/platform": "0.83.0",
+    "@effect/platform-node": "0.82.0",
     "@packages/api": "workspace:*",
     "@packages/api-impl": "workspace:*",
     "@packages/db-drizzlepg": "workspace:*",
-    "effect": "3.15.2"
+    "effect": "3.15.5"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

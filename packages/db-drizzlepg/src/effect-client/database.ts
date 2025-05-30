@@ -4,7 +4,6 @@ import pg from 'pg'
 
 import { QueryLogger } from '../query-logger.js'
 import * as schema from '../schema/index.js'
-import { relations } from '../schema/realtions.js'
 
 import { DatabaseConnectionLostError, matchPgError } from './errors.js'
 
@@ -14,7 +13,7 @@ export interface Config {
   ssl: boolean
 }
 
-type Client = NodePgDatabase<typeof schema, typeof relations> & {
+type Client = NodePgDatabase<typeof schema> & {
   $client: pg.Pool
 }
 
@@ -75,7 +74,6 @@ const makeService = (config: Config) =>
       casing: 'snake_case',
       client: connection,
       logger: config.loggingEnabled ? new QueryLogger() : false,
-      relations,
       schema,
     })
 

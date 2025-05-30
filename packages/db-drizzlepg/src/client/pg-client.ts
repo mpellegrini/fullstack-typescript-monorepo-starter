@@ -2,7 +2,7 @@ import { drizzle } from 'drizzle-orm/node-postgres'
 import pg from 'pg'
 
 import { QueryLogger } from '../query-logger.js'
-import { relations } from '../schema/realtions.js'
+import * as schema from '../schema/index.js'
 
 import env from './env-config.js'
 
@@ -44,5 +44,5 @@ export const db = drizzle({
   casing: 'snake_case',
   client: connection,
   logger: DB_LOGGING_ENABLED ? new QueryLogger() : false,
-  relations,
+  schema,
 })

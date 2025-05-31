@@ -1,0 +1,30 @@
+{
+  "name": "@packages/db-drizzlepg-client",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Effectful Drizzle PostgreSQL client using node-postgres driver",
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "clean": "del .turbo coverage",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@effect/platform": "0.84.4",
+    "@effect/platform-node": "0.84.2",
+    "drizzle-orm": "0.44.1",
+    "effect": "3.16.3",
+    "pg": "8.16.0"
+  },
+  "devDependencies": {
+    "@toolchain/eslint-config": "workspace:*",
+    "@toolchain/typescript-config": "workspace:*",
+    "@toolchain/vitest-config": "workspace:*",
+    "@types/pg": "8.15.2"
+  }
+}

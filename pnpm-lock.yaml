@@ -264,6 +264,37 @@ importers:
         specifier: 4.19.4
         version: 4.19.4
 
+  packages/db-drizzlepg-client:
+    dependencies:
+      '@effect/platform':
+        specifier: 0.84.4
+        version: 0.84.4(effect@3.16.3)
+      '@effect/platform-node':
+        specifier: 0.84.2
+        version: 0.84.2(@effect/cluster@0.29.21(@effect/platform@0.84.4(effect@3.16.3))(@effect/rpc@0.55.16(@effect/platform@0.84.4(effect@3.16.3))(effect@3.16.3))(@effect/sql@0.33.11(@effect/experimental@0.44.11(@effect/platform@0.84.4(effect@3.16.3))(effect@3.16.3))(@effect/platform@0.84.4(effect@3.16.3))(effect@3.16.3))(effect@3.16.3))(@effect/platform@0.84.4(effect@3.16.3))(@effect/rpc@0.55.16(@effect/platform@0.84.4(effect@3.16.3))(effect@3.16.3))(@effect/sql@0.33.11(@effect/experimental@0.44.11(@effect/platform@0.84.4(effect@3.16.3))(effect@3.16.3))(@effect/platform@0.84.4(effect@3.16.3))(effect@3.16.3))(effect@3.16.3)
+      drizzle-orm:
+        specifier: 0.44.1
+        version: 0.44.1(@types/pg@8.15.2)(gel@2.0.0)(pg@8.16.0)
+      effect:
+        specifier: 3.16.3
+        version: 3.16.3
+      pg:
+        specifier: 8.16.0
+        version: 8.16.0
+    devDependencies:
+      '@toolchain/eslint-config':
+        specifier: workspace:*
+        version: link:../../toolchain/eslint-config
+      '@toolchain/typescript-config':
+        specifier: workspace:*
+        version: link:../../toolchain/typescript-config
+      '@toolchain/vitest-config':
+        specifier: workspace:*
+        version: link:../../toolchain/vitest-config
+      '@types/pg':
+        specifier: 8.15.2
+        version: 8.15.2
+
   packages/example-pkg:
     devDependencies:
       '@toolchain/eslint-config':

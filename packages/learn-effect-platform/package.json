@@ -16,9 +16,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.84.3",
-    "@effect/platform-node": "0.83.3",
-    "effect": "3.16.2"
+    "@effect/platform": "0.84.4",
+    "@effect/platform-node": "0.84.2",
+    "effect": "3.16.3"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

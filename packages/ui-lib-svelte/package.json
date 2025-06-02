@@ -29,7 +29,7 @@
     "@toolchain/vitest-config": "workspace:*",
     "bits-ui": "2.4.1",
     "clsx": "2.1.1",
-    "svelte": "5.33.11",
+    "svelte": "5.33.13",
     "svelte-check": "4.2.1",
     "tailwind-merge": "3.3.0",
     "tailwind-variants": "1.0.0",

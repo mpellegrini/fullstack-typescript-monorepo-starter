@@ -30,14 +30,14 @@
     "pg": "8.16.0",
     "pg-error-enum": "1.0.2",
     "sql-formatter": "15.6.2",
-    "zod": "3.25.46"
+    "zod": "3.25.48"
   },
   "devDependencies": {
     "@softwaretechnik/dbml-renderer": "1.0.30",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/pg": "8.15.2",
+    "@types/pg": "8.15.4",
     "drizzle-dbml-generator": "0.10.0",
     "drizzle-kit": "0.31.1",
     "tsx": "4.19.4"

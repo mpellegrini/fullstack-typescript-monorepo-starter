@@ -2,8 +2,6 @@ import config from '@toolchain/eslint-config/profile/svelte'
 
 import svelteConfig from './svelte.config.js'
 
-delete svelteConfig.kit.typescript.config
-
 export default [
   ...config,
   {

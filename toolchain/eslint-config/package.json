@@ -20,12 +20,12 @@
     "eslint-import-resolver-typescript": "4.4.2",
     "eslint-plugin-eslint-comments": "3.2.0",
     "eslint-plugin-import": "2.31.0",
-    "eslint-plugin-perfectionist": "4.13.0",
+    "eslint-plugin-perfectionist": "4.14.0",
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-promise": "7.2.1",
     "eslint-plugin-svelte": "3.9.1",
     "eslint-plugin-unicorn": "59.0.1",
-    "typescript-eslint": "8.33.0"
+    "typescript-eslint": "8.33.1"
   },
   "devDependencies": {
     "globals": "16.2.0"

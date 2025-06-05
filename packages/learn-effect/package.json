@@ -23,7 +23,7 @@
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "@types/node": "22.15.29",
-    "msw": "2.8.7",
+    "msw": "2.9.0",
     "tsx": "4.19.4"
   }
 }

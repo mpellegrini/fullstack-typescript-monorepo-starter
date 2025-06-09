@@ -10,8 +10,6 @@ import { Effect, Layer } from 'effect'
 import { createServer } from 'node:http'
 
 import { ApiLive } from '@packages/api-impl'
-import { DatabaseLive } from '@packages/api-impl/services'
-import { Database } from '@packages/db-drizzlepg/effect-client'
 
 const EnvProviderLayer = Layer.unwrapEffect(
   PlatformConfigProvider.fromDotEnv('.env').pipe(
@@ -21,8 +19,8 @@ const EnvProviderLayer = Layer.unwrapEffect(
 )
 
 export const HttpLive = HttpApiBuilder.serve(HttpMiddleware.logger).pipe(
-  Layer.merge(Layer.effectDiscard(Database.Database.use((db) => db.setupConnectionListeners))),
-  Layer.provide(DatabaseLive),
+  // Layer.merge(Layer.effectDiscard(Database.Database.use((db) => db.setupConnectionListeners))),
+  // Layer.provide(DatabaseLive),
   Layer.provide(HttpApiScalar.layer({ scalar: { layout: 'modern', theme: 'kepler' } })),
   Layer.provide(HttpApiBuilder.middlewareOpenApi()),
   Layer.provide(HttpApiBuilder.middlewareCors()),

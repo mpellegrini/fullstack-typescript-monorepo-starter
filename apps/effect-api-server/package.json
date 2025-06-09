@@ -17,7 +17,6 @@
     "@effect/platform-node": "0.85.4",
     "@packages/api": "workspace:*",
     "@packages/api-impl": "workspace:*",
-    "@packages/db-drizzlepg": "workspace:*",
     "effect": "3.16.3"
   },
   "devDependencies": {

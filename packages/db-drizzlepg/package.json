@@ -29,8 +29,8 @@
     "effect": "3.16.5",
     "pg": "8.16.0",
     "pg-error-enum": "1.0.2",
-    "sql-formatter": "15.6.3",
-    "zod": "3.25.56"
+    "sql-formatter": "15.6.4",
+    "zod": "3.25.57"
   },
   "devDependencies": {
     "@softwaretechnik/dbml-renderer": "1.0.30",

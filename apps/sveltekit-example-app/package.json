@@ -34,6 +34,6 @@
     "sveltekit-superforms": "2.26.1",
     "tailwindcss": "4.1.8",
     "vite": "6.3.5",
-    "zod": "3.25.56"
+    "zod": "3.25.57"
   }
 }

@@ -19,7 +19,7 @@
     "@scalar/hono-api-reference": "0.9.3",
     "hono": "4.7.11",
     "http-status-codes": "2.3.0",
-    "zod": "3.25.57"
+    "zod": "3.25.61"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

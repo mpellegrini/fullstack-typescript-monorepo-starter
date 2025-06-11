@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@effect/platform": "0.84.9",
-    "@effect/platform-node": "0.85.13",
+    "@effect/platform-node": "0.85.14",
     "@packages/api": "workspace:*",
     "@packages/api-impl": "workspace:*",
     "effect": "3.16.5"
@@ -23,6 +23,6 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "tsx": "4.19.4"
+    "tsx": "4.20.1"
   }
 }

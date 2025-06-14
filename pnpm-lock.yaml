@@ -56,9 +56,6 @@ importers:
       '@effect/platform-node':
         specifier: 0.85.14
         version: 0.85.14(@effect/cluster@0.29.21(@effect/platform@0.84.9(effect@3.16.5))(@effect/rpc@0.55.16(@effect/platform@0.84.9(effect@3.16.5))(effect@3.16.5))(@effect/sql@0.33.11(@effect/experimental@0.44.11(@effect/platform@0.84.9(effect@3.16.5))(effect@3.16.5))(@effect/platform@0.84.9(effect@3.16.5))(effect@3.16.5))(effect@3.16.5))(@effect/platform@0.84.9(effect@3.16.5))(@effect/rpc@0.55.16(@effect/platform@0.84.9(effect@3.16.5))(effect@3.16.5))(@effect/sql@0.33.11(@effect/experimental@0.44.11(@effect/platform@0.84.9(effect@3.16.5))(effect@3.16.5))(@effect/platform@0.84.9(effect@3.16.5))(effect@3.16.5))(effect@3.16.5)
-      '@packages/api':
-        specifier: workspace:*
-        version: link:../../packages/api
       '@packages/api-impl':
         specifier: workspace:*
         version: link:../../packages/api-impl

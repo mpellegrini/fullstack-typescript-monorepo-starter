@@ -13,5 +13,6 @@ export const ApiLive = HttpApiBuilder
 
   .pipe(
     Layer.merge(Layer.effectDiscard(Database.Database.use((db) => db.setupConnectionListeners))),
-    Layer.provide([taskGroupLive, DatabaseLive]),
+    Layer.provide(DatabaseLive),
+    Layer.provide(taskGroupLive),
   )

@@ -15,14 +15,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.84.9",
-    "effect": "3.16.5",
+    "@effect/platform": "0.84.11",
+    "effect": "3.16.7",
     "http-status-codes": "2.3.0"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "tsx": "4.20.1"
+    "tsx": "4.20.3"
   }
 }

@@ -26,11 +26,11 @@
   "dependencies": {
     "dotenv": "16.5.0",
     "drizzle-orm": "0.44.2",
-    "effect": "3.16.5",
+    "effect": "3.16.7",
     "pg": "8.16.0",
     "pg-error-enum": "1.0.2",
     "sql-formatter": "15.6.4",
-    "zod": "3.25.61"
+    "zod": "3.25.64"
   },
   "devDependencies": {
     "@softwaretechnik/dbml-renderer": "1.0.30",
@@ -40,6 +40,6 @@
     "@types/pg": "8.15.4",
     "drizzle-dbml-generator": "0.10.0",
     "drizzle-kit": "0.31.1",
-    "tsx": "4.20.1"
+    "tsx": "4.20.3"
   }
 }

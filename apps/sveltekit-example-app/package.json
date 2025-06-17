@@ -31,9 +31,9 @@
     "mode-watcher": "1.0.8",
     "svelte": "5.34.3",
     "svelte-check": "4.2.1",
-    "sveltekit-superforms": "2.26.1",
+    "sveltekit-superforms": "2.27.0",
     "tailwindcss": "4.1.10",
     "vite": "6.3.5",
-    "zod": "3.25.64"
+    "zod": "3.25.67"
   }
 }

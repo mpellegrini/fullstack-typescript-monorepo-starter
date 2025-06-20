@@ -1,7 +1,7 @@
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import { Data, Effect, Logger } from 'effect'
 
-import { DrizzleNodePgClient } from './effect-client/index.js'
+import { DrizzleNodePgClient } from './client/index.js'
 
 class DrizzleMigrateError extends Data.TaggedError('DrizzleMigrateError')<{
   readonly cause: unknown

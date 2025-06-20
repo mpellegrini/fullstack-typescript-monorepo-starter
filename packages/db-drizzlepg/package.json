@@ -14,11 +14,12 @@
   "scripts": {
     "clean": "del .turbo coverage",
     "db:generate": "node --import=tsx ./node_modules/drizzle-kit/bin.cjs generate",
-    "db:migrate": "node --import=tsx ./src/migrate.ts",
+    "db:migrate": "node --import=tsx --env-file=.env src/migrate.ts",
     "db:push": "node --import=tsx ./node_modules/drizzle-kit/bin.cjs push",
     "db:studio": "node --import=tsx ./node_modules/drizzle-kit/bin.cjs studio",
     "dbml:generate": "node --import=tsx  ./src/generate-dbml.ts",
     "dbml:render": "dbml-renderer -i schema.dbml -o schema.svg",
+    "dbpush": "node --import=tsx ./node_modules/drizzle-kit/bin.cjs push",
     "lint": "eslint .",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

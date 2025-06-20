@@ -1,17 +1,33 @@
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
+import { Data, Effect, Logger } from 'effect'
 
-import { db } from './client/index.js'
+import { DrizzleNodePgClient } from './effect-client/index.js'
 
-try {
-  console.log('Drizzle database migration starting...')
+class DrizzleMigrateError extends Data.TaggedError('DrizzleMigrateError')<{
+  readonly cause: unknown
+  readonly message: string
+}> {}
 
-  await migrate(db, {
-    migrationsFolder: './src/migrations',
+const program = Effect.gen(function* () {
+  const { db } = yield* DrizzleNodePgClient
+  yield* Effect.logInfo('Drizzle database migration starting...')
+
+  yield* Effect.tryPromise({
+    catch: (cause) =>
+      new DrizzleMigrateError({
+        cause,
+        message: cause instanceof Error ? cause.message : 'An unknown error occurred',
+      }),
+    try: () => migrate(db, { migrationsFolder: './src/migrations' }),
   })
+  yield* Effect.logInfo('🎉 Drizzle database migration completed successfully!')
+})
 
-  console.log('Drizzle database migration completed successfully!')
-} catch (error) {
-  console.log('Drizzle database migrations failed!', error)
-} finally {
-  await db.$client.end()
-}
+const runnable = program.pipe(
+  Effect.provide(DrizzleNodePgClient.Default),
+  Effect.provide(Logger.pretty),
+)
+
+const main = runnable.pipe(Effect.orDie)
+
+await Effect.runPromise(main)

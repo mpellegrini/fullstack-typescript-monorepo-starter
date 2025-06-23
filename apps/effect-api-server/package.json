@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@effect/platform": "0.85.2",
-    "@effect/platform-node": "0.86.4",
+    "@effect/platform-node": "0.86.5",
     "@packages/api-impl": "workspace:*",
     "effect": "3.16.8"
   },

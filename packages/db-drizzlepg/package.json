@@ -39,7 +39,7 @@
     "@toolchain/vitest-config": "workspace:*",
     "@types/pg": "8.15.4",
     "drizzle-dbml-generator": "0.10.0",
-    "drizzle-kit": "0.31.1",
+    "drizzle-kit": "0.31.2",
     "tsx": "4.20.3"
   }
 }

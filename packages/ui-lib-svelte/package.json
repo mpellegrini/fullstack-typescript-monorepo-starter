@@ -27,7 +27,7 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "bits-ui": "2.8.5",
+    "bits-ui": "2.8.8",
     "clsx": "2.1.1",
     "svelte": "5.34.7",
     "svelte-check": "4.2.2",

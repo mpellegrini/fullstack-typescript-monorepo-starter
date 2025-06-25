@@ -3,6 +3,7 @@ import type pg from 'pg'
 import { type NodePgDatabase, drizzle } from 'drizzle-orm/node-postgres'
 import { Config, Effect } from 'effect'
 
+import { toTaggedErrorOrThrow } from './database-errors.js'
 import { createNodePgPool } from './nodepg-pool.js'
 
 type DrizzleClient = NodePgDatabase & {
@@ -11,6 +12,7 @@ type DrizzleClient = NodePgDatabase & {
 
 interface DrizzleNodePgClientImpl {
   readonly db: DrizzleClient
+  readonly use: <T>(fn: (client: DrizzleClient) => Promise<T>) => Effect.Effect<T, Error>
 }
 
 export class DrizzleNodePgClient extends Effect.Service<DrizzleNodePgClient>()(
@@ -28,7 +30,14 @@ export class DrizzleNodePgClient extends Effect.Service<DrizzleNodePgClient>()(
         logger: false,
       })
 
-      return { db } satisfies DrizzleNodePgClientImpl
+      const use = Effect.fn(<T>(fn: (client: DrizzleClient) => Promise<T>) =>
+        Effect.tryPromise({
+          catch: (cause) => toTaggedErrorOrThrow(cause),
+          try: () => fn(db),
+        }),
+      )
+
+      return { db, use } satisfies DrizzleNodePgClientImpl
     }),
   },
 ) {}

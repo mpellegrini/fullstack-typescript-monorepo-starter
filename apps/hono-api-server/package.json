@@ -1,0 +1,30 @@
+{
+  "name": "@apps/hono-api-server",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Hono Node API Server",
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "clean": "del .turbo coverage",
+    "dev": "tsx watch src/index.ts",
+    "lint": "eslint ",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/node-server": "1.13.7",
+    "@packages/api-hono": "workspace:*",
+    "dotenv": "16.5.0",
+    "zod": "3.25.67"
+  },
+  "devDependencies": {
+    "@toolchain/eslint-config": "workspace:*",
+    "@toolchain/typescript-config": "workspace:*",
+    "@toolchain/vitest-config": "workspace:*",
+    "tsx": "4.20.3"
+  }
+}

@@ -1,6 +1,6 @@
 import { HttpApiSchema } from '@effect/platform'
 import { Schema } from 'effect'
-import { StatusCodes } from 'http-status-codes'
+import status from 'http-status'
 
 /**
  * 4xx Client Errors
@@ -11,8 +11,8 @@ export class BadRequest extends Schema.TaggedError<BadRequest>('BadRequest')(
     message: Schema.optional(Schema.String),
   },
   HttpApiSchema.annotations({
-    description: 'The request was invalid or cannot be otherwise served',
-    status: StatusCodes.BAD_REQUEST,
+    description: status['400_MESSAGE'],
+    status: status.BAD_REQUEST,
   }),
 ) {}
 
@@ -22,8 +22,8 @@ export class Unauthorized extends Schema.TaggedError<Unauthorized>('Unauthorized
     message: Schema.optional(Schema.String),
   },
   HttpApiSchema.annotations({
-    description: 'Authentication is required and has failed or has not been provided',
-    status: StatusCodes.UNAUTHORIZED,
+    description: status['401_MESSAGE'],
+    status: status.UNAUTHORIZED,
   }),
 ) {}
 
@@ -33,7 +33,23 @@ export class NotFound extends Schema.TaggedError<NotFound>('NotFound')(
     message: Schema.optional(Schema.String),
   },
   HttpApiSchema.annotations({
-    description: 'The requested resource could not be found',
-    status: StatusCodes.NOT_FOUND,
+    description: status['404_MESSAGE'],
+    status: status.NOT_FOUND,
+  }),
+) {}
+
+/**
+ * 5xx Client Errors
+ */
+export class InternalServerError extends Schema.TaggedError<InternalServerError>(
+  'InternalServerError',
+)(
+  'InternalServerError',
+  {
+    message: Schema.optional(Schema.String),
+  },
+  HttpApiSchema.annotations({
+    description: status['500_MESSAGE'],
+    status: status.INTERNAL_SERVER_ERROR,
   }),
 ) {}

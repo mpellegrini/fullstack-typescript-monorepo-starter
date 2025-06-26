@@ -17,7 +17,7 @@
   "dependencies": {
     "@effect/platform": "0.87.1",
     "effect": "3.16.10",
-    "http-status-codes": "2.3.0"
+    "http-status": "2.1.0"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

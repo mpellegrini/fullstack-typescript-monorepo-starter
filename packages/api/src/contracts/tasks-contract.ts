@@ -6,6 +6,7 @@ import {
   OpenApi,
 } from '@effect/platform'
 import { Schema } from 'effect'
+import status from 'http-status'
 
 import * as CustomHttpApiError from '../custom-httpapi-error.js'
 import { TodoId } from '../entity-ids.js'
@@ -21,7 +22,7 @@ export const UuidParamSchema = HttpApiSchema.param('id', Schema.UUID)
 export class ApiGroup extends HttpApiGroup.make('tasks') //
   .add(
     HttpApiEndpoint.get('getTaskById')`/${UuidParamSchema}`
-      .addSuccess(Task)
+      .addSuccess(Task, { status: status.OK })
       .addError(CustomHttpApiError.BadRequest)
       .addError(HttpApiError.HttpApiDecodeError)
       .addError(CustomHttpApiError.NotFound),

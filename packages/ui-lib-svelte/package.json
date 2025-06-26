@@ -21,19 +21,19 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "6.0.1",
-    "@sveltejs/kit": "2.22.0",
+    "@sveltejs/kit": "2.22.2",
     "@sveltejs/vite-plugin-svelte": "5.1.0",
-    "@tailwindcss/vite": "4.1.10",
+    "@tailwindcss/vite": "4.1.11",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "bits-ui": "2.8.8",
     "clsx": "2.1.1",
-    "svelte": "5.34.7",
+    "svelte": "5.34.8",
     "svelte-check": "4.2.2",
     "tailwind-merge": "3.3.1",
     "tailwind-variants": "1.0.0",
-    "tailwindcss": "4.1.10",
-    "vite": "6.3.5"
+    "tailwindcss": "4.1.11",
+    "vite": "7.0.0"
   }
 }

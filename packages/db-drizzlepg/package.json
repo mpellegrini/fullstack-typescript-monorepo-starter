@@ -26,22 +26,22 @@
   "dependencies": {
     "@effect/platform": "0.87.1",
     "@effect/platform-node": "0.88.3",
-    "dotenv": "16.5.0",
+    "dotenv": "17.0.0",
     "drizzle-orm": "0.44.2",
     "effect": "3.16.10",
-    "pg": "8.16.2",
+    "pg": "8.16.3",
     "pg-error-enum": "1.0.2",
     "sql-formatter": "15.6.5",
     "zod": "3.25.67"
   },
   "devDependencies": {
-    "@softwaretechnik/dbml-renderer": "1.0.30",
+    "@softwaretechnik/dbml-renderer": "1.0.31",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "@types/pg": "8.15.4",
     "drizzle-dbml-generator": "0.10.0",
-    "drizzle-kit": "0.31.2",
+    "drizzle-kit": "0.31.4",
     "tsx": "4.20.3"
   }
 }

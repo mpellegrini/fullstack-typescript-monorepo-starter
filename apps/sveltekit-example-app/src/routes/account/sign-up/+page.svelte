@@ -1,8 +1,8 @@
 <script lang="ts">
   import SuperDebug, { superForm } from 'sveltekit-superforms'
-  import { zodClient } from 'sveltekit-superforms/adapters'
+  import { effectClient } from 'sveltekit-superforms/adapters'
 
-  import { signupSchema } from '$lib/schemas/index.js'
+  import { SignUpFormSchema } from '$lib/schemas/index.js'
 
   import type { PageProps } from './$types.js'
 
@@ -10,7 +10,7 @@
 
   const form = superForm(data.form, {
     validationMethod: 'auto',
-    validators: zodClient(signupSchema),
+    validators: effectClient(SignUpFormSchema),
   })
   const { allErrors, constraints, enhance, errors, form: formData, message } = form
 </script>
@@ -51,17 +51,17 @@
         </div>
       </div>
       <div>
-        <label for="password_confirm">Confirm Password</label>
+        <label for="confirmPassword">Confirm Password</label>
         <div class="mt-2">
           <input
-            name="password_confirm"
-            aria-invalid={$errors.password_confirm ? 'true' : undefined}
-            data-invalid={$errors.password_confirm ? 'true' : undefined}
+            name="confirmPassword"
+            aria-invalid={$errors.confirmPassword ? 'true' : undefined}
+            data-invalid={$errors.confirmPassword ? 'true' : undefined}
             type="password"
-            bind:value={$formData.password_confirm}
-            {...$constraints.password_confirm}
+            bind:value={$formData.confirmPassword}
+            {...$constraints.confirmPassword}
             class="block w-full border py-1.5" />
-          {#if $errors.password_confirm}<span class="text-red-500">{$errors.password_confirm}</span
+          {#if $errors.confirmPassword}<span class="text-red-500">{$errors.confirmPassword}</span
             >{/if}
         </div>
       </div>

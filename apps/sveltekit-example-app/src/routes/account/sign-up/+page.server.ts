@@ -1,20 +1,20 @@
 import { StatusCodes } from 'http-status-codes'
 import { fail, message, superValidate } from 'sveltekit-superforms'
-import { zod } from 'sveltekit-superforms/adapters'
+import { effect } from 'sveltekit-superforms/adapters'
 
-import { signupSchema } from '$lib/schemas'
+import { SignUpFormSchema } from '$lib/schemas'
 
 import type { Actions, PageServerLoad } from './$types.js'
 
 export const load = (async () => {
-  const form = await superValidate(zod(signupSchema))
+  const form = await superValidate(effect(SignUpFormSchema))
   return { form }
 }) satisfies PageServerLoad
 
 export const actions = {
   //   default: async ({ cookies, locals: { api }, request }) => {
   default: async ({ request }) => {
-    const form = await superValidate(request, zod(signupSchema))
+    const form = await superValidate(request, effect(SignUpFormSchema))
     if (!form.valid) return fail(StatusCodes.BAD_REQUEST, { form })
 
     /*

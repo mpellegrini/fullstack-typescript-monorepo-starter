@@ -13,4 +13,9 @@ export default [
       },
     },
   },
+  {
+    rules: {
+      'unicorn/no-array-method-this-argument': 'off',
+    },
+  },
 ]

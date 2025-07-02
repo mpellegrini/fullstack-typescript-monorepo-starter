@@ -12,8 +12,10 @@ import {
   HttpApiScalar,
   HttpApiSchema,
   HttpApiSecurity,
+  HttpApp,
   HttpMiddleware,
   HttpServer,
+  HttpServerResponse,
   OpenApi,
 } from '@effect/platform'
 import { NodeHttpServer, NodeRuntime } from '@effect/platform-node'
@@ -28,7 +30,7 @@ class Caller extends Schema.Class<Caller>('Caller')({
 
 class CallerContext extends Context.Tag('CurrentUser')<CallerContext, Caller>() {}
 
-export class Authorization extends HttpApiMiddleware.Tag<Authorization>()('Authorization', {
+class Authorization extends HttpApiMiddleware.Tag<Authorization>()('Authorization', {
   failure: Unauthorized,
   provides: CallerContext,
   security: {
@@ -36,7 +38,12 @@ export class Authorization extends HttpApiMiddleware.Tag<Authorization>()('Autho
   },
 }) {}
 
-export class Task extends Schema.Class<Task>('Task')({
+class PoweredByMiddleware extends HttpApiMiddleware.Tag<PoweredByMiddleware>()(
+  'PoweredByMiddleware',
+  {},
+) {}
+
+class Task extends Schema.Class<Task>('Task')({
   id: Schema.Number,
   done: Schema.Boolean,
   name: Schema.NonEmptyTrimmedString,
@@ -49,6 +56,7 @@ class TasksApi extends HttpApiGroup.make('tasks')
     )`/${HttpApiSchema.param('id', Schema.NumberFromString)}`.addSuccess(Task),
   )
   .middleware(Authorization)
+  .middleware(PoweredByMiddleware)
   .prefix('/tasks')
   .annotateContext(
     OpenApi.annotations({
@@ -63,7 +71,7 @@ class MyApi extends HttpApi.make('api').add(TasksApi) {}
 // implementation
 // ------------------------------------------------
 
-export class TasksRepository extends Effect.Service<TasksRepository>()('TasksRepository', {
+class TasksRepository extends Effect.Service<TasksRepository>()('TasksRepository', {
   effect: Effect.gen(function* () {
     yield* Effect.logInfo('Constructed Tasks Repository')
     const findById = //
@@ -78,7 +86,7 @@ export class TasksRepository extends Effect.Service<TasksRepository>()('TasksRep
   }),
 }) {}
 
-export class TasksService extends Effect.Service<TasksService>()('TasksService', {
+class TasksService extends Effect.Service<TasksService>()('TasksService', {
   effect: Effect.gen(function* () {
     yield* Effect.logInfo('Constructed Tasks Service')
     const findById = //
@@ -111,6 +119,13 @@ const AuthorizationLive = Layer.effect(
   }),
 )
 
+const PoweredByMiddlewareLive = Layer.succeed(
+  PoweredByMiddleware,
+  HttpApp.appendPreResponseHandler((_req, res) =>
+    HttpServerResponse.setHeader(res, 'X-Powered-By', '@effect/platform'),
+  ),
+)
+
 const TasksLive = HttpApiBuilder.group(MyApi, 'tasks', (handlers) =>
   handlers //
     .handle('findById', ({ path }) =>
@@ -122,7 +137,9 @@ const TasksLive = HttpApiBuilder.group(MyApi, 'tasks', (handlers) =>
     ),
 ).pipe(
   Layer.provide(AuthorizationLive),
-  Layer.provide([TasksService.Default, TasksRepository.Default]),
+  Layer.provide(PoweredByMiddlewareLive),
+  Layer.provide(TasksService.Default),
+  Layer.provide(TasksRepository.Default),
 )
 
 const ApiLive = HttpApiBuilder.api(MyApi)

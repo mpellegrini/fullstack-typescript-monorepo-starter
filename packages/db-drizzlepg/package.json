@@ -24,10 +24,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.87.3",
-    "@effect/platform-node": "0.88.5",
+    "@effect/platform": "0.87.10",
+    "@effect/platform-node": "0.89.2",
     "drizzle-orm": "0.44.2",
-    "effect": "3.16.11",
+    "effect": "3.16.12",
     "pg": "8.16.3",
     "pg-error-enum": "1.0.2",
     "sql-formatter": "15.6.6"

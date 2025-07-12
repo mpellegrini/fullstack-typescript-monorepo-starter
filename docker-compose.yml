@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:17.4-alpine
-    restart: always
+    restart: unless-stopped
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -23,7 +23,7 @@ services:
 
   mailpit:
     image: axllent/mailpit
-    restart: always
+    restart: unless-stopped
     environment:
       MP_MAX_MESSAGES: 5000
       MP_DATA_FILE: /data/mailpit.db
@@ -34,3 +34,35 @@ services:
       - 1025:1025
     volumes:
       - ./.docker/data/mailpit-data:/data
+
+  otel-lgtm:
+    image: grafana/otel-lgtm:latest
+    restart: unless-stopped
+    profiles:
+      - otel-lgtm
+    ports:
+      - "16686:3000"  # Grafana UI
+      - "4317:4317"   # OpenTelemetry Collector gRPC
+      - "4318:4318"   # OpenTelemetry Collector HTTP
+      - "9090:9090"   # Prometheus
+      - "3100:3100"   # Loki
+      - "3200:3200"   # Tempo
+    volumes:
+      - ./.docker/data/grafana-data:/data
+
+  otel-jaeger:
+    image: jaegertracing/jaeger:2.7.0
+    restart: unless-stopped
+    profiles:
+      - otel-jaeger
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+      - "4318:4318"
+      - "5778:5778"
+      - "9411:9411"
+    environment:
+      - LOG_LEVEL=debug
+    volumes:
+      - ./.docker/data/jaeger/data:/jaeger
+      - ./.docker/data/jaeger/tmp:/tmp

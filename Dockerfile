@@ -1,4 +1,4 @@
-FROM node:22.14.0-bookworm-slim AS builder
+FROM node:22.17.0-bookworm-slim AS builder
 
 ARG APP_NAME
 

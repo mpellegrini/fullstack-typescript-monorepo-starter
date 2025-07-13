@@ -3,6 +3,7 @@
  * That is generally the only time putting "requirements" into service methods is ok.
  */
 
+import { NodeSdk } from '@effect/opentelemetry'
 import {
   HttpApi,
   HttpApiBuilder,
@@ -20,6 +21,7 @@ import {
 } from '@effect/platform'
 import { NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { Unauthorized } from '@effect/platform/HttpApiError'
+import { BatchSpanProcessor, ConsoleSpanExporter } from '@opentelemetry/sdk-trace-base'
 import { Context, Effect, Layer, Redacted, Schema } from 'effect'
 import { createServer } from 'node:http'
 
@@ -150,6 +152,13 @@ const ApiLive = HttpApiBuilder.api(MyApi)
 // server
 // ------------------------------------------------
 
+const NodeSdkLive = NodeSdk.layer(() => ({
+  resource: {
+    serviceName: 'learn-effect-platform',
+  },
+  spanProcessor: new BatchSpanProcessor(new ConsoleSpanExporter()),
+}))
+
 HttpApiBuilder.serve(HttpMiddleware.logger).pipe(
   Layer.provide(HttpApiScalar.layer()),
   Layer.provide(HttpApiBuilder.middlewareOpenApi()),
@@ -157,6 +166,7 @@ HttpApiBuilder.serve(HttpMiddleware.logger).pipe(
   Layer.provide(HttpApiBuilder.middlewareCors()),
   HttpServer.withLogAddress,
   Layer.provide(NodeHttpServer.layer(createServer, { port: 3000 })),
+  Layer.provide(NodeSdkLive),
   Layer.launch,
   NodeRuntime.runMain(),
 )

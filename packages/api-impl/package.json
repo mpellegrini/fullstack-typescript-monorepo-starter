@@ -16,9 +16,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.87.12",
+    "@effect/platform": "0.87.13",
     "@packages/db-drizzlepg": "workspace:*",
-    "effect": "3.16.12"
+    "effect": "3.16.13"
   },
   "devDependencies": {
     "@packages/api": "workspace:*",

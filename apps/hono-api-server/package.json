@@ -16,10 +16,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@hono/node-server": "1.15.0",
+    "@hono/node-server": "1.16.0",
     "@packages/api-hono": "workspace:*",
     "dotenv": "17.2.0",
-    "zod": "3.25.76"
+    "zod": "4.0.5"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

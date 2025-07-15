@@ -12,9 +12,12 @@ import * as CustomHttpApiError from '../custom-httpapi-error.js'
 import { Task } from '../domain.js'
 import { singleItemResponseWrapperSchema } from '../response-helpers.js'
 
-export const UuidParamSchema = HttpApiSchema.param('id', Schema.UUID).annotations({
-  examples: ['df7b3075-8e5d-49fd-8746-a2ff2fda676d'],
-})
+export const UuidParamSchema = HttpApiSchema.param(
+  'id',
+  Schema.UUID.annotations({
+    examples: ['df7b3075-8e5d-49fd-8746-a2ff2fda676d'],
+  }),
+)
 
 export class ApiGroup extends HttpApiGroup.make('tasks') //
   .add(

@@ -1,6 +1,7 @@
 import { config } from 'typescript-eslint'
 
 import eslintCommentsConfig from './js/eslint-comments.js'
+import turborepo from './turborepo.js'
 
 export default config(
   {
@@ -21,4 +22,5 @@ export default config(
     },
   },
   eslintCommentsConfig,
+  turborepo,
 )

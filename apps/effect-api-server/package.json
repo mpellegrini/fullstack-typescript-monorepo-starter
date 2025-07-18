@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@effect/opentelemetry": "0.54.1",
-    "@effect/platform": "0.88.1",
+    "@effect/platform": "0.88.2",
     "@effect/platform-node": "0.91.0",
     "@opentelemetry/exporter-trace-otlp-http": "0.203.0",
     "@opentelemetry/sdk-trace-base": "2.0.1",

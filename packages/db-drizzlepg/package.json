@@ -24,7 +24,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.88.1",
+    "@effect/platform": "0.88.2",
     "@effect/platform-node": "0.91.0",
     "drizzle-orm": "0.44.3",
     "effect": "3.16.16",

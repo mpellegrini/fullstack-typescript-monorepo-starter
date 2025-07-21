@@ -31,9 +31,10 @@ export default config(
       'unicorn/custom-error-definition': ['error'],
 
       // Turn off the following recommended rules
-      'unicorn/no-array-reduce': ['off'],
-      'unicorn/no-null': ['off'],
-      'unicorn/prevent-abbreviations': ['off'],
+      'unicorn/no-array-reduce': 'off',
+      'unicorn/no-null': 'off',
+      'unicorn/prevent-abbreviations': 'off',
+      'unicorn/require-module-specifiers': 'off',
     },
   },
 )

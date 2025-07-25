@@ -8,5 +8,8 @@ export default [
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    rules: {
+      'unicorn/no-array-callback-reference': 'off',
+    },
   },
 ]

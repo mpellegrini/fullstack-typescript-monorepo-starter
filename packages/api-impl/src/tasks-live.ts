@@ -5,12 +5,10 @@ import { type Task, Api, TaskId, wrapSingleItemResponse } from '@packages/api'
 
 export const taskGroupLive = HttpApiBuilder.group(Api, 'tasks', (handlers) =>
   handlers.handle('getTaskById', ({ path }) =>
-    Effect.succeed(
-      wrapSingleItemResponse<Task>({
-        id: TaskId.make(path.id),
-        done: false,
-        name: 'My Found Task',
-      }),
-    ),
+    Effect.succeed({
+      id: TaskId.make(path.id),
+      done: false,
+      name: 'My Found Task',
+    }).pipe(Effect.map(wrapSingleItemResponse<Task>)),
   ),
 )

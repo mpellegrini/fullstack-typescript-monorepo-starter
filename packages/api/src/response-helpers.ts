@@ -12,7 +12,9 @@ export const singleItemResponseWrapperSchema = <A, I, R>(
   Schema.Struct({
     data: itemSchema,
     success: Schema.Literal(true),
-    timestamp: Schema.String,
+    timestamp: Schema.String.annotations({
+      examples: ['2025-07-25T12:30:18.956Z'],
+    }),
   })
 
 export const wrapSingleItemResponse = <T>(item: T): SingleItemResponseWrapper<T> => ({

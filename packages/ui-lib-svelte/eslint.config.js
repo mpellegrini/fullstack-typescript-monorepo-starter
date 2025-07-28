@@ -13,4 +13,10 @@ export default [
       },
     },
   },
+  {
+    rules: {
+      'perfectionist/sort-named-exports': 'off',
+      'unicorn/prefer-export-from': 'off',
+    },
+  },
 ]

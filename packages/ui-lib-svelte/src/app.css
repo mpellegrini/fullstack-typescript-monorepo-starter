@@ -1,5 +1,1 @@
-@import 'tailwindcss';
-
-/*noinspection CssInvalidAtRule*/
-@theme {
-}
+@import './styles/index.css';

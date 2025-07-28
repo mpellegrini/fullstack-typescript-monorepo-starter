@@ -1,1 +1,1 @@
-@import 'tailwindcss';
+@import '@packages/ui-lib-svelte/styles/index.css';

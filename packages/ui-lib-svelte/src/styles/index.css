@@ -2,7 +2,7 @@
 
 @import 'tw-animate-css';
 
-@source "./lib/**/*.{ts,svelte}";
+@source "../lib/**/*.{ts,svelte}";
 
 @custom-variant dark (&:is(.dark *));
 

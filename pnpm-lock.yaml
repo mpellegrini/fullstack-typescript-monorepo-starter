@@ -386,9 +386,6 @@ importers:
 
   packages/ui-lib-svelte:
     devDependencies:
-      '@internationalized/date':
-        specifier: 3.8.2
-        version: 3.8.2
       '@lucide/svelte':
         specifier: 0.526.0
         version: 0.526.0(svelte@5.37.0)

@@ -125,6 +125,9 @@ importers:
         specifier: 8.16.3
         version: 8.16.3
     devDependencies:
+      '@lucide/svelte':
+        specifier: 0.526.0
+        version: 0.526.0(svelte@5.37.0)
       '@packages/ui-lib-svelte':
         specifier: workspace:*
         version: link:../../packages/ui-lib-svelte
@@ -149,6 +152,9 @@ importers:
       '@toolchain/vitest-config':
         specifier: workspace:*
         version: link:../../toolchain/vitest-config
+      bits-ui:
+        specifier: 2.8.13
+        version: 2.8.13(@internationalized/date@3.8.2)(svelte@5.37.0)
       effect:
         specifier: 3.17.2
         version: 3.17.2
@@ -406,7 +412,7 @@ importers:
         version: link:../../toolchain/vitest-config
       bits-ui:
         specifier: 2.8.13
-        version: 2.8.13(@internationalized/date@3.8.1)(svelte@5.37.0)
+        version: 2.8.13(@internationalized/date@3.8.2)(svelte@5.37.0)
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -1202,8 +1208,8 @@ packages:
       '@types/node':
         optional: true
 
-  '@internationalized/date@3.8.1':
-    resolution: {integrity: sha512-PgVE6B6eIZtzf9Gu5HvJxRK3ufUFz9DhspELuhW/N0GuMGMTLvPQNRkHP2hTuP9lblOk+f+1xi96sPiPXANXAA==}
+  '@internationalized/date@3.8.2':
+    resolution: {integrity: sha512-/wENk7CbvLbkUvX1tu0mwq49CVkkWpkXubGel6birjRPyo6uQ4nQpnq5xZu823zRCwwn82zgHrvgF1vZyvmVgA==}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -6360,7 +6366,7 @@ snapshots:
       '@types/node': 24.0.14
     optional: true
 
-  '@internationalized/date@3.8.1':
+  '@internationalized/date@3.8.2':
     dependencies:
       '@swc/helpers': 0.5.17
 
@@ -7510,11 +7516,11 @@ snapshots:
 
   basic-ftp@5.0.5: {}
 
-  bits-ui@2.8.13(@internationalized/date@3.8.1)(svelte@5.37.0):
+  bits-ui@2.8.13(@internationalized/date@3.8.2)(svelte@5.37.0):
     dependencies:
       '@floating-ui/core': 1.7.2
       '@floating-ui/dom': 1.7.2
-      '@internationalized/date': 3.8.1
+      '@internationalized/date': 3.8.2
       esm-env: 1.2.2
       runed: 0.29.2(svelte@5.37.0)
       svelte: 5.37.0

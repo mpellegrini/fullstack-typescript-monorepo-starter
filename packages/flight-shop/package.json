@@ -1,0 +1,25 @@
+{
+  "name": "@packages/flight-shop",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Flight shopping value and entity objects",
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "clean": "del .turbo coverage",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "effect": "3.17.2"
+  },
+  "devDependencies": {
+    "@toolchain/eslint-config": "workspace:*",
+    "@toolchain/typescript-config": "workspace:*",
+    "@toolchain/vitest-config": "workspace:*"
+  }
+}

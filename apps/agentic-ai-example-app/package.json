@@ -1,0 +1,36 @@
+{
+  "name": "@apps/agentic-ai-example-app",
+  "version": "0.0.0",
+  "private": true,
+  "description": "SvelteKit Agentic AI Example App",
+  "type": "module",
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "svelte-kit sync",
+    "clean": "del .turbo coverage .svelte-kit build",
+    "dev": "vite dev",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "typecheck": "svelte-check --tsconfig ./tsconfig.json"
+  },
+  "devDependencies": {
+    "@ai-sdk/openai": "2.0.0-beta.16",
+    "@ai-sdk/svelte": "3.0.0-beta.34",
+    "@packages/ui-lib-svelte": "workspace:*",
+    "@sveltejs/adapter-auto": "6.0.1",
+    "@sveltejs/kit": "2.26.1",
+    "@sveltejs/vite-plugin-svelte": "6.1.0",
+    "@tailwindcss/vite": "4.1.11",
+    "@toolchain/eslint-config": "workspace:*",
+    "@toolchain/typescript-config": "workspace:*",
+    "@toolchain/vitest-config": "workspace:*",
+    "ai": "5.0.0-beta.34",
+    "svelte": "5.37.0",
+    "svelte-check": "4.3.0",
+    "tailwindcss": "4.1.11",
+    "vite": "7.0.6",
+    "zod": "3.25.76"
+  }
+}

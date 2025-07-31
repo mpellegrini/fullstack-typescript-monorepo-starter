@@ -1,11 +1,10 @@
 import type { RequestHandler } from '@sveltejs/kit'
 
-import { env } from '$env/dynamic/private'
 import { createOpenAI } from '@ai-sdk/openai'
 import { type UIMessage, convertToModelMessages, stepCountIs, streamText, tool } from 'ai'
 import { z } from 'zod'
 
-const openai = createOpenAI({ apiKey: env['OPENAI_API_KEY'] })
+const openai = createOpenAI({ apiKey: process.env['OPENAI_API_KEY'] })
 
 export const POST: RequestHandler = async ({ request }) => {
   const { messages } = (await request.json()) as { messages: UIMessage[] }

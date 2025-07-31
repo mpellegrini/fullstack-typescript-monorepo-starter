@@ -1,0 +1,6 @@
+{
+  "extends": ["@toolchain/typescript-config/tsconfig-svelte.json", "./.svelte-kit/tsconfig.json"],
+  "compilerOptions": {
+    "types": ["vitest/globals"]
+  }
+}

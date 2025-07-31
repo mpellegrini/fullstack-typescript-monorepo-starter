@@ -2,11 +2,11 @@
   import { Chat } from '@ai-sdk/svelte'
 
   let input = $state('')
-  const chat = new Chat({ maxSteps: 5 })
+  const chat = new Chat({})
 
-  const handleSubmit = (event: SubmitEvent) => {
+  const handleSubmit = (event: SubmitEvent): void => {
     event.preventDefault()
-    chat.sendMessage({ text: input })
+    void chat.sendMessage({ text: input })
     input = ''
   }
 </script>

@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@hono/zod-openapi": "0.19.10",
-    "@scalar/hono-api-reference": "0.9.12",
-    "hono": "4.8.9",
+    "@scalar/hono-api-reference": "0.9.13",
+    "hono": "4.8.10",
     "http-status-codes": "2.3.0",
     "zod": "3.25.76"
   },

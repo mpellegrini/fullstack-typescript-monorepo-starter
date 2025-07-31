@@ -26,8 +26,8 @@
   "dependencies": {
     "@effect/platform": "0.90.0",
     "@effect/platform-node": "0.94.0",
-    "drizzle-orm": "0.44.3",
-    "effect": "3.17.2",
+    "drizzle-orm": "0.44.4",
+    "effect": "3.17.4",
     "pg": "8.16.3",
     "pg-error-enum": "1.0.2",
     "sql-formatter": "15.6.6"
@@ -37,7 +37,7 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/pg": "8.15.4",
+    "@types/pg": "8.15.5",
     "drizzle-dbml-generator": "0.10.0",
     "drizzle-kit": "0.31.4",
     "tsx": "4.20.3"

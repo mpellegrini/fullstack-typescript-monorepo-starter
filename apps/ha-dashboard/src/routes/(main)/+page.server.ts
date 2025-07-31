@@ -1,9 +1,9 @@
-import { HOMEASSISTANT_BASE_URI } from '$env/static/private'
+import { env } from '$env/dynamic/private'
 
 import type { PageServerLoad } from './$types'
 
 const getSignInUrl = (request: Request): string => {
-  const loginUrl = new URL('/auth/authorize', HOMEASSISTANT_BASE_URI)
+  const loginUrl = new URL('/auth/authorize', env['HOMEASSISTANT_BASE_URI'])
   loginUrl.searchParams.set('response_type', 'code')
   loginUrl.searchParams.set('client_id', request.url)
   loginUrl.searchParams.set('redirect_uri', `${request.url}callback`)

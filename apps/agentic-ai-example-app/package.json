@@ -4,9 +4,6 @@
   "private": true,
   "description": "SvelteKit Agentic AI Example App",
   "type": "module",
-  "files": [
-    "build"
-  ],
   "scripts": {
     "build": "svelte-kit sync",
     "clean": "del .turbo coverage .svelte-kit build",

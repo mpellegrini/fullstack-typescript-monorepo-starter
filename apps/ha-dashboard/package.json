@@ -14,17 +14,17 @@
   },
   "devDependencies": {
     "@packages/api": "workspace:*",
-    "@sveltejs/adapter-auto": "6.0.1",
-    "@sveltejs/kit": "2.27.0",
-    "@sveltejs/vite-plugin-svelte": "6.1.0",
+    "@sveltejs/adapter-auto": "6.0.2",
+    "@sveltejs/kit": "2.27.3",
+    "@sveltejs/vite-plugin-svelte": "6.1.1",
     "@tailwindcss/vite": "4.1.11",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "home-assistant-js-websocket": "9.5.0",
-    "svelte": "5.37.3",
+    "svelte": "5.38.0",
     "svelte-check": "4.3.1",
     "tailwindcss": "4.1.11",
-    "vite": "7.0.6"
+    "vite": "7.1.1"
   }
 }

@@ -17,8 +17,8 @@
   "dependencies": {
     "@hono/mcp": "0.1.1",
     "@hono/node-server": "1.18.1",
-    "@modelcontextprotocol/sdk": "1.17.1",
-    "hono": "4.8.12",
+    "@modelcontextprotocol/sdk": "1.17.2",
+    "hono": "4.9.0",
     "zod": "3.25.76"
   },
   "devDependencies": {

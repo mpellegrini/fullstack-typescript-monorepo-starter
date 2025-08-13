@@ -24,7 +24,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.90.1",
+    "@effect/platform": "0.90.2",
     "@effect/platform-node": "0.95.0",
     "drizzle-orm": "0.44.4",
     "effect": "3.17.7",
@@ -40,6 +40,6 @@
     "@types/pg": "8.15.5",
     "drizzle-dbml-generator": "0.10.0",
     "drizzle-kit": "0.31.4",
-    "tsx": "4.20.3"
+    "tsx": "4.20.4"
   }
 }

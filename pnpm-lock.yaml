@@ -221,9 +221,6 @@ importers:
         specifier: 8.16.3
         version: 8.16.3
     devDependencies:
-      '@lucide/svelte':
-        specifier: 0.539.0
-        version: 0.539.0(svelte@5.38.1)
       '@packages/ui-lib-svelte':
         specifier: workspace:*
         version: link:../../packages/ui-lib-svelte
@@ -248,9 +245,6 @@ importers:
       '@toolchain/vitest-config':
         specifier: workspace:*
         version: link:../../toolchain/vitest-config
-      bits-ui:
-        specifier: 2.9.3
-        version: 2.9.3(@internationalized/date@3.8.2)(svelte@5.38.1)
       effect:
         specifier: 3.17.7
         version: 3.17.7
@@ -497,10 +491,17 @@ importers:
         version: 4.20.4
 
   packages/ui-lib-svelte:
-    devDependencies:
+    dependencies:
       '@lucide/svelte':
         specifier: 0.539.0
         version: 0.539.0(svelte@5.38.1)
+      bits-ui:
+        specifier: 2.9.3
+        version: 2.9.3(@internationalized/date@3.8.2)(svelte@5.38.1)
+      svelte-sonner:
+        specifier: 1.0.5
+        version: 1.0.5(svelte@5.38.1)
+    devDependencies:
       '@sveltejs/adapter-auto':
         specifier: 6.1.0
         version: 6.1.0(@sveltejs/kit@2.29.1(@sveltejs/vite-plugin-svelte@6.1.2(svelte@5.38.1)(vite@7.1.2(@types/node@24.2.1)(jiti@2.4.2)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)))(svelte@5.38.1)(vite@7.1.2(@types/node@24.2.1)(jiti@2.4.2)(lightningcss@1.30.1)(tsx@4.20.4)(yaml@2.8.1)))
@@ -522,9 +523,6 @@ importers:
       '@toolchain/vitest-config':
         specifier: workspace:*
         version: link:../../toolchain/vitest-config
-      bits-ui:
-        specifier: 2.9.3
-        version: 2.9.3(@internationalized/date@3.8.2)(svelte@5.38.1)
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -537,9 +535,6 @@ importers:
       svelte-check:
         specifier: 4.3.1
         version: 4.3.1(picomatch@4.0.3)(svelte@5.38.1)(typescript@5.9.2)
-      svelte-sonner:
-        specifier: 1.0.5
-        version: 1.0.5(svelte@5.38.1)
       tailwind-merge:
         specifier: 3.3.1
         version: 3.3.1

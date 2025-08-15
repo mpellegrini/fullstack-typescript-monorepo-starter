@@ -17,7 +17,6 @@
     "pg": "8.16.3"
   },
   "devDependencies": {
-    "@lucide/svelte": "0.539.0",
     "@packages/ui-lib-svelte": "workspace:*",
     "@sveltejs/adapter-node": "5.2.14",
     "@sveltejs/kit": "2.29.1",
@@ -26,7 +25,6 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "bits-ui": "2.9.3",
     "effect": "3.17.7",
     "http-status-codes": "2.3.0",
     "mode-watcher": "1.1.0",

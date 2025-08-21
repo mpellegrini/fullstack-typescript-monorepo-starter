@@ -5,7 +5,6 @@ import { createOpenAI } from '@ai-sdk/openai'
 import { type UIMessage, convertToModelMessages, stepCountIs, streamText, tool } from 'ai'
 import { z } from 'zod'
 
-// eslint-disable-next-line @typescript-eslint/dot-notation -- required based on SvelteKit behavior
 const openai = createOpenAI({ apiKey: env['OPENAI_API_KEY'] })
 
 export const POST: RequestHandler = async ({ request }) => {

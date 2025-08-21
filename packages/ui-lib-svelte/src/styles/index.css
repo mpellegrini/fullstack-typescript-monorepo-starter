@@ -2,6 +2,8 @@
 
 @import 'tw-animate-css';
 
+@plugin "@tailwindcss/forms";
+
 @source "../lib/**/*.{ts,svelte}";
 
 @custom-variant dark (&:is(.dark *));

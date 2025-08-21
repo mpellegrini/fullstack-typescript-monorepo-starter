@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@effect/opentelemetry": "0.56.4",
-    "@effect/platform": "0.90.5",
+    "@effect/platform": "0.90.6",
     "@effect/platform-node": "0.96.0",
     "@opentelemetry/sdk-trace-base": "2.0.1",
     "@opentelemetry/sdk-trace-node": "2.0.1",

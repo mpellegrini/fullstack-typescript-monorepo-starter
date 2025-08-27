@@ -16,13 +16,13 @@
   },
   "dependencies": {
     "@effect/platform": "0.90.6",
-    "effect": "3.17.8",
+    "effect": "3.17.9",
     "http-status": "2.1.0"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "tsx": "4.20.4"
+    "tsx": "4.20.5"
   }
 }

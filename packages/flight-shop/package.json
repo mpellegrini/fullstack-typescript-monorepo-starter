@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "effect": "3.17.9"
+    "effect": "3.17.10"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

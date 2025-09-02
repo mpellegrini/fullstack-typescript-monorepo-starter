@@ -1,19 +1,19 @@
 <script lang="ts">
-  import { Chat } from '@ai-sdk/svelte'
+  import type { UIMessage } from 'ai'
 
-  let input = $state('')
-  const chat = new Chat({})
-
-  const handleSubmit = (event: SubmitEvent): void => {
-    event.preventDefault()
-    void chat.sendMessage({ text: input })
-    input = ''
-  }
+  const {
+    loading,
+    messages,
+  }: {
+    loading: boolean
+    messages: UIMessage[]
+  } = $props()
 </script>
 
-<main>
+<p>Loading: {loading}</p>
+<div class="flex min-w-0 flex-1 flex-col gap-6 overflow-y-scroll pt-4">
   <ul>
-    {#each chat.messages as message, messageIndex (messageIndex)}
+    {#each messages as message, messageIndex (messageIndex)}
       <li>
         <div>{message.role}</div>
         <div>
@@ -28,8 +28,4 @@
       </li>
     {/each}
   </ul>
-  <form onsubmit={handleSubmit}>
-    <input bind:value={input} />
-    <button type="submit">Send</button>
-  </form>
-</main>
+</div>

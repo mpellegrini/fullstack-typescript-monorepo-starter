@@ -24,13 +24,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.90.6",
+    "@effect/platform": "0.90.7",
     "@effect/platform-node": "0.96.1",
     "drizzle-orm": "0.44.5",
-    "effect": "3.17.10",
+    "effect": "3.17.13",
     "pg": "8.16.3",
     "pg-error-enum": "1.0.2",
-    "sql-formatter": "15.6.6"
+    "sql-formatter": "15.6.8"
   },
   "devDependencies": {
     "@softwaretechnik/dbml-renderer": "1.0.31",

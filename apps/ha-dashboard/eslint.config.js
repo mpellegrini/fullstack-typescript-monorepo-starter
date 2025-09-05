@@ -13,4 +13,9 @@ export default [
       },
     },
   },
+  {
+    rules: {
+      '@typescript-eslint/dot-notation': 'off',
+    },
+  },
 ]

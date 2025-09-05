@@ -18,7 +18,7 @@
   "dependencies": {
     "@hono/node-server": "1.19.1",
     "@packages/api-hono": "workspace:*",
-    "dotenv": "17.2.1",
+    "dotenv": "17.2.2",
     "zod": "3.25.76"
   },
   "devDependencies": {

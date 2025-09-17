@@ -18,9 +18,9 @@
   },
   "devDependencies": {
     "@packages/ui-lib-svelte": "workspace:*",
-    "@sveltejs/adapter-node": "5.3.1",
-    "@sveltejs/kit": "2.37.1",
-    "@sveltejs/vite-plugin-svelte": "6.1.4",
+    "@sveltejs/adapter-node": "5.3.2",
+    "@sveltejs/kit": "2.42.1",
+    "@sveltejs/vite-plugin-svelte": "6.2.0",
     "@tailwindcss/vite": "4.1.13",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
@@ -28,10 +28,10 @@
     "effect": "3.17.13",
     "http-status-codes": "2.3.0",
     "mode-watcher": "1.1.0",
-    "svelte": "5.38.7",
+    "svelte": "5.38.10",
     "svelte-check": "4.3.1",
     "sveltekit-superforms": "2.27.1",
     "tailwindcss": "4.1.13",
-    "vite": "7.1.4"
+    "vite": "7.1.5"
   }
 }

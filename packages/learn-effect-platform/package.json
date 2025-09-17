@@ -16,8 +16,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/opentelemetry": "0.56.5",
-    "@effect/platform": "0.90.7",
+    "@effect/opentelemetry": "0.56.6",
+    "@effect/platform": "0.90.9",
     "@effect/platform-node": "0.96.1",
     "@opentelemetry/sdk-trace-base": "2.1.0",
     "@opentelemetry/sdk-trace-node": "2.1.0",

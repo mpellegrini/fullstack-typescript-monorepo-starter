@@ -25,6 +25,6 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "tsx": "4.20.5"
+    "tsx": "4.20.6"
   }
 }

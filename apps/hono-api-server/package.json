@@ -16,9 +16,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@hono/node-server": "1.19.4",
+    "@hono/node-server": "1.19.5",
     "@packages/api-hono": "workspace:*",
-    "dotenv": "17.2.2",
+    "dotenv": "17.2.3",
     "zod": "3.25.76"
   },
   "devDependencies": {

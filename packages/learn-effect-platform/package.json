@@ -18,10 +18,10 @@
   "dependencies": {
     "@effect/opentelemetry": "0.58.0",
     "@effect/platform": "0.92.1",
-    "@effect/platform-node": "0.98.2",
+    "@effect/platform-node": "0.98.3",
     "@opentelemetry/sdk-trace-base": "2.1.0",
     "@opentelemetry/sdk-trace-node": "2.1.0",
-    "effect": "3.18.1"
+    "effect": "3.18.4"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

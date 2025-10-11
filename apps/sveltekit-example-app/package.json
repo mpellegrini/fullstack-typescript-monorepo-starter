@@ -19,7 +19,7 @@
   "devDependencies": {
     "@packages/ui-lib-svelte": "workspace:*",
     "@sveltejs/adapter-node": "5.3.3",
-    "@sveltejs/kit": "2.46.0",
+    "@sveltejs/kit": "2.46.4",
     "@sveltejs/vite-plugin-svelte": "6.2.1",
     "@tailwindcss/vite": "4.1.14",
     "@toolchain/eslint-config": "workspace:*",
@@ -28,8 +28,8 @@
     "effect": "3.18.4",
     "http-status-codes": "2.3.0",
     "mode-watcher": "1.1.0",
-    "svelte": "5.39.9",
-    "svelte-check": "4.3.2",
+    "svelte": "5.39.11",
+    "svelte-check": "4.3.3",
     "sveltekit-superforms": "2.27.2",
     "tailwindcss": "4.1.14",
     "vite": "7.1.9"

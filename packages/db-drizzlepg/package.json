@@ -24,12 +24,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.92.1",
-    "@effect/platform-node": "0.98.3",
-    "drizzle-orm": "0.44.6",
-    "effect": "3.18.4",
+    "@effect/platform": "0.93.0",
+    "@effect/platform-node": "0.100.0",
+    "drizzle-orm": "0.44.7",
+    "effect": "3.19.2",
     "pg": "8.16.3",
-    "pg-error-enum": "1.0.2",
+    "pg-error-enum": "2.0.1",
     "sql-formatter": "15.6.10"
   },
   "devDependencies": {
@@ -37,9 +37,9 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/pg": "8.15.5",
+    "@types/pg": "8.15.6",
     "drizzle-dbml-generator": "0.10.0",
-    "drizzle-kit": "0.31.5",
+    "drizzle-kit": "0.31.6",
     "tsx": "4.20.6"
   }
 }

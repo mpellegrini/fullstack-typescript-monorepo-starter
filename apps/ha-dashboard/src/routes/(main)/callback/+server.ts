@@ -18,5 +18,5 @@ export const GET: RequestHandler = async ({ fetch, url }) => {
     method: 'POST',
   })
 
-  return new Response(JSON.stringify(await response.json()))
+  return Response.json(await response.json())
 }

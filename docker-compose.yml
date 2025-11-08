@@ -21,6 +21,17 @@ services:
       - ./.docker/data/pg-data:/var/lib/postgresql/data
       - ./.docker/init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  dynamodb-local:
+    image: "amazon/dynamodb-local:latest"
+    restart: unless-stopped
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
+    working_dir: /home/dynamodblocal
+    volumes:
+      - ./.docker/data/dynamodb:/home/dynamodblocal/data
+
   mailpit:
     image: axllent/mailpit:v1.27
     restart: unless-stopped

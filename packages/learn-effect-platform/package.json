@@ -16,11 +16,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "3.927.0",
+    "@effect-aws/client-dynamodb": "1.10.6",
     "@effect/opentelemetry": "0.56.5",
     "@effect/platform": "0.90.7",
     "@effect/platform-node": "0.96.1",
     "@opentelemetry/sdk-trace-base": "2.1.0",
     "@opentelemetry/sdk-trace-node": "2.1.0",
+    "@opentelemetry/sdk-trace-web": "2.2.0",
     "effect": "3.17.13"
   },
   "devDependencies": {

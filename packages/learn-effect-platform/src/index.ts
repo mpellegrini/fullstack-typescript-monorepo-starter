@@ -3,6 +3,9 @@
  * That is generally the only time putting "requirements" into service methods is ok.
  */
 
+import type { PutItemCommandInput } from '@aws-sdk/client-dynamodb'
+
+import { DynamoDB } from '@effect-aws/client-dynamodb'
 import { NodeSdk } from '@effect/opentelemetry'
 import {
   HttpApi,
@@ -76,8 +79,20 @@ class MyApi extends HttpApi.make('api').add(TasksApi) {}
 class TasksRepository extends Effect.Service<TasksRepository>()('TasksRepository', {
   effect: Effect.gen(function* () {
     yield* Effect.logInfo('Constructed Tasks Repository')
+    const db = yield* DynamoDB
     const findById = //
       Effect.fn('TasksRepository.findById')(function* (id: number) {
+        const args: PutItemCommandInput = {
+          Item: { testAttr: { S: 'test' } },
+          TableName: 'session_store',
+        }
+        const ddbResult = yield* db.putItem(args).pipe(
+          Effect.tapError((error) => Effect.logError(error.message)),
+          Effect.catchAll((_) => Effect.succeed({})),
+        )
+
+        yield* Effect.logInfo(ddbResult)
+
         const callerContext = yield* CallerContext
         yield* Effect.logInfo('TasksRepository.findById', callerContext)
         return Task.make({ id, done: false, name: 'Learn Effect' })
@@ -142,6 +157,16 @@ const TasksLive = HttpApiBuilder.group(MyApi, 'tasks', (handlers) =>
   Layer.provide(PoweredByMiddlewareLive),
   Layer.provide(TasksService.Default),
   Layer.provide(TasksRepository.Default),
+  Layer.provide(
+    DynamoDB.layer({
+      credentials: {
+        accessKeyId: 'fakeAccessKeyId',
+        secretAccessKey: 'fakeSecretAccessKey',
+      },
+      endpoint: 'http://localhost:8000',
+      region: 'local',
+    }),
+  ),
 )
 
 const ApiLive = HttpApiBuilder.api(MyApi)

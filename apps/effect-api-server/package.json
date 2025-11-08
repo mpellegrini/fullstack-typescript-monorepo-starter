@@ -13,19 +13,19 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/opentelemetry": "0.56.5",
-    "@effect/platform": "0.90.7",
-    "@effect/platform-node": "0.96.1",
-    "@opentelemetry/exporter-trace-otlp-http": "0.204.0",
-    "@opentelemetry/sdk-trace-base": "2.1.0",
-    "@opentelemetry/sdk-trace-node": "2.1.0",
+    "@effect/opentelemetry": "0.59.0",
+    "@effect/platform": "0.93.0",
+    "@effect/platform-node": "0.100.0",
+    "@opentelemetry/exporter-trace-otlp-http": "0.208.0",
+    "@opentelemetry/sdk-trace-base": "2.2.0",
+    "@opentelemetry/sdk-trace-node": "2.2.0",
     "@packages/api-impl": "workspace:*",
-    "effect": "3.17.13"
+    "effect": "3.19.2"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "tsx": "4.20.5"
+    "tsx": "4.20.6"
   }
 }

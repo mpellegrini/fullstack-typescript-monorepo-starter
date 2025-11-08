@@ -27,6 +27,7 @@
     "ai": "5.0.89",
     "svelte": "5.43.4",
     "svelte-check": "4.3.3",
+    "svelte-sonner": "1.0.5",
     "tailwindcss": "4.1.17",
     "vite": "7.2.2",
     "zod": "3.25.76"

@@ -24,10 +24,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.93.0",
-    "@effect/platform-node": "0.100.0",
+    "@effect/platform": "0.93.3",
+    "@effect/platform-node": "0.101.0",
     "drizzle-orm": "0.44.7",
-    "effect": "3.19.2",
+    "effect": "3.19.5",
     "pg": "8.16.3",
     "pg-error-enum": "2.0.1",
     "sql-formatter": "15.6.10"
@@ -39,7 +39,7 @@
     "@toolchain/vitest-config": "workspace:*",
     "@types/pg": "8.15.6",
     "drizzle-dbml-generator": "0.10.0",
-    "drizzle-kit": "0.31.6",
+    "drizzle-kit": "0.31.7",
     "tsx": "4.20.6"
   }
 }

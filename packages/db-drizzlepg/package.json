@@ -25,9 +25,9 @@
   },
   "dependencies": {
     "@effect/platform": "0.93.3",
-    "@effect/platform-node": "0.101.1",
+    "@effect/platform-node": "0.101.0",
     "drizzle-orm": "0.44.7",
-    "effect": "3.19.6",
+    "effect": "3.19.5",
     "pg": "8.16.3",
     "pg-error-enum": "2.0.1",
     "sql-formatter": "15.6.10"

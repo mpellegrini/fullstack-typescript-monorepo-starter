@@ -1,0 +1,27 @@
+import { HttpApiBuilder } from '@effect/platform'
+import * as NodeHttpServer from '@effect/platform-node/NodeHttpServer'
+import * as NodeRuntime from '@effect/platform-node/NodeRuntime'
+import * as HttpApiScalar from '@effect/platform/HttpApiScalar'
+import * as Effect from 'effect/Effect'
+import * as Layer from 'effect/Layer'
+import { createServer } from 'node:http'
+
+import { myApiLive } from './api-live.js'
+
+/**
+ *  This utility builds an HttpApp from an HttpApi instance and uses an
+ *  HttpServer to handle requests. Middleware can be added to customize or
+ *  enhance the server's behavior.
+ */
+export const serverLive = HttpApiBuilder.serve().pipe(
+  Layer.provide(HttpApiScalar.layer()),
+  Layer.provide(myApiLive),
+  Layer.provide(NodeHttpServer.layer(createServer, { port: 3000 })),
+)
+
+// Launch the server
+Layer.launch(serverLive).pipe(
+  //
+  Effect.tapErrorCause(Effect.logFatal),
+  NodeRuntime.runMain,
+)

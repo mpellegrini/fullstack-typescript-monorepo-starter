@@ -14,13 +14,13 @@
   },
   "dependencies": {
     "@effect/opentelemetry": "0.59.1",
-    "@effect/platform": "0.93.3",
-    "@effect/platform-node": "0.101.1",
+    "@effect/platform": "0.93.5",
+    "@effect/platform-node": "0.102.0",
     "@opentelemetry/exporter-trace-otlp-http": "0.208.0",
     "@opentelemetry/sdk-trace-base": "2.2.0",
     "@opentelemetry/sdk-trace-node": "2.2.0",
     "@packages/api-impl": "workspace:*",
-    "effect": "3.19.6"
+    "effect": "3.19.8"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

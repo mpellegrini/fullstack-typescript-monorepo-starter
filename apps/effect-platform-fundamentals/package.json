@@ -13,10 +13,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.93.3",
-    "@effect/platform-node": "0.101.1",
+    "@effect/platform": "0.93.5",
+    "@effect/platform-node": "0.102.0",
     "@effect/rpc": "0.72.2",
-    "effect": "3.19.6"
+    "effect": "3.19.8"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

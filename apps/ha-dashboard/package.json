@@ -22,8 +22,8 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "home-assistant-js-websocket": "9.5.0",
-    "svelte": "5.43.14",
+    "home-assistant-js-websocket": "9.6.0",
+    "svelte": "5.45.2",
     "svelte-check": "4.3.4",
     "tailwindcss": "4.1.17",
     "vite": "7.2.4"

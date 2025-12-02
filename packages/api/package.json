@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.93.5",
+    "@effect/platform": "0.93.6",
     "effect": "3.19.8",
     "http-status": "2.1.0"
   },
@@ -23,6 +23,6 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "tsx": "4.20.6"
+    "tsx": "4.21.0"
   }
 }

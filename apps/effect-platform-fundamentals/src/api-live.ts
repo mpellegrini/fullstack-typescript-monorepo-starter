@@ -1,8 +1,10 @@
-import * as HttpApiBuilder from '@effect/platform/HttpApiBuilder'
+import * as HttpLayerRouter from '@effect/platform/HttpLayerRouter'
 import * as Layer from 'effect/Layer'
 
-import { myApi } from './api-definition.js'
-import { myApiGreetingsLive } from './api-implementation.js'
+import { api } from './api.js'
+import { greetingsApiLive } from './greetings/api-implementation.js'
 
 // Provide the implementation for the API
-export const myApiLive = HttpApiBuilder.api(myApi).pipe(Layer.provide(myApiGreetingsLive))
+export const httpApiRoutesLive = HttpLayerRouter.addHttpApi(api, {
+  openapiPath: '/openapi.json',
+}).pipe(Layer.provide(greetingsApiLive))

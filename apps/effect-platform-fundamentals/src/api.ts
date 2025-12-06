@@ -1,9 +1,9 @@
 import * as HttpApi from '@effect/platform/HttpApi'
 
-import { greetingsGroup } from './grettings/index.js'
+import { greetingsApi } from './greetings/api-definition.js'
 
 /**
  * After defining your groups, you can combine them into one HttpApi representing
  * your entire set of endpoints.
  */
-export const myApi = HttpApi.make('MyApi').add(greetingsGroup)
+export const api = HttpApi.make('api').add(greetingsApi)

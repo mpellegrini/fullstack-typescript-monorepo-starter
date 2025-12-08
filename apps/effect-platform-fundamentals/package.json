@@ -1,0 +1,28 @@
+{
+  "name": "@apps/effect-platform-fundamentals",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Effect platform fundamentals",
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "clean": "del .turbo coverage",
+    "dev": "tsx --watch src/index.ts",
+    "lint": "eslint ",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@effect/platform": "0.93.6",
+    "@effect/platform-node": "0.103.0",
+    "@effect/rpc": "0.72.2",
+    "effect": "3.19.8"
+  },
+  "devDependencies": {
+    "@toolchain/eslint-config": "workspace:*",
+    "@toolchain/typescript-config": "workspace:*",
+    "@toolchain/vitest-config": "workspace:*",
+    "@types/node": "24.10.1",
+    "tsx": "4.21.0"
+  }
+}

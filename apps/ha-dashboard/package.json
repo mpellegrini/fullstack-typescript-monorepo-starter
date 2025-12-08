@@ -23,9 +23,9 @@
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "home-assistant-js-websocket": "9.6.0",
-    "svelte": "5.45.4",
+    "svelte": "5.45.6",
     "svelte-check": "4.3.4",
     "tailwindcss": "4.1.17",
-    "vite": "7.2.6"
+    "vite": "7.2.7"
   }
 }

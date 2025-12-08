@@ -1,25 +1,28 @@
 {
-  "name": "@packages/flight-shop",
+  "name": "@apps/effect-platform-fundamentals",
   "version": "0.0.0",
   "private": true,
-  "description": "Flight shopping value and entity objects",
+  "description": "Effect platform fundamentals",
   "license": "UNLICENSED",
   "type": "module",
-  "exports": {
-    ".": "./src/index.ts"
-  },
   "scripts": {
     "clean": "del .turbo coverage",
-    "lint": "eslint .",
+    "dev": "tsx --watch src/index.ts",
+    "lint": "eslint ",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@effect/platform": "0.93.6",
+    "@effect/platform-node": "0.103.0",
+    "@effect/rpc": "0.72.2",
     "effect": "3.19.9"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
-    "@toolchain/vitest-config": "workspace:*"
+    "@toolchain/vitest-config": "workspace:*",
+    "@types/node": "24.10.1",
+    "tsx": "4.21.0"
   }
 }

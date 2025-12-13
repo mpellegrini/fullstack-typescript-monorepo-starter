@@ -13,16 +13,16 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.93.6",
+    "@effect/platform": "0.93.8",
     "@effect/platform-node": "0.103.0",
     "@effect/rpc": "0.72.2",
-    "effect": "3.19.9"
+    "effect": "3.19.12"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/node": "24.10.1",
+    "@types/node": "25.0.1",
     "tsx": "4.21.0"
   }
 }

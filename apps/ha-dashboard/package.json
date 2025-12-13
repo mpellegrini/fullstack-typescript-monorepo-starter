@@ -16,16 +16,16 @@
     "@packages/api": "workspace:*",
     "@packages/ui-lib-svelte": "workspace:*",
     "@sveltejs/adapter-auto": "7.0.0",
-    "@sveltejs/kit": "2.49.1",
+    "@sveltejs/kit": "2.49.2",
     "@sveltejs/vite-plugin-svelte": "6.2.1",
-    "@tailwindcss/vite": "4.1.17",
+    "@tailwindcss/vite": "4.1.18",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "home-assistant-js-websocket": "9.6.0",
-    "svelte": "5.45.6",
+    "svelte": "5.46.0",
     "svelte-check": "4.3.4",
-    "tailwindcss": "4.1.17",
+    "tailwindcss": "4.1.18",
     "vite": "7.2.7"
   }
 }

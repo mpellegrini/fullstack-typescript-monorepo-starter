@@ -1,0 +1,28 @@
+{
+  "name": "@packages/aws-cdk-lib",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Aws cdk library",
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "clean": "del .turbo coverage",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.232.2",
+    "change-case": "5.4.4",
+    "constructs": "10.4.4"
+  },
+  "devDependencies": {
+    "@toolchain/eslint-config": "workspace:*",
+    "@toolchain/typescript-config": "workspace:*",
+    "@toolchain/vitest-config": "workspace:*",
+    "@types/node": "25.0.2"
+  }
+}

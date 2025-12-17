@@ -1,0 +1,6 @@
+{
+  "extends": "@toolchain/typescript-config/tsconfig-node22.json",
+  "compilerOptions": {
+    "types": ["vitest/globals"]
+  }
+}

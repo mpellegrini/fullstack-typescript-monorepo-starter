@@ -31,8 +31,9 @@ node_modules/
 # typescript build artifacts
 /dist
 
-# cdk deployment artifacts
-/**/cdk.out
+# CDK asset staging directory
+.cdk.staging
+cdk.out/
 cdk.context.json
 
 # turborepo logs and certain task outputs

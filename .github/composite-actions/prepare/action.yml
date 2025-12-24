@@ -6,9 +6,11 @@ runs:
   steps:
     - name: Install pnpm package manager
       uses: pnpm/action-setup@v4
+      with:
+        run_install: false  # Don't install yet, let caching work first
 
     - name: Setup Node.js environment
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version-file: package.json
         cache: pnpm
@@ -17,3 +19,7 @@ runs:
     - name: Install dependencies
       shell: bash
       run: pnpm install --ignore-scripts --frozen-lockfile
+
+    - name: Copy env files
+      shell: bash
+      run: find apps -name ".env.example" -execdir cp {} .env \;

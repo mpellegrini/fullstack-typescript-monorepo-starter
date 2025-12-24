@@ -38,14 +38,18 @@ export class GitHubOidcStack extends cdk.Stack {
     super(scope, id, props)
 
     const rawEndpoint = 'token.actions.githubusercontent.com'
+    const clientId = 'sts.amazonaws.com'
 
     // Create the GitHub OIDC provider
     const githubOidcProvider = new iam.OpenIdConnectProvider(this, `GitHubOidcProvider`, {
-      clientIds: ['sts.amazonaws.com'],
+      clientIds: [clientId],
       url: `https://${rawEndpoint}`,
     })
 
     const oidcPrincipal = new iam.OpenIdConnectPrincipal(githubOidcProvider).withConditions({
+      StringEquals: {
+        [`${rawEndpoint}:aud`]: clientId,
+      },
       StringLike: {
         [`${rawEndpoint}:sub`]: props.repos.map((repo) => `repo:${repo}`),
       },

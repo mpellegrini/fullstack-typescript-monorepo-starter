@@ -12,7 +12,7 @@ export class FargateStack extends Stack {
 
     const repo = ecr.Repository.fromRepositoryName(this, 'SomeRepository', 'reponame')
 
-    const vpc = ec2.Vpc.fromLookup(this, 'MyVpc', { isDefault: true })
+    const vpc = ec2.Vpc.fromLookup(this, 'DefaultVpc', { isDefault: true })
 
     const cluster = new ecs.Cluster(this, `Cluster`, {
       vpc,

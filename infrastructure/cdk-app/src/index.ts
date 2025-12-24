@@ -11,7 +11,7 @@ const app = new BaseApp({
   context: {
     account: '247226602506',
     name: 'G4',
-    region: 'eu-east-1',
+    region: 'us-east-1',
     stage: CDK_STAGE,
   },
 })

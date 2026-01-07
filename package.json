@@ -13,10 +13,10 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "@commitlint/cli": "20.2.0",
-    "@commitlint/config-conventional": "20.2.0",
-    "@effect/language-service": "0.62.3",
-    "@turbo/gen": "2.6.3",
+    "@commitlint/cli": "20.3.0",
+    "@commitlint/config-conventional": "20.3.0",
+    "@effect/language-service": "0.64.1",
+    "@turbo/gen": "2.7.3",
     "del-cli": "7.0.0",
     "husky": "9.1.7",
     "lint-staged": "16.2.7",
@@ -25,9 +25,9 @@
     "prettier-plugin-packagejson": "2.5.20",
     "prettier-plugin-svelte": "3.4.1",
     "prettier-plugin-tailwindcss": "0.7.2",
-    "turbo": "2.6.3"
+    "turbo": "2.7.3"
   },
-  "packageManager": "pnpm@10.26.0+sha512.3b3f6c725ebe712506c0ab1ad4133cf86b1f4b687effce62a9b38b4d72e3954242e643190fc51fa1642949c735f403debd44f5cb0edd657abe63a8b6a7e1e402",
+  "packageManager": "pnpm@10.27.0+sha512.72d699da16b1179c14ba9e64dc71c9a40988cbdc65c264cb0e489db7de917f20dcf4d64d8723625f2969ba52d4b7e2a1170682d9ac2a5dcaeaab732b7e16f04a",
   "engines": {
     "node": ">= 24.11.x < 25.x.x"
   },

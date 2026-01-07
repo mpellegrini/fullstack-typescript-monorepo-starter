@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
   const { messages } = (await request.json()) as { messages: UIMessage[] }
 
   const result = streamText({
-    messages: convertToModelMessages(messages),
+    messages: await convertToModelMessages(messages),
     model: openai('gpt-4o'),
     stopWhen: stepCountIs(5),
     tools: {

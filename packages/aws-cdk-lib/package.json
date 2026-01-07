@@ -1,13 +1,12 @@
 {
-  "name": "@packages/api-impl",
+  "name": "@packages/aws-cdk-lib",
   "version": "0.0.0",
   "private": true,
-  "description": "Api implentations",
+  "description": "Aws cdk library",
   "license": "UNLICENSED",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./services": "./src/services/index.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "clean": "del .turbo coverage",
@@ -16,14 +15,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.94.1",
-    "@packages/db-drizzlepg": "workspace:*",
-    "effect": "3.19.14"
+    "aws-cdk-lib": "2.233.0",
+    "change-case": "5.4.4",
+    "constructs": "10.4.4"
   },
   "devDependencies": {
-    "@packages/api": "workspace:*",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
-    "@toolchain/vitest-config": "workspace:*"
+    "@toolchain/vitest-config": "workspace:*",
+    "@types/node": "25.0.3"
   }
 }

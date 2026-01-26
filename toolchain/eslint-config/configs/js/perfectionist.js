@@ -60,31 +60,32 @@ export default config({
     'perfectionist/sort-imports': [
       'error',
       {
-        customGroups: {
-          value: {
-            'ts-paths': [String.raw`^\$lib/.*`],
+        customGroups: [
+          {
+            elementNamePattern: [String.raw`^\$lib/.*`],
+            groupName: 'ts-paths',
           },
-        },
+        ],
         environment: 'node',
         groups: [
-          'type',
-          ['builtin', 'external'],
-          'internal-type',
-          'internal',
+          'type-import',
+          ['value-builtin', 'value-external'],
+          'type-internal',
+          'value-internal',
           'ts-paths',
-          'parent-type',
-          'sibling-type',
-          'index-type',
-          'parent',
-          'sibling',
-          'index',
-          'object',
+          'type-parent',
+          'type-sibling',
+          'type-index',
+          'value-parent',
+          'value-sibling',
+          'value-index',
+          'ts-equals-import',
           'unknown',
         ],
         ignoreCase: true,
-        internalPattern: ['^@(apps|packages|toolchain)/.*'],
+        internalPattern: ['^@(apps|packages|infrastructure|toolchain)/.*'],
         maxLineLength: undefined,
-        newlinesBetween: 'always',
+        newlinesBetween: 1,
         order: 'asc',
         type: sortingMethodType,
       },
@@ -92,11 +93,7 @@ export default config({
     'perfectionist/sort-interfaces': [
       'error',
       {
-        customGroups: {},
-        groupKind: 'mixed',
-        groups: [],
         ignoreCase: true,
-        ignorePattern: [],
         order: 'asc',
         partitionByNewLine: true,
         type: sortingMethodType,
@@ -122,7 +119,7 @@ export default config({
     'perfectionist/sort-named-exports': [
       'error',
       {
-        // groupKind: 'types-first',
+        groups: ['type-export', 'value-export'],
         ignoreCase: true,
         order: 'asc',
         type: sortingMethodType,
@@ -131,7 +128,7 @@ export default config({
     'perfectionist/sort-named-imports': [
       'error',
       {
-        groupKind: 'types-first',
+        groups: ['type-import', 'value-import'],
         ignoreAlias: false,
         ignoreCase: true,
         order: 'asc',
@@ -141,8 +138,6 @@ export default config({
     'perfectionist/sort-object-types': [
       'error',
       {
-        customGroups: {},
-        groupKind: 'mixed',
         groups: [],
         ignoreCase: true,
         order: 'asc',
@@ -153,14 +148,14 @@ export default config({
     'perfectionist/sort-objects': [
       'error',
       {
-        customGroups: {
-          top: ['^id$'],
-        },
+        customGroups: [
+          {
+            elementNamePattern: ['^id$'],
+            groupName: 'top',
+          },
+        ],
         groups: ['top', 'unknown'],
-        // customGroups: { top: ['id'] },
-        // groups: ['top'],
         ignoreCase: true,
-        ignorePattern: [],
         order: 'asc',
         partitionByComment: true,
         partitionByNewLine: true,

@@ -1,10 +1,10 @@
 import { config as dotenvConfig } from 'dotenv'
 import * as process from 'node:process'
-import { type TypeOf, type ZodDefault, z } from 'zod'
+import { type ZodDefault, z } from 'zod'
 
-const withDevDefault = <T extends z.ZodTypeAny>(
+const withDevDefault = <T extends z.ZodType>(
   schema: T,
-  defaultDevValue: TypeOf<T>,
+  defaultDevValue: Exclude<z.output<T>, undefined>,
 ): T | ZodDefault<T> =>
   process.env['NODE_ENV'] === 'production' ? schema : schema.default(defaultDevValue)
 
@@ -21,7 +21,7 @@ const parsedEnv = envSchema.safeParse(process.env)
 
 if (!parsedEnv.success) {
   throw new Error(
-    `Invalid environment variables: ${JSON.stringify(parsedEnv.error.format(), null, 2)}`,
+    `Invalid environment variables: ${JSON.stringify(z.treeifyError(parsedEnv.error), null, 2)}`,
   )
 }
 

@@ -52,10 +52,10 @@ importers:
     devDependencies:
       '@ai-sdk/openai':
         specifier: 3.0.25
-        version: 3.0.25(zod@3.25.76)
+        version: 3.0.25(zod@4.3.6)
       '@ai-sdk/svelte':
         specifier: 4.0.68
-        version: 4.0.68(svelte@5.49.1)(zod@3.25.76)
+        version: 4.0.68(svelte@5.49.1)(zod@4.3.6)
       '@packages/ui-lib-svelte':
         specifier: workspace:*
         version: link:../../packages/ui-lib-svelte
@@ -85,7 +85,7 @@ importers:
         version: 25.2.0
       ai:
         specifier: 6.0.68
-        version: 6.0.68(zod@3.25.76)
+        version: 6.0.68(zod@4.3.6)
       svelte:
         specifier: 5.49.1
         version: 5.49.1
@@ -99,8 +99,8 @@ importers:
         specifier: 7.3.1
         version: 7.3.1(@types/node@25.2.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2)
       zod:
-        specifier: 3.25.76
-        version: 3.25.76
+        specifier: 4.3.6
+        version: 4.3.6
 
   apps/effect-api-server:
     dependencies:
@@ -233,8 +233,8 @@ importers:
         specifier: 17.2.3
         version: 17.2.3
       zod:
-        specifier: 3.25.76
-        version: 3.25.76
+        specifier: 4.3.6
+        version: 4.3.6
     devDependencies:
       '@toolchain/eslint-config':
         specifier: workspace:*
@@ -336,7 +336,7 @@ importers:
     dependencies:
       '@hono/zod-openapi':
         specifier: 1.2.1
-        version: 1.2.1(hono@4.11.7)(zod@3.25.76)
+        version: 1.2.1(hono@4.11.7)(zod@4.3.6)
       '@scalar/hono-api-reference':
         specifier: 0.9.39
         version: 0.9.39(hono@4.11.7)
@@ -347,8 +347,8 @@ importers:
         specifier: 2.3.0
         version: 2.3.0
       zod:
-        specifier: 3.25.76
-        version: 3.25.76
+        specifier: 4.3.6
+        version: 4.3.6
     devDependencies:
       '@toolchain/eslint-config':
         specifier: workspace:*
@@ -6228,34 +6228,34 @@ snapshots:
 
   '@aduh95/viz.js@3.4.0': {}
 
-  '@ai-sdk/gateway@3.0.32(zod@3.25.76)':
+  '@ai-sdk/gateway@3.0.32(zod@4.3.6)':
     dependencies:
       '@ai-sdk/provider': 3.0.7
-      '@ai-sdk/provider-utils': 4.0.13(zod@3.25.76)
+      '@ai-sdk/provider-utils': 4.0.13(zod@4.3.6)
       '@vercel/oidc': 3.1.0
-      zod: 3.25.76
+      zod: 4.3.6
 
-  '@ai-sdk/openai@3.0.25(zod@3.25.76)':
+  '@ai-sdk/openai@3.0.25(zod@4.3.6)':
     dependencies:
       '@ai-sdk/provider': 3.0.7
-      '@ai-sdk/provider-utils': 4.0.13(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 4.0.13(zod@4.3.6)
+      zod: 4.3.6
 
-  '@ai-sdk/provider-utils@4.0.13(zod@3.25.76)':
+  '@ai-sdk/provider-utils@4.0.13(zod@4.3.6)':
     dependencies:
       '@ai-sdk/provider': 3.0.7
       '@standard-schema/spec': 1.1.0
       eventsource-parser: 3.0.6
-      zod: 3.25.76
+      zod: 4.3.6
 
   '@ai-sdk/provider@3.0.7':
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/svelte@4.0.68(svelte@5.49.1)(zod@3.25.76)':
+  '@ai-sdk/svelte@4.0.68(svelte@5.49.1)(zod@4.3.6)':
     dependencies:
-      '@ai-sdk/provider-utils': 4.0.13(zod@3.25.76)
-      ai: 6.0.68(zod@3.25.76)
+      '@ai-sdk/provider-utils': 4.0.13(zod@4.3.6)
+      ai: 6.0.68(zod@4.3.6)
       svelte: 5.49.1
     transitivePeerDependencies:
       - zod
@@ -6277,10 +6277,10 @@ snapshots:
       lru-cache: 10.4.3
     optional: true
 
-  '@asteasolutions/zod-to-openapi@8.4.0(zod@3.25.76)':
+  '@asteasolutions/zod-to-openapi@8.4.0(zod@4.3.6)':
     dependencies:
       openapi3-ts: 4.5.0
-      zod: 3.25.76
+      zod: 4.3.6
 
   '@aws-cdk/asset-awscli-v1@2.2.263': {}
 
@@ -7296,18 +7296,18 @@ snapshots:
     dependencies:
       hono: 4.11.7
 
-  '@hono/zod-openapi@1.2.1(hono@4.11.7)(zod@3.25.76)':
+  '@hono/zod-openapi@1.2.1(hono@4.11.7)(zod@4.3.6)':
     dependencies:
-      '@asteasolutions/zod-to-openapi': 8.4.0(zod@3.25.76)
-      '@hono/zod-validator': 0.7.6(hono@4.11.7)(zod@3.25.76)
+      '@asteasolutions/zod-to-openapi': 8.4.0(zod@4.3.6)
+      '@hono/zod-validator': 0.7.6(hono@4.11.7)(zod@4.3.6)
       hono: 4.11.7
       openapi3-ts: 4.5.0
-      zod: 3.25.76
+      zod: 4.3.6
 
-  '@hono/zod-validator@0.7.6(hono@4.11.7)(zod@3.25.76)':
+  '@hono/zod-validator@0.7.6(hono@4.11.7)(zod@4.3.6)':
     dependencies:
       hono: 4.11.7
-      zod: 3.25.76
+      zod: 4.3.6
 
   '@humanfs/core@0.19.1': {}
 
@@ -8615,13 +8615,13 @@ snapshots:
       clean-stack: 2.2.0
       indent-string: 4.0.0
 
-  ai@6.0.68(zod@3.25.76):
+  ai@6.0.68(zod@4.3.6):
     dependencies:
-      '@ai-sdk/gateway': 3.0.32(zod@3.25.76)
+      '@ai-sdk/gateway': 3.0.32(zod@4.3.6)
       '@ai-sdk/provider': 3.0.7
-      '@ai-sdk/provider-utils': 4.0.13(zod@3.25.76)
+      '@ai-sdk/provider-utils': 4.0.13(zod@4.3.6)
       '@opentelemetry/api': 1.9.0
-      zod: 3.25.76
+      zod: 4.3.6
 
   ajv@6.12.6:
     dependencies:

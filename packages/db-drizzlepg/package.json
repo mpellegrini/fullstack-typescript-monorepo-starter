@@ -28,7 +28,7 @@
     "@effect/platform-node": "0.104.1",
     "drizzle-orm": "0.45.1",
     "effect": "3.19.15",
-    "pg": "8.17.2",
+    "pg": "8.18.0",
     "pg-error-enum": "2.0.1",
     "sql-formatter": "15.7.0"
   },

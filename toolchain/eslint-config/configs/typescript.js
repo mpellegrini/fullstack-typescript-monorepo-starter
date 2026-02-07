@@ -30,7 +30,8 @@ export default config(
       '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
       '@typescript-eslint/explicit-module-boundary-types': 'error',
       '@typescript-eslint/method-signature-style': ['error', 'property'],
-      '@typescript-eslint/no-deprecated': 'error',
+      // '@typescript-eslint/no-deprecated': 'error', // TODO - Re-enable once update to plugin to support ESLint 10.0.0 is released
+      '@typescript-eslint/consistent-generic-constructors': 'off', // TODO - Re-enable once update to plugin to support ESLint 10.0.0 is released
       '@typescript-eslint/no-import-type-side-effects': 'error',
       '@typescript-eslint/no-non-null-assertion': 'error',
       '@typescript-eslint/no-shadow': 'error',

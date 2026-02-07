@@ -1,3 +1,4 @@
+import { fixupPluginRules } from '@eslint/compat'
 import plugin from 'eslint-plugin-eslint-comments'
 import { config } from 'typescript-eslint'
 
@@ -11,7 +12,7 @@ export default config({
   name: 'eslint-config:config:eslint-comments',
 
   plugins: {
-    'eslint-comments': plugin,
+    'eslint-comments': fixupPluginRules(plugin), // TODO - Remove once update to plugin to support ESLint 10.0.0 is released
   },
   rules: {
     ...plugin.configs.recommended.rules,

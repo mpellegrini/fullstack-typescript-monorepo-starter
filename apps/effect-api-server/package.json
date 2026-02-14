@@ -19,9 +19,9 @@
     "@effect/opentelemetry": "0.61.0",
     "@effect/platform": "0.94.4",
     "@effect/platform-node": "0.104.1",
-    "@opentelemetry/exporter-trace-otlp-http": "0.211.0",
-    "@opentelemetry/sdk-trace-base": "2.5.0",
-    "@opentelemetry/sdk-trace-node": "2.5.0",
+    "@opentelemetry/exporter-trace-otlp-http": "0.212.0",
+    "@opentelemetry/sdk-trace-base": "2.5.1",
+    "@opentelemetry/sdk-trace-node": "2.5.1",
     "@packages/api-impl": "workspace:*",
     "effect": "3.19.16"
   },

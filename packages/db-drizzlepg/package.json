@@ -30,7 +30,7 @@
     "effect": "3.19.16",
     "pg": "8.18.0",
     "pg-error-enum": "2.0.1",
-    "sql-formatter": "15.7.0"
+    "sql-formatter": "15.7.1"
   },
   "devDependencies": {
     "@softwaretechnik/dbml-renderer": "1.0.31",

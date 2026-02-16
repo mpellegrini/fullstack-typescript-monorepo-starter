@@ -1,12 +1,10 @@
 import { getConnection } from './ha-connection'
 
-export const initHA = (): void => {
-  getConnection()
-    .then(() => {
-      console.log('[HA] Initialized successfully')
-      return
-    })
-    .catch((error: unknown) => {
-      console.error('[HA] Failed to initialize:', error)
-    })
+export const initHA = async (): Promise<void> => {
+  try {
+    await getConnection()
+    console.log('[HA] Initialized successfully')
+  } catch (error) {
+    console.error('[HA] Failed to initialize:', error)
+  }
 }

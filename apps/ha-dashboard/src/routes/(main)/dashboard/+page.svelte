@@ -11,7 +11,7 @@
 
   $effect(() => {
     initEntityState(data.entities)
-    return () => destroyEntityState()
+    return destroyEntityState
   })
 
   const lights = $derived(

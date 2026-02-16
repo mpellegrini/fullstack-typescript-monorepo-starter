@@ -16,14 +16,14 @@ let currentEntities: HassEntities = {}
 const listeners = new Set<ChangeListener>()
 
 const connect = async (): Promise<Connection> => {
-  const token = env['HOMEASSISTANT_TOKEN']
-  const baseUrl = env['HOMEASSISTANT_BASE_URI']
+  const token = env['HOME_ASSISTANT_TOKEN']
+  const baseUrl = env['HOME_ASSISTANT_BASE_URI']
 
   if (!token) {
-    throw new Error('[HA] HOMEASSISTANT_TOKEN environment variable is not set')
+    throw new Error('[HA] HOME_ASSISTANT_TOKEN environment variable is not set')
   }
   if (!baseUrl) {
-    throw new Error('[HA] HOMEASSISTANT_BASE_URI environment variable is not set')
+    throw new Error('[HA] HOME_ASSISTANT_BASE_URI environment variable is not set')
   }
 
   const auth = createLongLivedTokenAuth(baseUrl, token)

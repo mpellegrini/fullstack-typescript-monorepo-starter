@@ -6,13 +6,8 @@ import {
   createLongLivedTokenAuth,
   subscribeEntities,
 } from 'home-assistant-js-websocket'
-import WebSocket from 'ws'
 
 import type { ServiceCallRequest } from '$lib/types/ha'
-
-// Polyfill WebSocket for Node.js server environment
-// @ts-expect-error — ws is API-compatible with browser WebSocket
-globalThis.WebSocket = WebSocket
 
 type ChangeListener = (entities: HassEntities) => void
 

@@ -21,26 +21,26 @@
     "typecheck": "svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "@lucide/svelte": "0.564.0",
+    "@lucide/svelte": "0.575.0",
     "bits-ui": "2.15.5",
     "svelte-sonner": "1.0.7"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "7.0.1",
-    "@sveltejs/kit": "2.51.0",
+    "@sveltejs/kit": "2.53.0",
     "@sveltejs/vite-plugin-svelte": "6.2.4",
     "@tailwindcss/forms": "0.5.11",
-    "@tailwindcss/vite": "4.1.18",
+    "@tailwindcss/vite": "4.2.0",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "clsx": "2.1.1",
     "mode-watcher": "1.1.0",
-    "svelte": "5.51.0",
-    "svelte-check": "4.4.0",
-    "tailwind-merge": "3.4.0",
+    "svelte": "5.53.2",
+    "svelte-check": "4.4.3",
+    "tailwind-merge": "3.5.0",
     "tailwind-variants": "3.2.2",
-    "tailwindcss": "4.1.18",
+    "tailwindcss": "4.2.0",
     "tw-animate-css": "1.4.0",
     "vite": "7.3.1"
   }

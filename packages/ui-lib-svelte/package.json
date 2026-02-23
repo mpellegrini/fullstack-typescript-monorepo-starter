@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@lucide/svelte": "0.575.0",
-    "bits-ui": "2.15.5",
+    "bits-ui": "2.16.2",
     "svelte-sonner": "1.0.7"
   },
   "devDependencies": {

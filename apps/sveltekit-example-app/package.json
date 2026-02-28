@@ -14,24 +14,24 @@
   },
   "dependencies": {
     "@node-rs/argon2": "2.0.2",
-    "pg": "8.18.0"
+    "pg": "8.19.0"
   },
   "devDependencies": {
     "@packages/ui-lib-svelte": "workspace:*",
-    "@sveltejs/adapter-node": "5.5.3",
-    "@sveltejs/kit": "2.53.0",
+    "@sveltejs/adapter-node": "5.5.4",
+    "@sveltejs/kit": "2.53.4",
     "@sveltejs/vite-plugin-svelte": "6.2.4",
-    "@tailwindcss/vite": "4.2.0",
+    "@tailwindcss/vite": "4.2.1",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "effect": "3.19.19",
     "http-status-codes": "2.3.0",
     "mode-watcher": "1.1.0",
-    "svelte": "5.53.2",
-    "svelte-check": "4.4.3",
+    "svelte": "5.53.6",
+    "svelte-check": "4.4.4",
     "sveltekit-superforms": "2.30.0",
-    "tailwindcss": "4.2.0",
+    "tailwindcss": "4.2.1",
     "vite": "7.3.1"
   }
 }

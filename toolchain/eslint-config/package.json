@@ -30,6 +30,6 @@
   },
   "devDependencies": {
     "@eslint/compat": "2.0.2",
-    "globals": "17.3.0"
+    "globals": "17.4.0"
   }
 }

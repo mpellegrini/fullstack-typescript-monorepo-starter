@@ -21,7 +21,7 @@
     "typecheck": "svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "@lucide/svelte": "0.575.0",
+    "@lucide/svelte": "0.576.0",
     "bits-ui": "2.16.2",
     "svelte-sonner": "1.0.7"
   },

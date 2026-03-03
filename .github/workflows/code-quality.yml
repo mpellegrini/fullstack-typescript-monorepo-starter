@@ -21,11 +21,11 @@ jobs:
       - name: Prepare
         uses: ./.github/composite-actions/prepare
 
-      - name: Run ESLint check
-        run: pnpm run lint
-
       - name: Run Prettier check
         run: pnpm run format:check
+
+      - name: Run ESLint check
+        run: pnpm run lint
 
   type-check:
     name: Type Check

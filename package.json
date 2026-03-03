@@ -6,6 +6,7 @@
     "build": "turbo run build",
     "clean": "turbo run clean",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint": "turbo run lint",
     "one-version:check": "one-version check",
     "prepare": "husky",

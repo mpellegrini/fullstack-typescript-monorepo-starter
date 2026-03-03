@@ -16,7 +16,7 @@
   data-slot="accordion-content"
   bind:ref
   {...restProps}>
-  <div class={cn('pb-4 pt-0', className)}>
+  <div class={cn('pt-0 pb-4', className)}>
     {@render children?.()}
   </div>
 </AccordionPrimitive.Content>

@@ -7,7 +7,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 5s
       timeout: 10s
       retries: 120
@@ -22,12 +22,12 @@ services:
       - ./.docker/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   dynamodb-local:
-    image: "amazon/dynamodb-local:latest"
+    image: 'amazon/dynamodb-local:latest'
     restart: unless-stopped
-    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    command: '-jar DynamoDBLocal.jar -sharedDb -dbPath ./data'
     container_name: dynamodb-local
     ports:
-      - "8000:8000"
+      - '8000:8000'
     working_dir: /home/dynamodblocal
     volumes:
       - ./.docker/data/dynamodb:/home/dynamodblocal/data
@@ -52,12 +52,12 @@ services:
     profiles:
       - otel-lgtm
     ports:
-      - "16686:3000"  # Grafana UI
-      - "4317:4317"   # OpenTelemetry Collector gRPC
-      - "4318:4318"   # OpenTelemetry Collector HTTP
-      - "9090:9090"   # Prometheus
-      - "3100:3100"   # Loki
-      - "3200:3200"   # Tempo
+      - '16686:3000' # Grafana UI
+      - '4317:4317' # OpenTelemetry Collector gRPC
+      - '4318:4318' # OpenTelemetry Collector HTTP
+      - '9090:9090' # Prometheus
+      - '3100:3100' # Loki
+      - '3200:3200' # Tempo
     volumes:
       - ./.docker/data/grafana-data:/data
 
@@ -67,11 +67,11 @@ services:
     profiles:
       - otel-jaeger
     ports:
-      - "16686:16686"
-      - "4317:4317"
-      - "4318:4318"
-      - "5778:5778"
-      - "9411:9411"
+      - '16686:16686'
+      - '4317:4317'
+      - '4318:4318'
+      - '5778:5778'
+      - '9411:9411'
     environment:
       - LOG_LEVEL=debug
     volumes:

@@ -24,7 +24,7 @@
     "@toolchain/vitest-config": "workspace:*",
     "@types/ws": "8.18.1",
     "home-assistant-js-websocket": "9.6.0",
-    "svelte": "5.53.6",
+    "svelte": "5.53.7",
     "svelte-check": "4.4.4",
     "tailwindcss": "4.2.1",
     "vite": "7.3.1",

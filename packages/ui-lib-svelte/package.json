@@ -23,7 +23,7 @@
   "dependencies": {
     "@internationalized/date": "3.12.0",
     "@lucide/svelte": "0.577.0",
-    "bits-ui": "2.16.2",
+    "bits-ui": "2.16.3",
     "svelte-sonner": "1.0.8"
   },
   "devDependencies": {

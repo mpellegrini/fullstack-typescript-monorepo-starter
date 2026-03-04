@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@ai-sdk/openai": "3.0.39",
-    "@ai-sdk/svelte": "4.0.112",
+    "@ai-sdk/svelte": "4.0.114",
     "@packages/ui-lib-svelte": "workspace:*",
     "@sveltejs/adapter-auto": "7.0.1",
     "@sveltejs/kit": "2.53.4",
@@ -24,7 +24,7 @@
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "@types/node": "25.3.3",
-    "ai": "6.0.112",
+    "ai": "6.0.114",
     "svelte": "5.53.7",
     "svelte-check": "4.4.4",
     "tailwindcss": "4.2.1",

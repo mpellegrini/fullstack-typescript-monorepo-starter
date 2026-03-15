@@ -93,8 +93,8 @@ importers:
         specifier: 4.4.5
         version: 4.4.5(picomatch@4.0.3)(svelte@5.53.12)(typescript@5.9.3)
       svelte-sonner:
-        specifier: 1.0.7
-        version: 1.0.7(svelte@5.53.12)
+        specifier: 1.1.0
+        version: 1.1.0(svelte@5.53.12)
       tailwindcss:
         specifier: 4.2.1
         version: 4.2.1
@@ -5506,11 +5506,6 @@ packages:
       svelte:
         optional: true
 
-  svelte-sonner@1.0.7:
-    resolution: {integrity: sha512-1EUFYmd7q/xfs2qCHwJzGPh9n5VJ3X6QjBN10fof2vxgy8fYE7kVfZ7uGnd7i6fQaWIr5KvXcwYXE/cmTEjk5A==}
-    peerDependencies:
-      svelte: ^5.0.0
-
   svelte-sonner@1.1.0:
     resolution: {integrity: sha512-3lYM6ZIqWe+p9vwwWHGWP/ZdvHiUtzURsud2quIxivrX4rvpXh6i+geBGn0m3JS6KwW6W8VgbOl3xQMcDuh6gg==}
     peerDependencies:
@@ -10884,11 +10879,6 @@ snapshots:
       postcss-selector-parser: 7.1.1
       semver: 7.7.4
     optionalDependencies:
-      svelte: 5.53.12
-
-  svelte-sonner@1.0.7(svelte@5.53.12):
-    dependencies:
-      runed: 0.28.0(svelte@5.53.12)
       svelte: 5.53.12
 
   svelte-sonner@1.1.0(svelte@5.53.12):

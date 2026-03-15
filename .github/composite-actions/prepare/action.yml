@@ -7,7 +7,7 @@ runs:
     - name: Install pnpm package manager
       uses: pnpm/action-setup@v4
       with:
-        run_install: false  # Don't install yet, let caching work first
+        run_install: false # Don't install yet, let caching work first
 
     - name: Setup Node.js environment
       uses: actions/setup-node@v6

@@ -12,11 +12,13 @@
     ref = $bindable(null),
     scrollbarXClasses = '',
     scrollbarYClasses = '',
+    viewportRef = $bindable(null),
     ...restProps
   }: WithoutChild<ScrollAreaPrimitive.RootProps> & {
     orientation?: undefined | 'both' | 'horizontal' | 'vertical'
     scrollbarXClasses?: string | undefined
     scrollbarYClasses?: string | undefined
+    viewportRef?: HTMLElement | null
   } = $props()
 </script>
 
@@ -26,8 +28,9 @@
   bind:ref
   {...restProps}>
   <ScrollAreaPrimitive.Viewport
-    class="ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 size-full rounded-[inherit] transition-[color,box-shadow] focus-visible:outline-1 focus-visible:ring-4"
-    data-slot="scroll-area-viewport">
+    class="ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 size-full rounded-[inherit] transition-[color,box-shadow] focus-visible:ring-4 focus-visible:outline-1"
+    data-slot="scroll-area-viewport"
+    bind:ref={viewportRef}>
     {@render children?.()}
   </ScrollAreaPrimitive.Viewport>
   {#if orientation === 'vertical' || orientation === 'both'}

@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   lint:
-    name: ESLint
+    name: Lint
     runs-on: ubuntu-latest
 
     steps:
@@ -20,6 +20,9 @@ jobs:
 
       - name: Prepare
         uses: ./.github/composite-actions/prepare
+
+      - name: Run Prettier check
+        run: pnpm run format:check
 
       - name: Run ESLint check
         run: pnpm run lint

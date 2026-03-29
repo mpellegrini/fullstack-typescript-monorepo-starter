@@ -18,16 +18,16 @@
     "@sveltejs/adapter-auto": "7.0.1",
     "@sveltejs/kit": "2.55.0",
     "@sveltejs/vite-plugin-svelte": "7.0.0",
-    "@tailwindcss/vite": "4.2.1",
+    "@tailwindcss/vite": "4.2.2",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "@types/ws": "8.18.1",
     "home-assistant-js-websocket": "9.6.0",
-    "svelte": "5.53.12",
+    "svelte": "5.55.0",
     "svelte-check": "4.4.5",
-    "tailwindcss": "4.2.1",
-    "vite": "8.0.0",
-    "ws": "8.19.0"
+    "tailwindcss": "4.2.2",
+    "vite": "8.0.3",
+    "ws": "8.20.0"
   }
 }

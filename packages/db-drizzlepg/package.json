@@ -24,22 +24,22 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.94.5",
-    "@effect/platform-node": "0.104.1",
-    "drizzle-orm": "0.45.1",
-    "effect": "3.19.19",
-    "pg": "8.19.0",
+    "@effect/platform": "0.96.0",
+    "@effect/platform-node": "0.106.0",
+    "drizzle-orm": "0.45.2",
+    "effect": "3.21.0",
+    "pg": "8.20.0",
     "pg-error-enum": "2.0.1",
-    "sql-formatter": "15.7.2"
+    "sql-formatter": "15.7.3"
   },
   "devDependencies": {
     "@softwaretechnik/dbml-renderer": "1.0.31",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/pg": "8.18.0",
+    "@types/pg": "8.20.0",
     "drizzle-dbml-generator": "0.10.0",
-    "drizzle-kit": "0.31.9",
+    "drizzle-kit": "0.31.10",
     "tsx": "4.21.0"
   }
 }

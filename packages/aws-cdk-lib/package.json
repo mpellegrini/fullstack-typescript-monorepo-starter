@@ -15,14 +15,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "aws-cdk-lib": "2.240.0",
+    "aws-cdk-lib": "2.247.0",
     "change-case": "5.4.4",
-    "constructs": "10.5.1"
+    "constructs": "10.6.0"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/node": "25.3.2"
+    "@types/node": "25.5.0"
   }
 }

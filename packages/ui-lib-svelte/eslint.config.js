@@ -15,6 +15,7 @@ export default [
   },
   {
     rules: {
+      '@typescript-eslint/no-unsafe-type-assertion': 'off',
       'perfectionist/sort-named-exports': 'off',
       'unicorn/prefer-export-from': 'off',
     },

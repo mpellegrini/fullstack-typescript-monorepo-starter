@@ -8,6 +8,8 @@ import { z } from 'zod'
 const openai = createOpenAI({ apiKey: env['OPENAI_API_KEY'] })
 
 export const POST: RequestHandler = async ({ request }) => {
+  // TODO: this should be addressed with Zod as a type guard
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- need to fix
   const { messages } = (await request.json()) as { messages: UIMessage[] }
 
   const result = streamText({

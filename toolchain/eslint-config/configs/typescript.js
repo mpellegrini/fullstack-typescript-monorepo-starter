@@ -34,6 +34,7 @@ export default config(
       '@typescript-eslint/no-import-type-side-effects': 'error',
       '@typescript-eslint/no-non-null-assertion': 'error',
       '@typescript-eslint/no-shadow': 'error',
+      '@typescript-eslint/no-unsafe-type-assertion': 'error',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {

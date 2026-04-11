@@ -1,4 +1,28 @@
+#  Only explicitly listed packages can run install scripts. This is a strong mitigation
+#  against malicious postinstall scripts in transitive deps.
+allowBuilds:
+  esbuild: true
+
+#  Blocks packages with non-standard dependency specifiers
+#  (e.g., git://, file:, http:// deps in transitive dependencies). This is one of the most
+#  impactful supply chain controls available — it closes a common vector where malicious packages
+#  pull in arbitrary code via unusual specifiers.
+blockExoticSubdeps: true
+
+#  Requires packages to have been published for at least 72 hours before they can be installed.
+#  This mitigates "fast-follow" attacks where a typosquat or hijacked package is published and
+#  immediately pulled in before the community detects it.
+minimumReleaseAge: 4320 # 72 hours
+
 packages:
   - 'apps/*'
   - 'packages/*'
   - 'toolchain/*'
+
+#  Prevents packages from being installed at a version lower than what's in the lockfile.
+#  Defends against dependency confusion and rollback attacks where an attacker publishes
+#  a lower-versioned malicious package.
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  - 'chokidar@4.0.3'
+  - 'semver@6.3.1'

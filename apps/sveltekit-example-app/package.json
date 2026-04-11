@@ -32,6 +32,6 @@
     "svelte-check": "4.4.6",
     "sveltekit-superforms": "2.30.1",
     "tailwindcss": "4.2.2",
-    "vite": "8.0.8"
+    "vite": "8.0.7"
   }
 }

@@ -1,0 +1,17 @@
+# Runs the full quality gate on every push to main (i.e. merged pull request).
+
+name: Push Main
+
+on:
+  push:
+    branches: [main]
+    tags-ignore: ['**']
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  # ─────────────────────────────────────────────
+  code-quality:
+    uses: ./.github/workflows/_code-quality.yml

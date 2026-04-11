@@ -10,7 +10,8 @@ export const onError: ErrorHandler = (err, c) => {
   const statusCode =
     currentStatus === StatusCodes.OK
       ? StatusCodes.INTERNAL_SERVER_ERROR
-      : (currentStatus as ContentfulStatusCode)
+      : // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- required exception
+        (currentStatus as ContentfulStatusCode)
 
   return c.json(
     {

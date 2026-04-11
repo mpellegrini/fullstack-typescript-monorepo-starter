@@ -9,6 +9,8 @@ allowBuilds:
 #  pull in arbitrary code via unusual specifiers.
 blockExoticSubdeps: true
 
+engineStrict: true
+
 #  Requires packages to have been published for at least 72 hours before they can be installed.
 #  This mitigates "fast-follow" attacks where a typosquat or hijacked package is published and
 #  immediately pulled in before the community detects it.
@@ -18,6 +20,15 @@ packages:
   - 'apps/*'
   - 'packages/*'
   - 'toolchain/*'
+
+publicHoistPattern:
+  - 'typescript' # @toolchain/typescript-config
+  - 'eslint' # @toolchain/eslint-config
+  - 'vitest' # @toolchain/vitest-config
+  - '@vitest/coverage-v8' # @toolchain/vitest-config
+
+savePrefix: ''
+saveWorkspaceProtocol: 'rolling'
 
 #  Prevents packages from being installed at a version lower than what's in the lockfile.
 #  Defends against dependency confusion and rollback attacks where an attacker publishes

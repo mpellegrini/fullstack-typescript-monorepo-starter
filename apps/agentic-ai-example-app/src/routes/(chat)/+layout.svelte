@@ -1,11 +1,7 @@
 <script lang="ts">
-  import '../app.css'
-  import { Toaster } from '@packages/ui-lib-svelte/components/ui/sonner'
-
   import type { LayoutProps } from './$types.js'
 
   const { children }: LayoutProps = $props()
 </script>
 
-<Toaster position="top-center" />
 {@render children()}

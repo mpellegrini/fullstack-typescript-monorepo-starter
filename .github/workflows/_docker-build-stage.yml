@@ -58,9 +58,9 @@ jobs:
 
     permissions:
       contents: read
-      packages: write       # push to GHCR
-      id-token: write       # cosign keyless + OIDC attestations
-      attestations: write   # actions/attest-build-provenance
+      packages: write # push to GHCR
+      id-token: write # cosign keyless + OIDC attestations
+      attestations: write # actions/attest-build-provenance
 
     outputs:
       digest: ${{ steps.build.outputs.digest }}

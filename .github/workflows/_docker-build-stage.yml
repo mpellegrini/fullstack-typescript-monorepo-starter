@@ -90,7 +90,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v6
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image-name }}
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}
           tags: |
             type=sha,prefix=sha-,format=short
             type=ref,event=branch
@@ -115,7 +115,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            ${{ inputs.build-args }}
+            ${{ inputs.build_args }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: mode=max
@@ -126,7 +126,7 @@ jobs:
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v1
         with:
-          subject-name: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image-name }}
+          subject-name: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}
           subject-digest: ${{ steps.build.outputs.digest }}
           push-to-registry: true
 
@@ -139,7 +139,7 @@ jobs:
             echo ""
             echo "**Pinned ref:**"
             echo "\`\`\`"
-            echo "${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image-name }}@${{ steps.build.outputs.digest }}"
+            echo "${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}@${{ steps.build.outputs.digest }}"
             echo "\`\`\`"
             echo ""
             echo "**Tags:**"

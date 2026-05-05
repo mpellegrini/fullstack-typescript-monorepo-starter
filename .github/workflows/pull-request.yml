@@ -29,4 +29,4 @@ jobs:
     with:
       image_name: flight-res/flight-res-mgmt-shop
       build_args: |
-        APP_NAME=flight-res-mgmt-shop
+        APP_NAME=effect-api-server

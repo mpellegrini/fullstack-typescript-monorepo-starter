@@ -1,4 +1,4 @@
-FROM node:22.17.0-bookworm-slim AS builder
+FROM node:24.11.1-trixie-slim AS builder
 
 ARG APP_NAME
 
@@ -14,7 +14,8 @@ RUN pnpm exec turbo build --filter=@apps/$APP_NAME^...
 RUN pnpm --filter=@apps/$APP_NAME exec vite build
 RUN pnpm --filter=@apps/$APP_NAME deploy --legacy --prod out
 
-FROM gcr.io/distroless/nodejs22-debian12 AS deployer
+FROM gcr.io/distroless/nodejs24-debian13 AS deployer
+
 
 ENV NODE_ENV=production
 ENV ORIGIN=http://localhost:8080

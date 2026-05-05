@@ -19,6 +19,12 @@ jobs:
 
   # ─────────────────────────────────────────────
   build:
+    needs: code-quality
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
     uses: ./.github/workflows/_docker-build-stage.yml
     with:
       image_name: flight-res/flight-res-mgmt-shop

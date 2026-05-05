@@ -54,19 +54,16 @@ env:
 
 jobs:
   build:
-    runs-on: ${{ inputs.runs-on }}
-
+    runs-on: ${{ inputs.runs_on }}
     permissions:
       contents: read
       packages: write # push to GHCR
       id-token: write # cosign keyless + OIDC attestations
       attestations: write # actions/attest-build-provenance
-
     outputs:
       digest: ${{ steps.build.outputs.digest }}
       image-ref: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image-name }}@${{ steps.build.outputs.digest }}
       ghcr-repo: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image-name }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v6

@@ -1,7 +1,12 @@
 #  Only explicitly listed packages can run install scripts. This is a strong mitigation
 #  against malicious postinstall scripts in transitive deps.
 allowBuilds:
+  '@parcel/watcher': false
   esbuild: true
+  msgpackr-extract: false
+  msw: false
+  protobufjs: false
+  unrs-resolver: false
 
 #  Blocks packages with non-standard dependency specifiers
 #  (e.g., git://, file:, http:// deps in transitive dependencies). This is one of the most

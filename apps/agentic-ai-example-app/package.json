@@ -13,12 +13,12 @@
     "typecheck": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
-    "@ai-sdk/openai": "3.0.61",
+    "@ai-sdk/openai": "3.0.62",
     "@ai-sdk/svelte": "4.0.175",
     "@packages/ui-lib-svelte": "workspace:*",
     "@sveltejs/adapter-auto": "7.0.1",
     "@sveltejs/kit": "2.59.1",
-    "@sveltejs/vite-plugin-svelte": "7.1.0",
+    "@sveltejs/vite-plugin-svelte": "7.1.1",
     "@tailwindcss/vite": "4.2.4",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",

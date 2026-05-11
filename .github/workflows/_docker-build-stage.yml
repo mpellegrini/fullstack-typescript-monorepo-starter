@@ -124,7 +124,7 @@ jobs:
       # SLSA build provenance attached to the registry image.
       # Travels with the manifest when crane copies it to ECR later.
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@v4
         with:
           subject-name: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}
           subject-digest: ${{ steps.build.outputs.digest }}

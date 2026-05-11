@@ -39,15 +39,15 @@ on:
         default: 'ubuntu-latest'
 
     outputs:
-      image-digest:
+      image_digest:
         description: 'Immutable sha256 digest of the pushed manifest'
         value: ${{ jobs.build.outputs.digest }}
-      image-ref:
+      image_ref:
         description: 'Pinned reference: registry/owner/name@sha256:...'
-        value: ${{ jobs.build.outputs.image-ref }}
-      ghcr-repo:
+        value: ${{ jobs.build.outputs.image_ref }}
+      ghcr_repo:
         description: 'GHCR repository (no tag)'
-        value: ${{ jobs.build.outputs.ghcr-repo }}
+        value: ${{ jobs.build.outputs.ghcr_repo }}
 
 env:
   REGISTRY: ghcr.io
@@ -62,8 +62,8 @@ jobs:
       attestations: write # actions/attest-build-provenance
     outputs:
       digest: ${{ steps.build.outputs.digest }}
-      image-ref: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image-name }}@${{ steps.build.outputs.digest }}
-      ghcr-repo: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image-name }}
+      image_ref: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}@${{ steps.build.outputs.digest }}
+      ghcr_repo: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6

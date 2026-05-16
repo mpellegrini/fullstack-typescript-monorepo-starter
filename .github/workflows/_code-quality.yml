@@ -1,7 +1,10 @@
-name: Code Quality (Reusable)
+name: Code Quality Checks
 
 on:
   workflow_call:
+
+permissions:
+  contents: read
 
 jobs:
   lint:
@@ -17,6 +20,9 @@ jobs:
 
       - name: Run ESLint check
         run: pnpm run lint
+
+      - name: Run Prettier check
+        run: pnpm run format:check
 
   type-check:
     name: Type Check

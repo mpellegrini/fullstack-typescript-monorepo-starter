@@ -125,14 +125,14 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}
           tags: |
-            type=sha,prefix=sha-,format=short
+            type=raw,value=${{ steps.commit-info.outputs.tag }}
             type=ref,event=branch
             type=ref,event=pr,prefix=pr-
             type=raw,value=unverified-${{ github.run_id }}
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
-            org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.created=${{ github.event.repository.updated_at }}
+            org.opencontainers.image.revision=${{ steps.commit-info.outputs.full_sha }}
+            org.opencontainers.image.created=${{ steps.commit-info.outputs.build_date }}
             org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
             io.pipeline.scan-status=pending
             io.pipeline.promoted=false

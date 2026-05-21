@@ -37,7 +37,6 @@ on:
         required: false
         type: string
         default: 'ubuntu-latest'
-
     outputs:
       image_digest:
         description: 'Immutable sha256 digest of the pushed manifest'
@@ -55,24 +54,58 @@ env:
 jobs:
   build:
     runs-on: ${{ inputs.runs_on }}
+
     permissions:
       contents: read
       packages: write # push to GHCR
       id-token: write # cosign keyless + OIDC attestations
       attestations: write # actions/attest-build-provenance
+
     outputs:
       digest: ${{ steps.build.outputs.digest }}
       image_ref: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}@${{ steps.build.outputs.digest }}
       ghcr_repo: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          # Need the PR head commit (a parent of the merge ref) available
+          # locally so `git show` can read its committer date for BUILD_DATE.
+          fetch-depth: 2
 
       - name: Set up QEMU (cross-arch emulation)
         uses: docker/setup-qemu-action@v4
 
-      - name: Set up Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
+
+      - name: Resolve commit SHA and build date
+        id: commit-info
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          # On pull_request events, github.sha is a temporary merge commit.
+          # Use the actual head commit SHA for traceability.
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            SHA="$PR_HEAD_SHA"
+          else
+            SHA="$GITHUB_SHA"
+          fi
+
+          # Derive BUILD_DATE from the commit's committer date so the label is
+          # deterministic for a given code state. Avoids pull_request.updated_at,
+          # which churns on unrelated PR edits (title, labels, assignees).
+          BUILD_DATE="$(TZ=UTC git show -s --format=%cd --date=format-local:'%Y-%m-%dT%H:%M:%SZ' "$SHA")"
+
+          SHORT_SHA="$(echo "${SHA}" | head -c 12)"
+
+          echo "full_sha=${SHA}" >> "$GITHUB_OUTPUT"
+          echo "tag=sha-${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+          echo "build_date=${BUILD_DATE}" >> "$GITHUB_OUTPUT"
 
       - name: Log in to GHCR
         uses: docker/login-action@v4

@@ -169,6 +169,9 @@ importers:
       '@types/node':
         specifier: 25.9.1
         version: 25.9.1
+      vite:
+        specifier: 8.0.14
+        version: 8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0)
 
   apps/effect-platform-fundamentals:
     dependencies:

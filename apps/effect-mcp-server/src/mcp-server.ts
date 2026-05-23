@@ -8,39 +8,30 @@ import * as McpServer from 'effect/unstable/ai/McpServer'
 import * as Tool from 'effect/unstable/ai/Tool'
 import * as Toolkit from 'effect/unstable/ai/Toolkit'
 
-const DemoTool = Tool.make('DemoTool', {
-  description: 'This is a demo tool for the documentation',
-  parameters: Schema.Struct({
-    demoId: Schema.Number,
-    demoName: Schema.String,
-  }),
-  success: Schema.String,
-})
-  .annotate(Tool.Readonly, true)
-  .annotate(Tool.Destructive, false)
+const toolkit = Toolkit.make(
+  Tool.make('DemoTool', {
+    description: 'This is a demo tool for the documentation',
+    parameters: Schema.Struct({
+      demoId: Schema.Number,
+      demoName: Schema.String,
+    }),
+    success: Schema.String,
+  })
+    .annotate(Tool.Readonly, true)
+    .annotate(Tool.Destructive, false),
 
-const OtherDemoTool = Tool.make('OtherDemoTool', {
-  description: 'Another demo tool',
-  parameters: Schema.Struct({
-    value: Schema.Number,
-  }),
-  success: Schema.String,
-})
-  .annotate(Tool.Readonly, true)
-  .annotate(Tool.Destructive, false)
+  Tool.make('OtherDemoTool', {
+    description: 'Another demo tool',
+    parameters: Schema.Struct({
+      value: Schema.Number,
+    }),
+    success: Schema.String,
+  })
+    .annotate(Tool.Readonly, true)
+    .annotate(Tool.Destructive, false),
+)
 
-const toolkit = Toolkit.make(DemoTool, OtherDemoTool)
-
-// const MyToolkitLayer = McpServer.toolkit(toolkit).pipe(
-//   Layer.provideMerge(
-//     toolkit.toLayer({
-//       DemoTool: ({ demoId, demoName }) => Effect.succeed(`Processed ${demoName} with ID ${demoId}`),
-//       OtherDemoTool: ({ value }) => Effect.succeed(`Other tool result: ${value * 2}`),
-//     }),
-//   ),
-// )
-
-const MyToolkitLayer = toolkit.toLayer(
+const ToolkitLayer = toolkit.toLayer(
   Effect.gen(function* () {
     yield* Effect.logInfo('ToolKit Layer')
     return toolkit.of({
@@ -56,21 +47,7 @@ const MyToolkitLayer = toolkit.toLayer(
   }),
 )
 
-export const McpServerToolkit = McpServer.toolkit(toolkit).pipe(Layer.provide(MyToolkitLayer))
-
-// // Create the server layer
-// const ServerLayer = Layer.mergeAll(MyToolkitLayer).pipe(
-//   // Provide the MCP server implementation
-//   Layer.provide(
-//     McpServer.layerStdio({
-//       name: 'Demo Server',
-//       version: '1.0.0',
-//     }),
-//   ),
-//   Layer.provide(NodeStdio.layer),
-//   Layer.provide(Layer.succeed(Logger.LogToStderr)(true)),
-// )
-// Layer.launch(ServerLayer).pipe(NodeRuntime.runMain)
+export const McpServerToolkit = McpServer.toolkit(toolkit).pipe(Layer.provide(ToolkitLayer))
 
 McpServer.layerStdio({
   name: 'Demo Server',

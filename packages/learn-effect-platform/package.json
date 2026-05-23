@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.1045.0",
+    "@aws-sdk/client-dynamodb": "3.1050.0",
     "@effect-aws/client-dynamodb": "1.11.0",
     "@effect/opentelemetry": "0.63.0",
     "@effect/platform": "0.96.1",
@@ -30,6 +30,6 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "tsx": "4.21.0"
+    "tsx": "4.22.3"
   }
 }

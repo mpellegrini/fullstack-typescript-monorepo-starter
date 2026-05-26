@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@ai-sdk/openai": "3.0.64",
-    "@ai-sdk/svelte": "4.0.185",
+    "@ai-sdk/svelte": "4.0.188",
     "@packages/ui-lib-svelte": "workspace:*",
     "@sveltejs/adapter-auto": "7.0.1",
     "@sveltejs/kit": "2.60.1",
@@ -24,11 +24,11 @@
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "@types/node": "25.9.1",
-    "ai": "6.0.185",
-    "svelte": "5.55.8",
+    "ai": "6.0.188",
+    "svelte": "5.55.9",
     "svelte-check": "4.4.8",
     "tailwindcss": "4.3.0",
-    "vite": "8.0.13",
+    "vite": "8.0.14",
     "zod": "4.4.3"
   }
 }

@@ -2,17 +2,22 @@ import * as Context from 'effect/Context'
 import * as Effect from 'effect/Effect'
 import * as Layer from 'effect/Layer'
 
-export class Notifications extends Context.Service<
-  Notifications,
+export class MyService extends Context.Service<
+  MyService,
   {
-    readonly notify: (message: string) => Effect.Effect<void>
+    readonly demoTool: (demoId: number, demoName: string) => Effect.Effect<string>
+    readonly otherDemoTool: (value: number) => Effect.Effect<string>
   }
->()('Notifications', {
+>()('MyService', {
   make: Effect.gen(function* () {
     yield* Effect.logInfo('Creating FooBar service')
-    const notify = (message: string): Effect.Effect<string> => Effect.succeed(`${message}!`)
+    const demoTool = (demoId: number, demoName: string): Effect.Effect<string> =>
+      Effect.succeed(`Processed ${demoName} with ID ${demoId}`)
+    const otherDemoTool = (value: number): Effect.Effect<string> =>
+      Effect.succeed(`Other tool result: ${value * 2}`)
     return {
-      notify,
+      demoTool,
+      otherDemoTool,
     } as const
   }),
 }) {

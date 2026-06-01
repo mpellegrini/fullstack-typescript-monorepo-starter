@@ -113,6 +113,24 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Labels only — no tags here. The per-arch images are pushed by digest,
+      # so the full label set gets baked into each platform's image config.
+      # The merge job recomputes the same metadata to tag the final manifest.
+      - name: Compute labels
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}
+          tags: |
+            type=raw,value=sha-${{ steps.commit-info.outputs.short_sha }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ steps.commit-info.outputs.full_sha }}
+            org.opencontainers.image.created=${{ steps.commit-info.outputs.build_date }}
+            org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
+            io.pipeline.scan-status=pending
+            io.pipeline.promoted=false
+
       # Push by digest only — no tags here. The merge job stitches the
       # per-platform digests into a single tagged multi-arch manifest.
       - name: Build and push by digest
@@ -125,10 +143,7 @@ jobs:
           build-args: |
             ${{ inputs.build_args }}
           outputs: type=image,name=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }},push-by-digest=true,name-canonical=true,push=true
-          labels: |
-            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
-            org.opencontainers.image.revision=${{ steps.commit-info.outputs.full_sha }}
-            org.opencontainers.image.created=${{ steps.commit-info.outputs.build_date }}
+          labels: ${{ steps.meta.outputs.labels }}
           # Scope the cache per-platform so the two parallel matrix legs don't
           # race to reserve the same GHA cache key.
           cache-from: type=gha,scope=buildcache-${{ env.PLATFORM_PAIR }}

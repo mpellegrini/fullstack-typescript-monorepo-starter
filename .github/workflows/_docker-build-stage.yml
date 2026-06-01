@@ -47,7 +47,7 @@ jobs:
   # ─────────────────────────────────────────────
   # Build each platform on its native runner in parallel.
   # Images are pushed by digest (no tag) so they can be merged below.
-  build-platform:
+  multi-platform-build:
     strategy:
       fail-fast: false
       matrix:
@@ -170,7 +170,7 @@ jobs:
   # apply tags and labels, attest provenance, and emit the final digest.
   merge:
     runs-on: ubuntu-latest
-    needs: build-platform
+    needs: multi-platform-build
 
     permissions:
       contents: read

@@ -12,6 +12,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   # ─────────────────────────────────────────────
   code-quality:
@@ -21,12 +24,11 @@ jobs:
   build:
     needs: code-quality
     permissions:
-      contents: read
       packages: write
       id-token: write
       attestations: write
     uses: ./.github/workflows/_docker-build-stage.yml
     with:
-      image_name: flight-res/flight-res-mgmt-shop
       build_args: |
         APP_NAME=effect-api-server
+      image_name: flight-res/flight-res-mgmt-shop

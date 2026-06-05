@@ -75,18 +75,11 @@ jobs:
       - name: Resolve commit SHA and build date
         id: commit-info
         env:
-          EVENT_NAME: ${{ github.event_name }}
-          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          set -euo pipefail
-
           # On pull_request events, github.sha is a temporary merge commit.
           # Use the actual head commit SHA for traceability.
-          if [ "$EVENT_NAME" = "pull_request" ]; then
-            SHA="$PR_HEAD_SHA"
-          else
-            SHA="$GITHUB_SHA"
-          fi
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
 
           # Derive BUILD_DATE from the commit's committer date so the label is
           # deterministic for a given code state. Avoids pull_request.updated_at,
@@ -194,18 +187,17 @@ jobs:
       - name: Resolve commit SHA and build date
         id: commit-info
         env:
-          EVENT_NAME: ${{ github.event_name }}
-          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          # On pull_request events, github.sha is a temporary merge commit.
+          # Use the actual head commit SHA for traceability.
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           set -euo pipefail
 
-          if [ "$EVENT_NAME" = "pull_request" ]; then
-            SHA="$PR_HEAD_SHA"
-          else
-            SHA="$GITHUB_SHA"
-          fi
-
+          # Derive BUILD_DATE from the commit's committer date so the label is
+          # deterministic for a given code state. Avoids pull_request.updated_at,
+          # which churns on unrelated PR edits (title, labels, assignees).
           BUILD_DATE="$(TZ=UTC git show -s --format=%cd --date=format-local:'%Y-%m-%dT%H:%M:%SZ' "$SHA")"
+
           SHORT_SHA="$(echo "${SHA}" | head -c 12)"
 
           echo "full_sha=${SHA}" >> "$GITHUB_OUTPUT"

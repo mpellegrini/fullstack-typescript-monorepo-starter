@@ -14,8 +14,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform-node": "4.0.0-beta.70",
-    "effect": "4.0.0-beta.70"
+    "@effect/platform-node": "4.0.0-beta.75",
+    "effect": "4.0.0-beta.75"
   },
   "devDependencies": {
     "@modelcontextprotocol/inspector": "0.21.2",
@@ -23,6 +23,6 @@
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "@types/node": "25.9.1",
-    "vite": "8.0.14"
+    "vite": "8.0.16"
   }
 }

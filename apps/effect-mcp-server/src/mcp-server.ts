@@ -8,6 +8,8 @@ import * as McpServer from 'effect/unstable/ai/McpServer'
 import * as Tool from 'effect/unstable/ai/Tool'
 import * as Toolkit from 'effect/unstable/ai/Toolkit'
 
+import { MyService } from './service.ts'
+
 const toolkit = Toolkit.make(
   Tool.make('DemoTool', {
     description: 'This is a demo tool for the documentation',
@@ -31,29 +33,30 @@ const toolkit = Toolkit.make(
     .annotate(Tool.Destructive, false),
 )
 
-const ToolkitLayer = toolkit.toLayer(
-  Effect.gen(function* () {
-    yield* Effect.logInfo('ToolKit Layer')
-    return toolkit.of({
-      DemoTool: Effect.fn(function* ({ demoId, demoName }) {
-        yield* Effect.logInfo('DemoTool Called')
-        return `Processed ${demoName} with ID ${demoId}`
-      }),
-      OtherDemoTool: Effect.fn(function* ({ value }) {
-        yield* Effect.logInfo('OtherDemoTool Called')
-        return `Other tool result: ${value * 2}`
-      }),
-    })
-  }),
-)
+const ToolkitLayer = toolkit
+  .toLayer(
+    Effect.gen(function* () {
+      const service = yield* MyService
+      return toolkit.of({
+        DemoTool: Effect.fn(function* ({ demoId, demoName }) {
+          console.error('foobar')
+          return yield* service.demoTool(demoId, demoName)
+        }),
+        OtherDemoTool: Effect.fn(function* ({ value }) {
+          return yield* service.otherDemoTool(value)
+        }),
+      })
+    }),
+  )
+  .pipe(Layer.provide(MyService.layer))
 
-export const McpServerToolkit = McpServer.toolkit(toolkit).pipe(Layer.provide(ToolkitLayer))
+export const McpServerLayer = McpServer.toolkit(toolkit).pipe(Layer.provide(ToolkitLayer))
 
 McpServer.layerStdio({
   name: 'Demo Server',
   version: '0.0.0',
 }).pipe(
-  Layer.provide([McpServerToolkit, NodeServices.layer]),
+  Layer.provide([McpServerLayer, NodeServices.layer]),
   Layer.provide(Layer.succeed(Logger.LogToStderr)(true)),
   Layer.launch,
   NodeRuntime.runMain,

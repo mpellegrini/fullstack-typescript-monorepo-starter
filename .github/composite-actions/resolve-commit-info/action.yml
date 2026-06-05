@@ -1,0 +1,39 @@
+name: Resolve Commit Info
+description: >
+  Resolves the true commit SHA (using PR head on pull_request events) and
+  derives BUILD_DATE from the commit's committer date for deterministic OCI labels.
+
+outputs:
+  full_sha:
+    description: Full 40-char commit SHA
+    value: ${{ steps.commit-info.outputs.full_sha }}
+  short_sha:
+    description: First 12 chars of the commit SHA
+    value: ${{ steps.commit-info.outputs.short_sha }}
+  build_date:
+    description: Committer date in ISO-8601 UTC (e.g. 2024-01-01T00:00:00Z)
+    value: ${{ steps.commit-info.outputs.build_date }}
+
+runs:
+  using: composite
+  steps:
+    - name: Resolve commit SHA and build date
+      id: commit-info
+      shell: bash
+      env:
+        # On pull_request events, github.sha is a temporary merge commit.
+        # Use the actual head commit SHA for traceability.
+        SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      run: |
+        set -euo pipefail
+
+        # Derive BUILD_DATE from the commit's committer date so the label is
+        # deterministic for a given code state. Avoids pull_request.updated_at,
+        # which churns on unrelated PR edits (title, labels, assignees).
+        BUILD_DATE="$(TZ=UTC git show -s --format=%cd --date=format-local:'%Y-%m-%dT%H:%M:%SZ' "$SHA")"
+
+        SHORT_SHA="$(echo "${SHA}" | head -c 12)"
+
+        echo "full_sha=${SHA}" >> "$GITHUB_OUTPUT"
+        echo "short_sha=${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+        echo "build_date=${BUILD_DATE}" >> "$GITHUB_OUTPUT"

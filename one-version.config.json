@@ -1,5 +1,12 @@
 {
   "packageManager": "pnpm",
   "versionStrategy": "pin",
-  "overrides": {}
+  "overrides": {
+    "@effect/platform-node": {
+      "4.0.0-beta.75": ["@apps/effect-mcp-server"]
+    },
+    "effect": {
+      "4.0.0-beta.75": ["@apps/effect-mcp-server"]
+    }
+  }
 }

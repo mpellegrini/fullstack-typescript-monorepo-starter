@@ -1,28 +1,28 @@
 {
-  "name": "@apps/effect-platform-fundamentals",
+  "name": "@apps/effect-mcp-server",
   "version": "0.0.0",
   "private": true,
-  "description": "Effect platform fundamentals",
+  "description": "Effect MCP Server Example App",
   "license": "UNLICENSED",
   "type": "module",
   "scripts": {
-    "clean": "del .turbo coverage",
-    "dev": "tsx --watch src/index.ts",
+    "clean": "del .turbo coverage build",
+    "dev": "node --watch src/index.ts",
     "lint": "eslint ",
+    "mcp-inspector": "mcp-inspector node src/mcp-server.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.96.1",
-    "@effect/platform-node": "0.106.0",
-    "@effect/rpc": "0.75.1",
-    "effect": "3.21.2"
+    "@effect/platform-node": "4.0.0-beta.75",
+    "effect": "4.0.0-beta.75"
   },
   "devDependencies": {
+    "@modelcontextprotocol/inspector": "0.21.2",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "@types/node": "25.9.1",
-    "tsx": "4.22.4"
+    "vite": "8.0.16"
   }
 }

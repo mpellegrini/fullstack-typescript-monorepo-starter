@@ -1,0 +1,255 @@
+name: Build and Stage to GHCR
+
+# Builds a multi-platform image using native runners (no QEMU emulation):
+#   linux/amd64 → ubuntu-latest
+#   linux/arm64 → ubuntu-24.04-arm
+# Both platforms build in parallel, then a merge job combines them into a
+# single multi-arch manifest. Outputs the immutable digest so downstream
+# jobs operate on the exact bytes that were built.
+
+on:
+  workflow_call:
+    inputs:
+      build_args:
+        description: 'Newline-separated build args (KEY=VALUE)'
+        required: false
+        type: string
+        default: ''
+      context:
+        description: 'Docker build context path'
+        required: false
+        type: string
+        default: '.'
+      dockerfile:
+        description: 'Path to Dockerfile'
+        required: false
+        type: string
+        default: './Dockerfile'
+      image_name:
+        description: 'Image name without registry (e.g. my-service)'
+        required: true
+        type: string
+
+    outputs:
+      image_digest:
+        description: 'Immutable sha256 digest of the pushed manifest'
+        value: ${{ jobs.merge.outputs.digest }}
+      image_ref:
+        description: 'Fully qualified Docker image pinned reference: registry/owner/name@sha256:...'
+        value: ${{ jobs.merge.outputs.image_ref }}
+      ghcr_repo:
+        description: 'GHCR repository (no tag)'
+        value: ${{ jobs.merge.outputs.ghcr_repo }}
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  # ─────────────────────────────────────────────
+  # Build each platform on its native runner in parallel.
+  # Images are pushed by digest (no tag) so they can be merged below.
+  multi-platform-build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-latest
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+
+    runs-on: ${{ matrix.runner }}
+
+    permissions:
+      contents: read
+      packages: write # push to GHCR
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          # Need the PR head commit (a parent of the merge ref) available
+          # locally so `git show` can read its committer date for BUILD_DATE.
+          fetch-depth: 2
+
+      - name: Resolve commit SHA and build date
+        id: commit-info
+        uses: ./.github/composite-actions/resolve-commit-info
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Labels only (no tags here). The per-arch images are pushed by their digest,
+      # so the full label set gets baked into each platform's image config.
+      # The merge job recomputes the same metadata to tag the final manifest.
+      - name: Compute labels
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}
+          tags: |
+            type=raw,value=sha-${{ steps.commit-info.outputs.short_sha }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ steps.commit-info.outputs.full_sha }}
+            org.opencontainers.image.created=${{ steps.commit-info.outputs.build_date }}
+            org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
+            # TODO: Check if this is really needed
+            io.pipeline.scan-status=pending
+            io.pipeline.promoted=false
+
+      - name: Sanitize platform name
+        run: |
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> "$GITHUB_ENV"
+
+      # Push by digest only — no tags here. The merge job stitches the
+      # per-platform digests into a single tagged multi-arch manifest.
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v7
+        with:
+          context: ${{ inputs.context }}
+          file: ${{ inputs.dockerfile }}
+          platforms: ${{ matrix.platform }}
+          build-args: |
+            ${{ inputs.build_args }}
+          outputs: type=image,name=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }},push-by-digest=true,name-canonical=true,push=true
+          labels: ${{ steps.meta.outputs.labels }}
+          # Scope the cache per-platform so the two parallel matrix legs don't
+          # race to reserve the same GHA cache key.
+          cache-from: type=gha,scope=buildcache-${{ env.PLATFORM_PAIR }}
+          cache-to: type=gha,mode=max,scope=buildcache-${{ env.PLATFORM_PAIR }}
+          provenance: mode=max
+          sbom: true
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+
+      - name: Upload digest artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  # ─────────────────────────────────────────────
+  # Combine the per-platform digests into a single multi-arch manifest,
+  # apply tags and labels, attest provenance, and emit the final digest.
+  merge:
+    runs-on: ubuntu-latest
+    needs: multi-platform-build
+
+    permissions:
+      contents: read
+      packages: write # push to GHCR
+      id-token: write # cosign keyless + OIDC attestations
+      attestations: write # actions/attest-build-provenance
+
+    outputs:
+      digest: ${{ steps.inspect.outputs.digest }}
+      image_ref: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}@${{ steps.inspect.outputs.digest }}
+      ghcr_repo: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - name: Resolve commit SHA and build date
+        id: commit-info
+        uses: ./.github/composite-actions/resolve-commit-info
+
+      - name: Download digest artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: /tmp/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Tagging strategy for GHCR (staging):
+      #   sha-<short>          immutable, every build, the canonical handle
+      #   <branch>             mutable, useful for "latest from main"
+      #   pr-<n>               mutable, ephemeral PR builds
+      #   unverified-<run_id>  loud signal that this hasn't passed scans yet
+      - name: Compute tags and labels
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}
+          tags: |
+            type=raw,value=sha-${{ steps.commit-info.outputs.short_sha }}
+            type=ref,event=branch
+            type=ref,event=pr,prefix=pr-
+            type=raw,value=unverified-${{ github.run_id }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ steps.commit-info.outputs.full_sha }}
+            org.opencontainers.image.created=${{ steps.commit-info.outputs.build_date }}
+            org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
+            io.pipeline.scan-status=pending
+            io.pipeline.promoted=false
+
+      - name: Create and push multi-arch manifest
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create \
+            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}@sha256:%s ' *)
+
+      - name: Inspect manifest and capture digest
+        id: inspect
+        run: |
+          digest=$(docker buildx imagetools inspect \
+            ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}:sha-${{ steps.commit-info.outputs.short_sha }} \
+            --format '{{.Manifest.Digest}}')
+          echo "digest=${digest}" >> "$GITHUB_OUTPUT"
+
+      # SLSA build provenance attached to the registry image.
+      # Travels with the manifest when crane copies it to ECR later.
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}
+          subject-digest: ${{ steps.inspect.outputs.digest }}
+          push-to-registry: true
+
+      - name: Summary
+        run: |
+          {
+            echo "### Built and staged to GHCR"
+            echo ""
+            echo "**Digest:** \`${{ steps.inspect.outputs.digest }}\`"
+            echo ""
+            echo "**Pinned ref:**"
+            echo "\`\`\`"
+            echo "${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}@${{ steps.inspect.outputs.digest }}"
+            echo "\`\`\`"
+            echo ""
+            echo "**Tags:**"
+            echo "\`\`\`"
+            echo "${{ steps.meta.outputs.tags }}"
+            echo "\`\`\`"
+          } >> "$GITHUB_STEP_SUMMARY"

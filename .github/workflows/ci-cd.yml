@@ -1,7 +1,7 @@
 # Runs the full quality gate on every pull request.
 # Images are pushed to ECR with pr-<number> and sha-<hash> tags.
 
-name: Pull Request
+name: CI-CD
 
 on:
   pull_request:

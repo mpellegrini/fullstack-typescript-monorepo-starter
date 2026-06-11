@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@effect/platform": "0.96.1",
-    "effect": "3.21.2",
+    "effect": "3.21.3",
     "http-status": "2.1.0"
   },
   "devDependencies": {

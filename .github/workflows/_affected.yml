@@ -42,8 +42,6 @@ jobs:
           set -euo pipefail
 
           # Capture the raw JSON once, then derive the arrays and count.
-          # --skip-infer stops the `pnpm exec` shim printing a version banner
-          # onto stdout, which would otherwise corrupt the JSON.
           raw="$(pnpm exec turbo ls --affected --output=json)"
 
           packages="$(echo "$raw" | jq -c '[.packages.items[].name]')"

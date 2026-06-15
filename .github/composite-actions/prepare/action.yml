@@ -23,3 +23,27 @@ runs:
     - name: Copy env files
       shell: bash
       run: find apps -name ".env.example" -execdir cp {} .env \;
+
+    - name: Resolve affected base
+      shell: bash
+      run: |
+        if [ "${{ github.event_name }}" = "push" ]; then
+          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            # first push to the branch — no prior commit to diff
+            echo "TURBO_SCM_BASE=" >> "$GITHUB_ENV"
+          else
+            echo "TURBO_SCM_BASE=${{ github.event.before }}" >> "$GITHUB_ENV"
+          fi
+        else
+          echo "TURBO_SCM_BASE=origin/main" >> "$GITHUB_ENV"
+        fi
+
+    - name: List affected packages
+      shell: bash
+      run: |
+        echo "## Affected Packages" >> "$GITHUB_STEP_SUMMARY"
+        pnpm turbo ls --affected --output=json \
+          | jq -r '.packages.items[] | "- \(.name) (\(.path))"' \
+          >> "$GITHUB_STEP_SUMMARY"
+      env:
+        TURBO_SCM_HEAD: HEAD

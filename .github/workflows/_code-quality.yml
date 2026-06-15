@@ -6,11 +6,11 @@ on:
 permissions:
   contents: read
 
-# Resolve the base commit for Turborepo's `--affected` from the event payload.
-# `actions/checkout` (fetch-depth: 0) only creates the `origin/main` tracking ref,
-# not a local `main` branch, so Turbo cannot resolve the bare ref name `main`.
-env:
-  TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+## Resolve the base commit for Turborepo's `--affected` from the event payload.
+## `actions/checkout` (fetch-depth: 0) only creates the `origin/main` tracking ref,
+## not a local `main` branch, so Turbo cannot resolve the bare ref name `main`.
+#env:
+#  TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
 
 jobs:
   lint:

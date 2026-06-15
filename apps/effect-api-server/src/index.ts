@@ -10,4 +10,3 @@ HttpLive.pipe(
   Layer.launch,
   NodeRuntime.runMain({}),
 )
-// hello

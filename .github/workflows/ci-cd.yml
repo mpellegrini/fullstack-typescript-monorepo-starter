@@ -1,0 +1,33 @@
+name: ci-cd
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+    tags-ignore: ['**']
+
+# Cancel superseded runs on the same ref (e.g. new pushes to a PR)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─────────────────────────────────────────────
+  code-quality:
+    uses: ./.github/workflows/_code-quality.yml
+
+  # ─────────────────────────────────────────────
+  build:
+    needs: code-quality
+    permissions:
+      attestations: write
+      contents: read
+      id-token: write
+      packages: write
+    uses: ./.github/workflows/_docker-build-stage.yml
+    with:
+      build_args: |
+        APP_NAME=effect-api-server
+      image_name: flight-res/flight-res-mgmt-shop

@@ -6,6 +6,9 @@ on:
 permissions:
   contents: read
 
+env:
+  TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+
 jobs:
   lint:
     name: Lint
@@ -14,12 +17,14 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Prepare
         uses: ./.github/composite-actions/prepare
 
       - name: Run ESLint check
-        run: pnpm run lint
+        run: pnpm run lint --affected
 
       - name: Run Prettier check
         run: pnpm run format:check
@@ -31,12 +36,14 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Prepare
         uses: ./.github/composite-actions/prepare
 
       - name: Run type checks
-        run: pnpm run typecheck
+        run: pnpm run typecheck --affected
 
   test:
     name: Unit Test
@@ -45,9 +52,11 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Prepare
         uses: ./.github/composite-actions/prepare
 
       - name: Run unit tests
-        run: pnpm run test
+        run: pnpm run test --affected

@@ -5,7 +5,7 @@ runs:
   using: composite
   steps:
     - name: Install pnpm package manager
-      uses: pnpm/action-setup@v4
+      uses: pnpm/action-setup@v6
       with:
         run_install: false # Don't install yet, let caching work first
 

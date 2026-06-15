@@ -25,12 +25,12 @@
   },
   "dependencies": {
     "@effect/platform": "0.96.1",
-    "@effect/platform-node": "0.106.0",
+    "@effect/platform-node": "0.107.0",
     "drizzle-orm": "0.45.2",
-    "effect": "3.21.2",
+    "effect": "3.21.3",
     "pg": "8.21.0",
     "pg-error-enum": "2.0.1",
-    "sql-formatter": "15.8.0"
+    "sql-formatter": "15.8.1"
   },
   "devDependencies": {
     "@softwaretechnik/dbml-renderer": "1.0.31",

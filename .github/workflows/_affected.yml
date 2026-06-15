@@ -35,8 +35,6 @@ jobs:
       - name: Prepare
         uses: ./.github/composite-actions/prepare
 
-      # TURBO_SCM_BASE / TURBO_SCM_HEAD are exported by `prepare`, so
-      # `turbo ls --affected` diffs against the right range.
       - name: Compute affected packages
         id: affected
         shell: bash
@@ -46,7 +44,7 @@ jobs:
           # Capture the raw JSON once, then derive the arrays and count.
           # --skip-infer stops the `pnpm exec` shim printing a version banner
           # onto stdout, which would otherwise corrupt the JSON.
-          raw="$(pnpm exec turbo ls --affected --output=json --skip-infer)"
+          raw="$(pnpm exec turbo ls --affected --output=json)"
 
           packages="$(echo "$raw" | jq -c '[.packages.items[].name]')"
           paths="$(echo "$raw" | jq -c '[.packages.items[].path]')"

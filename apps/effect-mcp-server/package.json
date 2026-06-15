@@ -14,15 +14,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform-node": "4.0.0-beta.78",
-    "effect": "4.0.0-beta.78"
+    "@effect/platform-node": "4.0.0-beta.80",
+    "effect": "4.0.0-beta.80"
   },
   "devDependencies": {
     "@modelcontextprotocol/inspector": "0.22.0",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/node": "25.9.2",
+    "@types/node": "25.9.3",
     "vite": "8.0.16"
   }
 }

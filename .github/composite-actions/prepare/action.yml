@@ -23,3 +23,20 @@ runs:
     - name: Copy env files
       shell: bash
       run: find apps -name ".env.example" -execdir cp {} .env \;
+
+    # Export TURBO_SCM_BASE / TURBO_SCM_HEAD for every job that prepares, so any
+    # subsequent `turbo --affected` invocation diffs against the right range.
+    # On pull_request, github.sha is a temporary merge commit, so diff the PR
+    # base against the PR head. On push, diff against the previous commit.
+    - name: Resolve Turbo SCM range
+      shell: bash
+      env:
+        RESOLVED_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        RESOLVED_HEAD: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+      run: |
+        set -euo pipefail
+        {
+          echo "TURBO_SCM_BASE=${RESOLVED_BASE}"
+          echo "TURBO_SCM_HEAD=${RESOLVED_HEAD}"
+        } >> "$GITHUB_ENV"
+        echo "Turbo affected range: ${RESOLVED_BASE:-<none>} -> ${RESOLVED_HEAD:-HEAD}"

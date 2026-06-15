@@ -1,0 +1,76 @@
+name: Affected Packages
+
+on:
+  workflow_call:
+    outputs:
+      packages:
+        description: JSON array of affected package names.
+        value: ${{ jobs.affected.outputs.packages }}
+      paths:
+        description: JSON array of affected package paths.
+        value: ${{ jobs.affected.outputs.paths }}
+      count:
+        description: Number of affected packages.
+        value: ${{ jobs.affected.outputs.count }}
+
+permissions:
+  contents: read
+
+jobs:
+  affected:
+    name: Compute affected
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.affected.outputs.packages }}
+      paths: ${{ steps.affected.outputs.paths }}
+      count: ${{ steps.affected.outputs.count }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          # Full history is required, so Turborepo can diff against the base ref.
+          fetch-depth: 0
+
+      - name: Prepare
+        uses: ./.github/composite-actions/prepare
+
+      # TURBO_SCM_BASE / TURBO_SCM_HEAD are exported by `prepare`, so
+      # `turbo ls --affected` diffs against the right range.
+      - name: Compute affected packages
+        id: affected
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Capture the raw JSON once, then derive the arrays and count.
+          # --skip-infer stops the `pnpm exec` shim printing a version banner
+          # onto stdout, which would otherwise corrupt the JSON.
+          raw="$(pnpm exec turbo ls --affected --output=json --skip-infer)"
+
+          packages="$(echo "$raw" | jq -c '[.packages.items[].name]')"
+          paths="$(echo "$raw" | jq -c '[.packages.items[].path]')"
+          count="$(echo "$raw" | jq '.packages.count')"
+
+          {
+            echo "packages=${packages}"
+            echo "paths=${paths}"
+            echo "count=${count}"
+          } >> "$GITHUB_OUTPUT"
+
+          # Human-readable run summary.
+          {
+            echo "### 📦 Affected packages (${count})"
+            echo ""
+            echo "Comparing \`${TURBO_SCM_BASE:-<auto>}\` → \`${TURBO_SCM_HEAD:-HEAD}\`"
+            echo ""
+            if [ "$count" -eq 0 ]; then
+              echo "_No packages affected._"
+            else
+              echo "| Package | Path |"
+              echo "| --- | --- |"
+              echo "$raw" | jq -r '.packages.items[] | "| `\(.name)` | `\(.path)` |"'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          echo "Affected (${count}): ${packages}"

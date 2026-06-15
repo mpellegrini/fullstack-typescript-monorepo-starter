@@ -41,12 +41,19 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Capture the raw JSON once, then derive the arrays and count.
-          raw="$(pnpm exec turbo ls --affected --output=json)"
+          # `turbo query affected` is the supported successor to the deprecated
+          # `turbo ls --affected --output=json`. It reads TURBO_SCM_BASE/HEAD from
+          # the env (set by prepare). --skip-infer stops the `pnpm exec` shim
+          # printing a version banner onto stdout, which would corrupt the JSON.
+          #
+          # The result includes the workspace root as an item named "//" with an
+          # empty path; we filter it out so the array holds only real packages.
+          raw="$(pnpm exec turbo query affected --packages --skip-infer)"
+          items='[.data.affectedPackages.items[] | select(.path != "")]'
 
-          packages="$(echo "$raw" | jq -c '[.packages.items[].name]')"
-          paths="$(echo "$raw" | jq -c '[.packages.items[].path]')"
-          count="$(echo "$raw" | jq '.packages.count')"
+          packages="$(echo "$raw" | jq -c "${items} | map(.name)")"
+          paths="$(echo "$raw" | jq -c "${items} | map(.path)")"
+          count="$(echo "$packages" | jq 'length')"
 
           {
             echo "packages=${packages}"
@@ -65,7 +72,7 @@ jobs:
             else
               echo "| Package | Path |"
               echo "| --- | --- |"
-              echo "$raw" | jq -r '.packages.items[] | "| `\(.name)` | `\(.path)` |"'
+              echo "$raw" | jq -r "${items}[] | \"| \`\(.name)\` | \`\(.path)\` |\""
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 

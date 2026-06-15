@@ -1,4 +1,4 @@
-#name: Build and Stage to GHCR
+name: Build and Stage to GHCR
 
 # Builds a multi-platform image using native runners (no QEMU emulation):
 #   linux/amd64 → ubuntu-latest

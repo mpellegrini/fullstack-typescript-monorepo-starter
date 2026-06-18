@@ -121,6 +121,9 @@ jobs:
           platforms: ${{ matrix.platform }}
           build-args: |
             ${{ inputs.build_args }}
+            VCS_REF=${{ steps.commit-info.outputs.full_sha }}
+            BUILD_DATE=${{ steps.commit-info.outputs.build_date }}
+            VERSION=${{ steps.meta.outputs.version }}
           outputs: type=image,name=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }},push-by-digest=true,name-canonical=true,push=true
           labels: ${{ steps.meta.outputs.labels }}
           # Scope the cache per-platform so the two parallel matrix legs don't

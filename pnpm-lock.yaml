@@ -206,9 +206,6 @@ importers:
 
   apps/ha-dashboard:
     devDependencies:
-      '@packages/api':
-        specifier: workspace:*
-        version: link:../../packages/api
       '@packages/ui-lib-svelte':
         specifier: workspace:*
         version: link:../../packages/ui-lib-svelte

@@ -13,7 +13,6 @@
     "typecheck": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
-    "@packages/api": "workspace:*",
     "@packages/ui-lib-svelte": "workspace:*",
     "@sveltejs/adapter-auto": "7.0.1",
     "@sveltejs/kit": "2.65.0",

@@ -15,12 +15,20 @@ concurrency:
 
 jobs:
   # ─────────────────────────────────────────────
+  # Computes the affected packages once, up front. Exposes a JSON array
+  # (needs.affected.outputs.packages) for any downstream job to consume.
+  affected:
+    uses: ./.github/workflows/_affected.yml
+
+  # ─────────────────────────────────────────────
   code-quality:
     uses: ./.github/workflows/_code-quality.yml
 
   # ─────────────────────────────────────────────
   build:
-    needs: code-quality
+    needs: [code-quality, affected]
+    # Only build the image when its app (or one of its deps) is affected.
+    if: contains(fromJSON(needs.affected.outputs.packages), '@apps/effect-api-server')
     permissions:
       attestations: write
       contents: read

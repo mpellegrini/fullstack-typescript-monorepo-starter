@@ -9,7 +9,6 @@ COPY . .
 RUN TURBO_VERSION=$(node -p "require('./package.json').devDependencies.turbo") && \
     pnpm dlx turbo@${TURBO_VERSION} prune @apps/${APP_NAME} --docker
 
-
 # ---- Install deps & build using only the pruned subset ----
 FROM base AS builder
 ARG APP_NAME
@@ -30,6 +29,13 @@ WORKDIR /app
 ENV NODE_ENV=production
 COPY --chown=nonroot:nonroot --from=builder /repo/out/ .
 USER nonroot
+
+ARG VERSION=unknown
+ARG VCS_REF=unknown
+ARG BUILD_DATE=unknown
+ENV VCS_REF=${VCS_REF} \
+    BUILD_DATE=${BUILD_DATE} \
+    VERSION=${VERSION}
 
 EXPOSE 3000
 ENV PORT=3000

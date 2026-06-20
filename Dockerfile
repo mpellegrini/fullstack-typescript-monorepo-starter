@@ -30,10 +30,12 @@ ENV NODE_ENV=production
 COPY --chown=nonroot:nonroot --from=builder /repo/out/ .
 USER nonroot
 
+ARG APP_NAME=unknown
 ARG VERSION=unknown
 ARG VCS_REF=unknown
 ARG BUILD_DATE=unknown
-ENV VCS_REF=${VCS_REF} \
+ENV APP_NAME=${APP_NAME} \
+    VCS_REF=${VCS_REF} \
     BUILD_DATE=${BUILD_DATE} \
     VERSION=${VERSION}
 

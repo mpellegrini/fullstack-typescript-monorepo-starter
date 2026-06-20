@@ -26,7 +26,7 @@ on:
         description: 'Comma-separated severities that fail the build'
         required: false
         type: string
-        default: 'CRITICAL,HIGH'
+        default: 'CRITICAL'
       ignore_unfixed:
         description: 'Ignore CVEs that have no fix available'
         required: false

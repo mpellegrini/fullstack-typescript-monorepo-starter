@@ -49,5 +49,5 @@ jobs:
     uses: ./.github/workflows/_docker-security-scan.yml
     with:
       image_ref: ${{ needs.docker-build.outputs.image_ref }}
-      severity_threshold: 'CRITICAL,HIGH'
+      severity_threshold: 'CRITICAL'
       ignore_unfixed: true

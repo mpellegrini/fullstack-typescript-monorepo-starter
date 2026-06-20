@@ -42,6 +42,10 @@ jobs:
 
   scan:
     needs: docker-build
+    permissions:
+      contents: read
+      packages: read # pull from GHCR
+      security-events: write # upload SARIF to GitHub Security tab
     uses: ./.github/workflows/_docker-security-scan.yml
     with:
       image_ref: ${{ needs.docker-build.outputs.image_ref }}

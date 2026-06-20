@@ -44,6 +44,10 @@ env:
 jobs:
   scan:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read # pull from GHCR
+      security-events: write # upload SARIF to GitHub Security tab
     outputs:
       passed: ${{ steps.gate.outputs.passed }}
 

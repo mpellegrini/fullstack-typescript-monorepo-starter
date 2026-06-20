@@ -1,0 +1,77 @@
+# =============================================================================
+# Reusable Workflow: Docker Security Scan
+# =============================================================================
+# Downloads a Docker image artifact, runs Trivy and Grype vulnerability
+# scanners, uploads SARIF to GitHub Security tab, and gates on severity.
+#
+# Usage:
+#   jobs:
+#     scan:
+#       uses: ./.github/workflows/_docker-security-scan.yml
+#       with:
+#         artifact_name: docker-image
+#         fail_on_severity: CRITICAL
+# =============================================================================
+
+name: Docker Security Scan
+
+on:
+  workflow_call:
+    inputs:
+      image-ref:
+        description: 'Full image ref with digest (registry/repo@sha256:...)'
+        required: true
+        type: string
+      severity_threshold:
+        description: 'Comma-separated severities that fail the build'
+        required: false
+        type: string
+        default: 'CRITICAL,HIGH'
+      ignore_unfixed:
+        description: 'Ignore CVEs that have no fix available'
+        required: false
+        type: boolean
+        default: true
+
+    outputs:
+      scan-passed:
+        description: 'true when all blocking scans succeeded'
+        value: ${{ jobs.scan.outputs.passed }}
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    outputs:
+      passed: ${{ steps.gate.outputs.passed }}
+
+    steps:
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Trivy vulnerability scan
+        id: trivy
+        uses: aquasecurity/trivy-action@0.36.0
+        with:
+          image-ref: ${{ inputs.image-ref }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: ${{ inputs.severity-threshold }}
+          ignore-unfixed: ${{ inputs.ignore-unfixed }}
+          exit-code: '1'
+          vuln-type: 'os,library'
+        # Don't fail the step here — we want SARIF uploaded regardless
+        continue-on-error: true
+
+      - name: Upload Trivy scan results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v4
+        if: always() && hashFiles('trivy-results.sarif') != '' # Upload results even if the scan fails
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: trivy-container

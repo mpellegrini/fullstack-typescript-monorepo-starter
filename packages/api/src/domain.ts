@@ -13,6 +13,10 @@ export class Task extends Schema.Class<Task>('Task')({
 }) {}
 
 export class BuildInfo extends Schema.Class<BuildInfo>('Info')({
+  appName: Schema.String.annotations({
+    description: 'Name of the running service',
+    examples: ['effect-api-server'],
+  }),
   buildDate: Schema.String.annotations({
     description: 'ISO-8601 UTC timestamp of when the service was built',
     examples: ['2025-07-25T12:30:18Z'],

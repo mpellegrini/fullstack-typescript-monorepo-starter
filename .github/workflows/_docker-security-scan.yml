@@ -55,19 +55,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Trivy vulnerability scan
+      - name: Run Trivy vulnerability scanner
         id: trivy
-        uses: aquasecurity/trivy-action@0.36.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{ inputs.image-ref }}
+          image-ref: ${{ inputs.image_ref }}
           format: 'sarif'
           output: 'trivy-results.sarif'
-          severity: ${{ inputs.severity-threshold }}
-          ignore-unfixed: ${{ inputs.ignore-unfixed }}
-          exit-code: '1'
+          ignore-unfixed: ${{ inputs.ignore_unfixed }}
           vuln-type: 'os,library'
-        # Don't fail the step here — we want SARIF uploaded regardless
-        continue-on-error: true
+          severity: ${{ inputs.severity_threshold }}
+          exit-code: '1'
+        continue-on-error: true # Don't fail the step here — we want SARIF uploaded regardless
 
       - name: Upload Trivy scan results to GitHub Security
         uses: github/codeql-action/upload-sarif@v4
@@ -75,3 +74,32 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
           category: trivy-container
+
+      - name: Trivy misconfiguration scan (image config)
+        id: trivy-config
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ inputs.image_ref }}
+          scanners: 'misconfig,secret'
+          format: 'table'
+          exit-code: '1'
+        continue-on-error: true
+
+      - name: Gate decision
+        id: gate
+        run: |
+          TRIVY="${{ steps.trivy.outcome }}"
+          CONFIG="${{ steps.trivy-config.outcome }}"
+
+          echo "Trivy vuln scan:    $TRIVY"
+          echo "Trivy config/secret: $CONFIG"
+
+          # vuln + config/secret are blocking.
+          if [[ "$TRIVY" == "success" && "$CONFIG" == "success" ]]; then
+            echo "passed=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Scans passed — image is eligible for promotion"
+          else
+            echo "passed=false" >> "$GITHUB_OUTPUT"
+            echo "::error::Scans failed — image will NOT be promoted to ECR"
+            exit 1
+          fi

@@ -18,7 +18,7 @@ name: Docker Security Scan
 on:
   workflow_call:
     inputs:
-      image-ref:
+      image_ref:
         description: 'Full image ref with digest (registry/repo@sha256:...)'
         required: true
         type: string

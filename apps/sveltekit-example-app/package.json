@@ -19,7 +19,7 @@
   "devDependencies": {
     "@packages/ui-lib-svelte": "workspace:*",
     "@sveltejs/adapter-node": "5.5.4",
-    "@sveltejs/kit": "2.65.1",
+    "@sveltejs/kit": "2.66.0",
     "@sveltejs/vite-plugin-svelte": "7.1.2",
     "@tailwindcss/vite": "4.3.1",
     "@toolchain/eslint-config": "workspace:*",

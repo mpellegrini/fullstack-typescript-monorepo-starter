@@ -1,4 +1,4 @@
-FROM node:24.15.0-trixie-slim AS base
+FROM node:24.17.0-trixie-slim AS base
 RUN corepack enable pnpm
 WORKDIR /repo
 

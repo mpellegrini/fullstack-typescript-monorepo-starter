@@ -25,7 +25,7 @@ jobs:
     uses: ./.github/workflows/_code-quality.yml
 
   # ─────────────────────────────────────────────
-  build:
+  docker-build:
     needs: [code-quality, affected]
     # Only build the image when its app (or one of its deps) is affected.
     if: contains(fromJSON(needs.affected.outputs.packages), '@apps/effect-api-server')
@@ -39,3 +39,13 @@ jobs:
       build_args: |
         APP_NAME=effect-api-server
       image_name: flight-res/flight-res-mgmt-shop
+
+  scan:
+    needs: docker-build
+    permissions:
+      contents: read
+      packages: read # pull from GHCR
+      security-events: write # upload SARIF to GitHub Security tab
+    uses: ./.github/workflows/_docker-security-scan.yml
+    with:
+      image_ref: ${{ needs.docker-build.outputs.image_ref }}

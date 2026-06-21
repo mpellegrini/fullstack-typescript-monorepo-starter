@@ -1,0 +1,58 @@
+# =============================================================================
+# GHCR Cleanup: prune untagged container versions
+# =============================================================================
+# Removes dangling (untagged) image versions from GHCR on a schedule.
+#
+# Why a dedicated action instead of `actions/delete-package-versions`?
+# Our images are multi-arch (a manifest *index* plus one child manifest per
+# platform) and carry provenance/SBOM attestations. The per-platform children
+# and attestations are themselves UNTAGGED — only the index carries the tag.
+# A naive "delete all untagged" deletes children still referenced by a tagged
+# index and corrupts the tagged image. `dataaxiom/ghcr-cleanup-action` is
+# multi-arch/referrer aware: it keeps untagged manifests referenced by a tagged
+# image and only deletes the truly dangling ones.
+# =============================================================================
+
+name: ghcr-cleanup
+
+on:
+  schedule:
+    # Weekly, Sundays at 03:00 UTC.
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Log what would be deleted without deleting anything'
+        required: false
+        type: boolean
+        default: true
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: read
+      packages: write # delete package versions from GHCR
+
+    steps:
+      - name: Prune untagged GHCR versions
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          owner: ${{ github.repository_owner }}
+          # Container packages to clean. Supports comma-separated names and
+          # `*`/`?` globs. Add new image names here as the repo grows.
+          packages: 'flight-res/*'
+          # Delete dangling manifests; multi-arch children + attestations that
+          # belong to a tagged image are preserved automatically.
+          delete-untagged: true
+          # Re-link and verify multi-arch/referrer integrity after deletion.
+          validate: true
+          # Scheduled runs delete for real; manual runs default to a preview.
+          dry-run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}

@@ -83,13 +83,13 @@ jobs:
       # -------------------------------------------------------------------
       # Severity gate: fail on configured threshold
       # -------------------------------------------------------------------
-      - name: Fail on ${{ inputs.fail_on_severity }} vulnerabilities
+      - name: Fail on ${{ inputs.severity_threshold }} vulnerabilities
         id: trivy
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ inputs.image_ref }}
           format: 'table'
-          severity: ${{ inputs.fail_on_severity }}
+          severity: ${{ inputs.severity_threshold }}
           exit-code: '1'
           ignore-unfixed: ${{ inputs.ignore_unfixed }}
         continue-on-error: true

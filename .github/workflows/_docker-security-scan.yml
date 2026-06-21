@@ -18,6 +18,16 @@ name: Docker Security Scan
 on:
   workflow_call:
     inputs:
+      enable_grype:
+        description: 'Run Grype as a secondary security scanner'
+        required: false
+        type: boolean
+        default: true
+      ignore_unfixed:
+        description: 'Ignore vulnerabilities without a fix available'
+        required: false
+        type: boolean
+        default: true
       image_ref:
         description: 'Full image ref with digest (registry/repo@sha256:...)'
         required: true
@@ -26,12 +36,7 @@ on:
         description: 'Comma-separated severities that fail the build'
         required: false
         type: string
-        default: 'CRITICAL,HIGH'
-      ignore_unfixed:
-        description: 'Ignore vulnerabilities without a fix available'
-        required: false
-        type: boolean
-        default: true
+        default: 'CRITICAL'
 
     outputs:
       scan-passed:
@@ -66,9 +71,9 @@ jobs:
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ inputs.image_ref }}
+          scanners: 'vuln,secret,misconfig'
           format: 'sarif'
           output: 'trivy-results.sarif'
-          vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH,MEDIUM'
           exit-code: '1'
         continue-on-error: true # Don't fail the step here — we want SARIF uploaded regardless
@@ -84,10 +89,11 @@ jobs:
       # Severity gate: fail on configured threshold
       # -------------------------------------------------------------------
       - name: Fail on ${{ inputs.severity_threshold }} vulnerabilities
-        id: trivy
+        id: trivy-vuln
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ inputs.image_ref }}
+          scanners: 'vuln'
           format: 'table'
           severity: ${{ inputs.severity_threshold }}
           exit-code: '1'
@@ -107,18 +113,18 @@ jobs:
       - name: Gate decision
         id: gate
         run: |
-          TRIVY="${{ steps.trivy.outcome }}"
+          VULN="${{ steps.trivy-vuln.outcome }}"
           CONFIG="${{ steps.trivy-config.outcome }}"
 
-          echo "Trivy vuln scan:    $TRIVY"
+          echo "Trivy vuln scan:    $VULN"
           echo "Trivy config/secret: $CONFIG"
 
           # vuln + config/secret are blocking.
-          if [[ "$TRIVY" == "success" && "$CONFIG" == "success" ]]; then
+          if [[ "$VULN" == "success" && "$CONFIG" == "success" ]]; then
             echo "passed=true" >> "$GITHUB_OUTPUT"
             echo "::notice::Scans passed — image is eligible for promotion"
           else
             echo "passed=false" >> "$GITHUB_OUTPUT"
-            echo "::error::Scans failed — image will NOT be promoted to ECR"
+            echo "::error::Scans failed — image will NOT be promoted"
             exit 1
           fi

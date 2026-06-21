@@ -45,7 +45,9 @@ export const toTaggedErrorOrThrow = (cause: unknown): DatabaseConnectionError | 
     if (rootCause instanceof pg.DatabaseError) {
       const type = matchPgError(rootCause)
       return new DatabaseError({ cause: rootCause, params: cause.params, query: cause.query, type })
-    } else if (
+    }
+
+    if (
       rootCause instanceof AggregateError &&
       rootCause.errors.some(
         (err) => err instanceof Error && 'code' in err && err.code === 'ECONNREFUSED',

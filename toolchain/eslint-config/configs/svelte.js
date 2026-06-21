@@ -17,6 +17,8 @@ export default config(
     rules: {
       'svelte/block-lang': ['error', { script: 'ts', style: ['postcss', 'css'] }],
       'svelte/sort-attributes': 'error',
+      'unicorn/consistent-boolean-name': 'off', // Crashes on the Svelte AST ("parameters is not iterable"); keep enabled for .ts/.js only.
+      'unicorn/no-top-level-assignment-in-function': 'off', // Reassigning a top-level `$state` rune from an event handler is idiomatic Svelte 5.
     },
   },
   {

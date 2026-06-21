@@ -6,7 +6,7 @@
   const { data }: PageProps = $props()
 
   const signIn = (): void => {
-    globalThis.location.assign(data.signInUrl)
+    location.assign(data.signInUrl)
   }
 </script>
 

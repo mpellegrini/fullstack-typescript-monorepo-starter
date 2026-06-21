@@ -15,6 +15,7 @@ const envSchema = z.object({
 
 export type Env = z.infer<typeof envSchema>
 
+// eslint-disable-next-line unicorn/no-top-level-side-effects -- demo purposes only
 dotenvConfig()
 
 const parsedEnv = envSchema.safeParse(process.env)

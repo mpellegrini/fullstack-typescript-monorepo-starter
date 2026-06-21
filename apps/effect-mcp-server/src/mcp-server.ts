@@ -1,8 +1,5 @@
-import { NodeServices } from '@effect/platform-node'
-import * as NodeRuntime from '@effect/platform-node/NodeRuntime'
 import * as Effect from 'effect/Effect'
 import * as Layer from 'effect/Layer'
-import * as Logger from 'effect/Logger'
 import * as Schema from 'effect/Schema'
 import * as McpServer from 'effect/unstable/ai/McpServer'
 import * as Tool from 'effect/unstable/ai/Tool'
@@ -51,13 +48,3 @@ const ToolkitLayer = toolkit
   .pipe(Layer.provide(MyService.layer))
 
 export const McpServerLayer = McpServer.toolkit(toolkit).pipe(Layer.provide(ToolkitLayer))
-
-McpServer.layerStdio({
-  name: 'Demo Server',
-  version: '0.0.0',
-}).pipe(
-  Layer.provide([McpServerLayer, NodeServices.layer]),
-  Layer.provide(Layer.succeed(Logger.LogToStderr)(true)),
-  Layer.launch,
-  NodeRuntime.runMain,
-)

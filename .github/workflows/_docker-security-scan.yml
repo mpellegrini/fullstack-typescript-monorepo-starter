@@ -28,7 +28,7 @@ on:
         type: string
         default: 'CRITICAL,HIGH'
       ignore_unfixed:
-        description: 'Ignore CVEs that have no fix available'
+        description: 'Ignore vulnerabilities without a fix available'
         required: false
         type: boolean
         default: true
@@ -59,16 +59,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # -------------------------------------------------------------------
+      # Trivy: primary vulnerability scanner (SARIF output)
+      # -------------------------------------------------------------------
       - name: Run Trivy vulnerability scanner
-        id: trivy
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ inputs.image_ref }}
           format: 'sarif'
           output: 'trivy-results.sarif'
-          ignore-unfixed: ${{ inputs.ignore_unfixed }}
           vuln-type: 'os,library'
-          severity: ${{ inputs.severity_threshold }}
+          severity: 'CRITICAL,HIGH,MEDIUM'
           exit-code: '1'
         continue-on-error: true # Don't fail the step here — we want SARIF uploaded regardless
 
@@ -78,6 +79,20 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
           category: trivy-container
+
+      # -------------------------------------------------------------------
+      # Severity gate: fail on configured threshold
+      # -------------------------------------------------------------------
+      - name: Fail on ${{ inputs.fail_on_severity }} vulnerabilities
+        id: trivy
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ inputs.image_ref }}
+          format: 'table'
+          severity: ${{ inputs.fail_on_severity }}
+          exit-code: '1'
+          ignore-unfixed: ${{ inputs.ignore_unfixed }}
+        continue-on-error: true
 
       - name: Trivy misconfiguration scan (image config)
         id: trivy-config

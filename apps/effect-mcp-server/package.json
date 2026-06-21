@@ -9,7 +9,7 @@
     "clean": "del .turbo coverage build",
     "dev": "node --watch src/index.ts",
     "lint": "eslint ",
-    "mcp-inspector": "mcp-inspector node src/mcp-server.ts",
+    "mcp-inspector": "mcp-inspector node src/main.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

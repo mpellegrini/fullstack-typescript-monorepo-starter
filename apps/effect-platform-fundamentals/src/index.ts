@@ -23,6 +23,7 @@ export const httpLayer = HttpLayerRouter.serve(allRoutes).pipe(
   Layer.provide(NodeHttpServer.layer(createServer, { port: 3000 })),
 )
 
+// eslint-disable-next-line unicorn/no-top-level-side-effects -- demo purposes only
 Layer.launch(httpLayer).pipe(
   //
   Effect.tapErrorCause(Effect.logFatal),

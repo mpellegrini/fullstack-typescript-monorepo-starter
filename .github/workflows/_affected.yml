@@ -20,6 +20,7 @@ jobs:
   affected:
     name: Compute affected
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       packages: ${{ steps.affected.outputs.packages }}
       paths: ${{ steps.affected.outputs.paths }}

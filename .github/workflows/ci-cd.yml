@@ -34,12 +34,8 @@ jobs:
   # ─────────────────────────────────────────────
   docker-build:
     needs: [code-quality, affected]
-    # Only build the image when its app (or one of its deps) is affected, and
-    # never for fork PRs: the staging pipeline pushes per-arch digests to GHCR,
-    # but fork PRs receive a read-only GITHUB_TOKEN and would fail on push.
-    if: >-
-      contains(fromJSON(needs.affected.outputs.packages), '@apps/effect-api-server')
-      && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false)
+    # Only build the image when its app (or one of its deps) is affected.
+    # if: contains(fromJSON(needs.affected.outputs.packages), '@apps/effect-api-server')
     permissions:
       attestations: write
       contents: read

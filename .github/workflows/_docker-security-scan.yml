@@ -146,11 +146,6 @@ jobs:
           VULN_ARM64="${{ steps.trivy-vuln-arm64.outcome }}"
           CONFIG="${{ steps.trivy-config.outcome }}"
 
-          echo "Trivy vuln scan on amd64:    $VULN_AMD64"
-          echo "Trivy vuln scan on arm64:    $VULN_ARM64"
-          echo "Trivy config/secret:         $CONFIG"
-
-          # vuln + config/secret are blocking.
           if [[ "$VULN_AMD64" == "success" && "$VULN_ARM64" == "success" && "$CONFIG" == "success" ]]; then
             PASSED=true
           else
@@ -162,10 +157,11 @@ jobs:
           {
             echo "### Docker security scan"
             echo ""
+            echo "**Scanned image:** \`${{ inputs.image_ref }}\`"
             echo "| Scan | Result |"
             echo "| --- | --- |"
-            echo "| Trivy vuln (amd64) | $(icon "$VULN_AMD64") |"
-            echo "| Trivy vuln (arm64) | $(icon "$VULN_ARM64") |"
+            echo "| Trivy vulnerability (amd64) | $(icon "$VULN_AMD64") |"
+            echo "| Trivy vulnerability (arm64) | $(icon "$VULN_ARM64") |"
             echo "| Trivy config/secret | $(icon "$CONFIG") |"
             echo ""
             if [[ "$PASSED" == "true" ]]; then

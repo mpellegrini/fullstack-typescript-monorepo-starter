@@ -54,6 +54,11 @@ jobs:
           # Delete dangling manifests; multi-arch children + attestations that
           # belong to a tagged image are preserved automatically.
           delete-untagged: true
+          # Safety margin against the build race: a multi-arch build pushes
+          # per-arch child digests (briefly untagged/unreferenced) before the
+          # merge job tags the index. Never prune anything newer than this so a
+          # cleanup run can't delete an in-flight build's children.
+          older-than: 1 day
           # Re-link and verify multi-arch/referrer integrity after deletion.
           validate: true
           # Scheduled runs delete for real; manual runs default to a preview.

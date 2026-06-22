@@ -46,9 +46,11 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           owner: ${{ github.repository_owner }}
-          # Container packages to clean. Supports comma-separated names and
-          # `*`/`?` globs. Add new image names here as the repo grows.
-          packages: 'flight-res/*'
+          # Container packages to clean. Comma-separated explicit names (no
+          # globs) so the default GITHUB_TOKEN suffices — glob expansion would
+          # require `expand-packages: true` and a classic PAT. Add new image
+          # names here as the repo grows.
+          packages: 'flight-res/flight-res-mgmt-shop'
           # Delete dangling manifests; multi-arch children + attestations that
           # belong to a tagged image are preserved automatically.
           delete-untagged: true

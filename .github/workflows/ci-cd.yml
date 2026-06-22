@@ -35,7 +35,7 @@ jobs:
   docker-build:
     needs: [code-quality, affected]
     # Only build the image when its app (or one of its deps) is affected.
-    # if: contains(fromJSON(needs.affected.outputs.packages), '@apps/effect-api-server')
+    if: contains(fromJSON(needs.affected.outputs.packages), '@apps/effect-api-server')
     permissions:
       attestations: write
       contents: read

@@ -1,16 +1,17 @@
 # =============================================================================
 # Reusable Workflow: Docker Security Scan
 # =============================================================================
-# Downloads a Docker image artifact, runs Trivy and Grype vulnerability
-# scanners, uploads SARIF to GitHub Security tab, and gates on severity.
+# Pulls a Docker image from GHCR by its pinned ref, runs Trivy (vuln, secret,
+# and misconfig scanners), uploads SARIF to the GitHub Security tab, and gates
+# the build on the configured severity threshold.
 #
 # Usage:
 #   jobs:
 #     scan:
 #       uses: ./.github/workflows/_docker-security-scan.yml
 #       with:
-#         artifact_name: docker-image
-#         fail_on_severity: CRITICAL
+#         image_ref: ghcr.io/owner/name@sha256:...
+#         severity_threshold: CRITICAL
 # =============================================================================
 
 name: Docker Security Scan

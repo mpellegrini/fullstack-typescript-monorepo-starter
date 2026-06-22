@@ -148,10 +148,34 @@ jobs:
 
           echo "Trivy vuln scan on amd64:    $VULN_AMD64"
           echo "Trivy vuln scan on arm64:    $VULN_ARM64"
-          echo "Trivy config/secret: $CONFIG"
+          echo "Trivy config/secret:         $CONFIG"
 
           # vuln + config/secret are blocking.
           if [[ "$VULN_AMD64" == "success" && "$VULN_ARM64" == "success" && "$CONFIG" == "success" ]]; then
+            PASSED=true
+          else
+            PASSED=false
+          fi
+
+          icon() { [[ "$1" == "success" ]] && echo "✅ pass" || echo "❌ fail"; }
+
+          {
+            echo "### Docker security scan"
+            echo ""
+            echo "| Scan | Result |"
+            echo "| --- | --- |"
+            echo "| Trivy vuln (amd64) | $(icon "$VULN_AMD64") |"
+            echo "| Trivy vuln (arm64) | $(icon "$VULN_ARM64") |"
+            echo "| Trivy config/secret | $(icon "$CONFIG") |"
+            echo ""
+            if [[ "$PASSED" == "true" ]]; then
+              echo "**Gate:** ✅ passed — image is eligible for promotion"
+            else
+              echo "**Gate:** ❌ failed — image will NOT be promoted"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [[ "$PASSED" == "true" ]]; then
             echo "passed=true" >> "$GITHUB_OUTPUT"
             echo "::notice::Scans passed — image is eligible for promotion"
           else

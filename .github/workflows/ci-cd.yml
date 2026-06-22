@@ -8,10 +8,17 @@ on:
     branches: [main]
     tags-ignore: ['**']
 
-# Cancel superseded runs on the same ref (e.g. new pushes to a PR)
+# Cancel superseded PR runs on the same ref (e.g. new pushes to a PR), but let
+# main builds run to completion — they push images, attestations, and tags that
+# must not be interrupted mid-publish.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Default-deny at the workflow root; jobs that need more elevate per job.
+# contents: read is the minimum for affected/code-quality to check out the repo.
+permissions:
+  contents: read
 
 jobs:
   # ─────────────────────────────────────────────

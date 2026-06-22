@@ -88,8 +88,8 @@ jobs:
       # -------------------------------------------------------------------
       # Severity gate: fail on configured threshold
       # -------------------------------------------------------------------
-      - name: Fail on ${{ inputs.severity_threshold }} vulnerabilities
-        id: trivy-vuln
+      - name: Fail on ${{ inputs.severity_threshold }} vulnerabilities in amd64
+        id: trivy-vuln-amd64
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ inputs.image_ref }}
@@ -98,9 +98,29 @@ jobs:
           severity: ${{ inputs.severity_threshold }}
           exit-code: '1'
           ignore-unfixed: ${{ inputs.ignore_unfixed }}
-        # DB was just fetched/cached by the SARIF scan above; reuse it instead
-        # of re-downloading.
+        # DB was just fetched/cached by the SARIF scan above;
+        # force reuse instead of re-downloading.
         env:
+          TRIVY_PLATFORM: 'linux/amd64'
+          TRIVY_SKIP_DB_UPDATE: true
+          TRIVY_SKIP_JAVA_DB_UPDATE: true
+        continue-on-error: true
+
+      # -------------------------------------------------------------------
+      # Severity gate: fail on configured threshold
+      # -------------------------------------------------------------------
+      - name: Fail on ${{ inputs.severity_threshold }} vulnerabilities in arm64
+        id: trivy-vuln-arm64
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ inputs.image_ref }}
+          scanners: 'vuln'
+          format: 'table'
+          severity: ${{ inputs.severity_threshold }}
+          exit-code: '1'
+          ignore-unfixed: ${{ inputs.ignore_unfixed }}
+        env:
+          TRIVY_PLATFORM: 'linux/arm64'
           TRIVY_SKIP_DB_UPDATE: true
           TRIVY_SKIP_JAVA_DB_UPDATE: true
         continue-on-error: true
@@ -122,14 +142,16 @@ jobs:
       - name: Gate decision
         id: gate
         run: |
-          VULN="${{ steps.trivy-vuln.outcome }}"
+          VULN_AMD64="${{ steps.trivy-vuln-amd64.outcome }}"
+          VULN_ARM64="${{ steps.trivy-vuln-arm64.outcome }}"
           CONFIG="${{ steps.trivy-config.outcome }}"
 
-          echo "Trivy vuln scan:    $VULN"
+          echo "Trivy vuln scan on amd64:    $VULN_AMD64"
+          echo "Trivy vuln scan on arm64:    $VULN_ARM64"
           echo "Trivy config/secret: $CONFIG"
 
           # vuln + config/secret are blocking.
-          if [[ "$VULN" == "success" && "$CONFIG" == "success" ]]; then
+          if [[ "$VULN_AMD64" == "success" && "$VULN_ARM64" == "success" && "$CONFIG" == "success" ]]; then
             echo "passed=true" >> "$GITHUB_OUTPUT"
             echo "::notice::Scans passed — image is eligible for promotion"
           else

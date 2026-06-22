@@ -62,7 +62,11 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # -------------------------------------------------------------------
-      # Trivy: primary vulnerability scanner (SARIF output)
+      # Trivy: primary vulnerability scanner (SARIF output). trivy-action
+      # caches the vulnerability DB by default (cache-dir defaults to
+      # $GITHUB_WORKSPACE/.cache/trivy), so this is the only step that needs to
+      # fetch/refresh it; the two gate scans below reuse it via the
+      # TRIVY_SKIP_*_DB_UPDATE env vars.
       # -------------------------------------------------------------------
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@v0.36.0
@@ -94,6 +98,11 @@ jobs:
           severity: ${{ inputs.severity_threshold }}
           exit-code: '1'
           ignore-unfixed: ${{ inputs.ignore_unfixed }}
+        # DB was just fetched/cached by the SARIF scan above; reuse it instead
+        # of re-downloading.
+        env:
+          TRIVY_SKIP_DB_UPDATE: true
+          TRIVY_SKIP_JAVA_DB_UPDATE: true
         continue-on-error: true
 
       - name: Trivy misconfiguration scan (image config)
@@ -104,6 +113,10 @@ jobs:
           scanners: 'misconfig,secret'
           format: 'table'
           exit-code: '1'
+        # No vuln DB needed here, but skip the update regardless for speed.
+        env:
+          TRIVY_SKIP_DB_UPDATE: true
+          TRIVY_SKIP_JAVA_DB_UPDATE: true
         continue-on-error: true
 
       - name: Gate decision

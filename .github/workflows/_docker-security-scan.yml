@@ -158,6 +158,8 @@ jobs:
             echo "### Docker security scan"
             echo ""
             echo "**Scanned image:** \`${{ inputs.image_ref }}\`"
+            echo "**Severity threshold:** \`${{ inputs.severity_threshold }}\`"
+            echo ""
             echo "| Scan | Result |"
             echo "| --- | --- |"
             echo "| Trivy vulnerability (amd64) | $(icon "$VULN_AMD64") |"

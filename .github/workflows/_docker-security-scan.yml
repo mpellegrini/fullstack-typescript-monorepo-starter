@@ -62,11 +62,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # -------------------------------------------------------------------
-      # Trivy: primary vulnerability scanner (SARIF output). trivy-action
-      # caches the vulnerability DB by default (cache-dir defaults to
-      # $GITHUB_WORKSPACE/.cache/trivy), so this is the only step that needs to
-      # fetch/refresh it; the two gate scans below reuse it via the
-      # TRIVY_SKIP_*_DB_UPDATE env vars.
+      # Report pass: never fail the build, even if the scan fails,
+      # just feeds the GitHub Security tab. Scans the runner's native
+      # platform (linux/amd64), good enough for visibility/triage.
       # -------------------------------------------------------------------
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@v0.36.0
@@ -86,7 +84,7 @@ jobs:
           category: trivy-container
 
       # -------------------------------------------------------------------
-      # Severity gate: fail on configured threshold
+      # Severity gate (amd64): fail on configured severity threshold
       # -------------------------------------------------------------------
       - name: Fail on ${{ inputs.severity_threshold }} vulnerabilities in amd64
         id: trivy-vuln-amd64
@@ -98,16 +96,12 @@ jobs:
           severity: ${{ inputs.severity_threshold }}
           exit-code: '1'
           ignore-unfixed: ${{ inputs.ignore_unfixed }}
-        # DB was just fetched/cached by the SARIF scan above;
-        # force reuse instead of re-downloading.
         env:
           TRIVY_PLATFORM: 'linux/amd64'
-          TRIVY_SKIP_DB_UPDATE: true
-          TRIVY_SKIP_JAVA_DB_UPDATE: true
         continue-on-error: true
 
       # -------------------------------------------------------------------
-      # Severity gate: fail on configured threshold
+      # Severity gate (arm64): fail on configured severity threshold
       # -------------------------------------------------------------------
       - name: Fail on ${{ inputs.severity_threshold }} vulnerabilities in arm64
         id: trivy-vuln-arm64
@@ -121,8 +115,6 @@ jobs:
           ignore-unfixed: ${{ inputs.ignore_unfixed }}
         env:
           TRIVY_PLATFORM: 'linux/arm64'
-          TRIVY_SKIP_DB_UPDATE: true
-          TRIVY_SKIP_JAVA_DB_UPDATE: true
         continue-on-error: true
 
       - name: Trivy misconfiguration scan (image config)
@@ -133,10 +125,6 @@ jobs:
           scanners: 'misconfig,secret'
           format: 'table'
           exit-code: '1'
-        # No vuln DB needed here, but skip the update regardless for speed.
-        env:
-          TRIVY_SKIP_DB_UPDATE: true
-          TRIVY_SKIP_JAVA_DB_UPDATE: true
         continue-on-error: true
 
       - name: Gate decision

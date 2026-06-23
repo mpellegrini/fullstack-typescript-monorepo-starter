@@ -1,9 +1,17 @@
 # =============================================================================
 # Reusable Workflow: Docker Security Scan
 # =============================================================================
-# Pulls a Docker image from GHCR by its pinned ref, runs Trivy (vuln, secret,
-# and misconfig scanners), uploads SARIF to the GitHub Security tab, and gates
-# the build on the configured severity threshold.
+# Vulnerability-scans an image that has already been staged to GHCR, addressing
+# it by its immutable digest. Nothing is rebuilt — Trivy reads the exact bytes
+# from the registry. This is the gate that decides whether an image is allowed
+# to be promoted: if the gate step finds vulnerabilities at/above the
+# configured severity, the job fails, and any downstream `promote` job that
+# `needs:` this one is skipped.
+#
+# Multiple Trivy passes run intentionally:
+#   1. report always uploads SARIF to the Security tab (never fails the job)
+#   2. gate for each platform (amd64, arm64) vulnerability scan and misconfiguration scan
+# The DB and image layers are cached after the first pass, so the others are inexpensive.
 #
 # Usage:
 #   jobs:
@@ -13,7 +21,6 @@
 #         image_ref: ghcr.io/owner/name@sha256:...
 #         severity_threshold: CRITICAL
 # =============================================================================
-
 name: Docker Security Scan
 
 on:

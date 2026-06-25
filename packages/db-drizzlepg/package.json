@@ -28,9 +28,9 @@
     "@effect/platform-node": "0.107.0",
     "drizzle-orm": "0.45.2",
     "effect": "3.21.4",
-    "pg": "8.21.0",
+    "pg": "8.22.0",
     "pg-error-enum": "2.0.1",
-    "sql-formatter": "15.8.1"
+    "sql-formatter": "15.8.2"
   },
   "devDependencies": {
     "@softwaretechnik/dbml-renderer": "1.0.31",

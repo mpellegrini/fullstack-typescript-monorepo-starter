@@ -18,10 +18,14 @@ permissions: {}
 jobs:
   # ─────────────────────────────────────────────
   compute-affected:
+    permissions:
+      contents: read
     uses: ./.github/workflows/_compute-affected.yml
 
   # ─────────────────────────────────────────────
   code-quality:
+    permissions:
+      contents: read
     uses: ./.github/workflows/_code-quality.yml
 
   # ─────────────────────────────────────────────

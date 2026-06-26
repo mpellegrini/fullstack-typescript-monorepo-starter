@@ -58,4 +58,4 @@ jobs:
         uses: ./.github/composite-actions/prepare
 
       - name: Run unit tests
-        run: pnpm exec turbo run test --affected
+        run: pnpm exec turbo run test --affected --reporter=default

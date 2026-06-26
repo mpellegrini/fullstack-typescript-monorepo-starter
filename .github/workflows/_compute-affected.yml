@@ -5,13 +5,13 @@ on:
     outputs:
       packages:
         description: JSON array of affected package names.
-        value: ${{ jobs.affected.outputs.packages }}
+        value: ${{ jobs.compute-affected.outputs.packages }}
       paths:
         description: JSON array of affected package paths.
-        value: ${{ jobs.affected.outputs.paths }}
+        value: ${{ jobs.compute-affected.outputs.paths }}
       count:
         description: Number of affected packages.
-        value: ${{ jobs.affected.outputs.count }}
+        value: ${{ jobs.compute-affected.outputs.count }}
 
 jobs:
   compute-affected:

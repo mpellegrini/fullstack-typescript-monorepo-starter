@@ -37,7 +37,7 @@ jobs:
   # scan → publish chain below, plus a has_apps flag so the chain skips cleanly
   # when empty.
   deploy-matrix:
-    needs: compute-affected
+    needs: [code-quality, compute-affected]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:

@@ -11,7 +11,7 @@ on:
       apps:
         description: >-
           JSON array of deployable apps, each
-          {app_name, dir, ecr_repository, environments}.
+          {app_name, dir, image_name, environments}.
         value: ${{ jobs.deploy-matrix.outputs.apps }}
       has_apps:
         description: Boolean string, true when one or more deployable apps were found.
@@ -22,7 +22,7 @@ jobs:
   # opts in by shipping a `deploy.json` in its folder root, which declares its
   # ECR repository and per-environment ECS targets; apps without it (sandboxes,
   # libraries, not-yet-containerized servers) are skipped. Emits a JSON matrix
-  # of {app_name, dir, ecr_repository, environments} consumed by the build →
+  # of {app_name, dir, image_name, environments} consumed by the build →
   # scan → publish chain, plus a has_apps flag so the chain skips cleanly when
   # empty.
   deploy-matrix:
@@ -58,8 +58,8 @@ jobs:
               echo "::error file=${cfg}::deploy.json is not valid JSON."
               exit 1
             fi
-            ecr="$(jq -r '.imageName // empty' "$cfg")"
-            if [ -z "$ecr" ]; then
+            image_name="$(jq -r '.imageName // empty' "$cfg")"
+            if [ -z "$image_name" ]; then
               echo "::error file=${cfg}::deploy.json is missing required \"imageName\"."
               exit 1
             fi
@@ -69,9 +69,9 @@ jobs:
             apps="$(jq -c \
               --arg n "$app_name" \
               --arg d "$path" \
-              --arg e "$ecr" \
+              --arg e "$image_name" \
               --argjson v "$envs" \
-              '. + [{app_name:$n, dir:$d, ecr_repository:$e, environments:$v}]' <<< "$apps")"
+              '. + [{app_name:$n, dir:$d, image_name:$e, environments:$v}]' <<< "$apps")"
           done
 
           count="$(jq 'length' <<< "$apps")"
@@ -86,8 +86,8 @@ jobs:
             if [ "$count" -eq 0 ]; then
               echo "_No deployable apps affected._"
             else
-              echo "| App | ECR repository | Environments |"
+              echo "| App | Image name | Environments |"
               echo "| --- | --- | --- |"
-              jq -r '.[] | "| `\(.app_name)` | `\(.ecr_repository)` | \(.environments | join(", ")) |"' <<< "$apps"
+              jq -r '.[] | "| `\(.app_name)` | `\(.image_name)` | \(.environments | join(", ")) |"' <<< "$apps"
             fi
           } >> "$GITHUB_STEP_SUMMARY"

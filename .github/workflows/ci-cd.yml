@@ -89,7 +89,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
           {
-            echo "### Deployable affected apps (${count})"
+            echo "### 🚢 Deployable affected apps (${count})"
             echo ""
             if [ "$count" -eq 0 ]; then
               echo "_No deployable apps affected._"

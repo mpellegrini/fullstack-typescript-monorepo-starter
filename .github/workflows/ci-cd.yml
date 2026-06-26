@@ -29,7 +29,7 @@ jobs:
     uses: ./.github/workflows/_compute-affected-packages.yml
 
   # ─────────────────────────────────────────────
-  # Turn the affected packages into the set of deployable apps to build.
+  # Compute the deployable apps from the set of affected packages.
   deploy-matrix:
     needs: [code-quality, compute-affected]
     permissions:
@@ -37,6 +37,21 @@ jobs:
     uses: ./.github/workflows/_compute-deployable-apps.yml
     with:
       paths: ${{ needs.compute-affected.outputs.paths }}
+
+  # ─────────────────────────────────────────────
+  bootstrap-env:
+    needs: [deploy-matrix]
+    if: needs.deploy-matrix.outputs.has_apps == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.deploy-matrix.outputs.apps) }}
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/_ecr-bootstrap.yml
+    with:
+      image_name: ${{ matrix.target.image_name }}
 
   # ─────────────────────────────────────────────
   # Single aggregate status check. Configure branch protection to require ONLY

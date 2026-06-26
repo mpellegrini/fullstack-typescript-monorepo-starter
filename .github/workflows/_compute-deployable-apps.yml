@@ -58,9 +58,9 @@ jobs:
               echo "::error file=${cfg}::deploy.json is not valid JSON."
               exit 1
             fi
-            ecr="$(jq -r '.ecrRepository // empty' "$cfg")"
+            ecr="$(jq -r '.imageName // empty' "$cfg")"
             if [ -z "$ecr" ]; then
-              echo "::error file=${cfg}::deploy.json is missing required \"ecrRepository\"."
+              echo "::error file=${cfg}::deploy.json is missing required \"imageName\"."
               exit 1
             fi
 

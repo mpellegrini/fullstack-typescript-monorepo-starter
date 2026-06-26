@@ -17,88 +17,26 @@ permissions: {}
 
 jobs:
   # ─────────────────────────────────────────────
-  compute-affected:
-    permissions:
-      contents: read
-    uses: ./.github/workflows/_compute-affected.yml
-
-  # ─────────────────────────────────────────────
   code-quality:
     permissions:
       contents: read
     uses: ./.github/workflows/_code-quality.yml
 
   # ─────────────────────────────────────────────
-  # Turn the affected packages into the set of deployable apps to build. An app
-  # opts in by shipping a `deploy.json` in its folder root, which declares its
-  # ECR repository and per-environment ECS targets; apps without it (sandboxes,
-  # libraries, not-yet-containerized servers) are skipped. Emits a JSON matrix
-  # of {app_name, dir, ecr_repository, environments} consumed by the build →
-  # scan → publish chain below, plus a has_apps flag so the chain skips cleanly
-  # when empty.
+  compute-affected:
+    permissions:
+      contents: read
+    uses: ./.github/workflows/_compute-affected-packages.yml
+
+  # ─────────────────────────────────────────────
+  # Turn the affected packages into the set of deployable apps to build.
   deploy-matrix:
     needs: [code-quality, compute-affected]
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    outputs:
-      apps: ${{ steps.compute.outputs.apps }}
-      has_apps: ${{ steps.compute.outputs.has_apps }}
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v6
-
-      - name: Compute deployable affected apps
-        id: compute
-        env:
-          PATHS: ${{ needs.compute-affected.outputs.paths }}
-        run: |
-          set -euo pipefail
-          apps='[]'
-          for path in $(jq -r '.[]' <<< "$PATHS"); do
-            # Only apps are containerized, and only those that opt in by shipping
-            # a deploy.json describing their ECR repo + deploy environments.
-            case "$path" in apps/*) ;; *) continue ;; esac
-            cfg="${path}/deploy.json"
-            [ -f "$cfg" ] || continue
-
-            # Fail loud on a malformed opt-in rather than silently skipping it.
-            if ! jq -e . "$cfg" > /dev/null 2>&1; then
-              echo "::error file=${cfg}::deploy.json is not valid JSON."
-              exit 1
-            fi
-            ecr="$(jq -r '.ecrRepository // empty' "$cfg")"
-            if [ -z "$ecr" ]; then
-              echo "::error file=${cfg}::deploy.json is missing required \"ecrRepository\"."
-              exit 1
-            fi
-
-            app_name="$(basename "$path")"
-            envs="$(jq -c '.environments // {} | keys' "$cfg")"
-            apps="$(jq -c \
-              --arg n "$app_name" \
-              --arg d "$path" \
-              --arg e "$ecr" \
-              --argjson v "$envs" \
-              '. + [{app_name:$n, dir:$d, ecr_repository:$e, environments:$v}]' <<< "$apps")"
-          done
-
-          count="$(jq 'length' <<< "$apps")"
-          {
-            echo "apps=${apps}"
-            echo "has_apps=$([ "$count" -gt 0 ] && echo true || echo false)"
-          } >> "$GITHUB_OUTPUT"
-
-          {
-            echo "### 🚢 Deployable affected apps (${count})"
-            echo ""
-            if [ "$count" -eq 0 ]; then
-              echo "_No deployable apps affected._"
-            else
-              echo "| App | ECR repository | Environments |"
-              echo "| --- | --- | --- |"
-              jq -r '.[] | "| `\(.app_name)` | `\(.ecr_repository)` | \(.environments | join(", ")) |"' <<< "$apps"
-            fi
-          } >> "$GITHUB_STEP_SUMMARY"
+    permissions:
+      contents: read
+    uses: ./.github/workflows/_compute-deployable-apps.yml
+    with:
+      paths: ${{ needs.compute-affected.outputs.paths }}
 
   # ─────────────────────────────────────────────
   # Single aggregate status check. Configure branch protection to require ONLY

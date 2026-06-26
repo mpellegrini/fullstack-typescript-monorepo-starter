@@ -1,4 +1,4 @@
-name: Affected Packages
+name: Compute Affected Packages
 
 on:
   workflow_call:

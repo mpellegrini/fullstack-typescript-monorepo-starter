@@ -1,0 +1,17 @@
+{
+  "ecrRepository": "monorepo/effect-api-server",
+  "environments": {
+    "staging": {
+      "ecsCluster": "staging-cluster",
+      "ecsService": "effect-api-server-svc",
+      "containerName": "effect-api-server",
+      "taskDefinition": "effect-api-server-task-staging"
+    },
+    "production": {
+      "ecsCluster": "prod-cluster",
+      "ecsService": "effect-api-server-svc",
+      "containerName": "effect-api-server",
+      "taskDefinition": "effect-api-server-task-prod"
+    }
+  }
+}

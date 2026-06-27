@@ -97,13 +97,39 @@ jobs:
       app_slug: ${{ matrix.target.app_name }}
       image_name: ${{ matrix.target.image_name }}
 
+  # Only reached when the gate passes: tag the multi-arch manifest and attest.
+  docker-publish:
+    needs: [deploy-matrix, docker-scan]
+    if: needs.deploy-matrix.outputs.has_apps == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.deploy-matrix.outputs.apps) }}
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    uses: ./.github/workflows/_ecr-publish.yml
+    with:
+      app_slug: ${{ matrix.target.app_name }}
+      image_name: ${{ matrix.target.image_name }}
+
   # ─────────────────────────────────────────────
   # Single aggregate status check. Configure branch protection to require ONLY
   # this job: it rolls up every upstream result, so conditionally-skipped jobs
   # never block a merge while genuine failures and cancellations still do.
   ci-passed:
     if: always() # Ensures this job ALWAYS runs to report status
-    needs: [compute-affected, code-quality, deploy-matrix, bootstrap-env, docker-build, docker-scan]
+    needs:
+      [
+        compute-affected,
+        code-quality,
+        deploy-matrix,
+        bootstrap-env,
+        docker-build,
+        docker-scan,
+        docker-publish,
+      ]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

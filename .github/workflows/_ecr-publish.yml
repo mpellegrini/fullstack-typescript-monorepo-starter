@@ -1,0 +1,139 @@
+# =============================================================================
+# Reusable Workflow: Publish multi-arch image to ECR (post-gate)
+# =============================================================================
+# Runs ONLY after the security scan gate has passed. Stitches the per-arch
+# digests (pushed untagged by the build stage) into a single multi-arch manifest
+# and applies the human-facing tags — this is the ONLY place tags are applied,
+# so an untagged/unverified image can never masquerade as a published one.
+#
+# Tagging strategy:
+#   pull_request → pr-<n>, sha-<short>
+#   push: main   → latest, sha-<short>
+#
+# SLSA build provenance is attested against the final manifest digest and pushed
+# to ECR as an OCI referrer, so it travels with the image.
+# =============================================================================
+name: Publish to ECR
+
+on:
+  workflow_call:
+    inputs:
+      app_slug:
+        description: "Registry-name-safe app identifier used to select this app's digest artifacts (e.g. effect-api-server)"
+        required: true
+        type: string
+      image_name:
+        description: 'ECR repository name without registry (e.g. team/service)'
+        required: true
+        type: string
+
+    outputs:
+      image_digest:
+        description: 'Immutable sha256 digest of the published manifest'
+        value: ${{ jobs.publish.outputs.digest }}
+      image_ref:
+        description: 'Pinned reference: registry/image_name@sha256:...'
+        value: ${{ jobs.publish.outputs.image_ref }}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write # OIDC: assume AWS role + sign attestations
+      attestations: write # actions/attest-build-provenance
+    outputs:
+      digest: ${{ steps.inspect.outputs.digest }}
+      image_ref: ${{ steps.repo.outputs.repo }}@${{ steps.inspect.outputs.digest }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - name: Resolve commit SHA and build date
+        id: commit-info
+        uses: ./.github/composite-actions/resolve-commit-info
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_GHA_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Resolve ECR repository
+        id: repo
+        run: |
+          echo "repo=${{ steps.ecr-login.outputs.registry }}/${{ inputs.image_name }}" >> "$GITHUB_OUTPUT"
+
+      - name: Download digest artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: /tmp/digests
+          pattern: digests-${{ inputs.app_slug }}-*
+          merge-multiple: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Compute tags and labels
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ steps.repo.outputs.repo }}
+          tags: |
+            type=raw,value=sha-${{ steps.commit-info.outputs.full_sha }}
+            type=ref,event=pr,prefix=pr-
+            type=raw,value=latest,enable=${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ steps.commit-info.outputs.full_sha }}
+            org.opencontainers.image.created=${{ steps.commit-info.outputs.build_date }}
+            org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
+
+      - name: Create and push multi-arch manifest
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create \
+            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ steps.repo.outputs.repo }}@sha256:%s ' *)
+
+      - name: Inspect manifest and capture digest
+        id: inspect
+        run: |
+          digest=$(docker buildx imagetools inspect \
+            ${{ steps.repo.outputs.repo }}:sha-${{ steps.commit-info.outputs.short_sha }} \
+            --format '{{.Manifest.Digest}}')
+          echo "digest=${digest}" >> "$GITHUB_OUTPUT"
+
+      # SLSA build provenance attached to the ECR image as an OCI referrer.
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-name: ${{ steps.repo.outputs.repo }}
+          subject-digest: ${{ steps.inspect.outputs.digest }}
+          push-to-registry: true
+
+      - name: Summary
+        run: |
+          {
+            echo "### Published to ECR"
+            echo ""
+            echo "**Digest:** \`${{ steps.inspect.outputs.digest }}\`"
+            echo ""
+            echo "**Pinned ref:**"
+            echo "\`\`\`"
+            echo "${{ steps.repo.outputs.repo }}@${{ steps.inspect.outputs.digest }}"
+            echo "\`\`\`"
+            echo ""
+            echo "**Tags:**"
+            echo "\`\`\`"
+            echo "${{ steps.meta.outputs.tags }}"
+            echo "\`\`\`"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -78,7 +78,7 @@ jobs:
   # never block a merge while genuine failures and cancellations still do.
   ci-passed:
     if: always() # Ensures this job ALWAYS runs to report status
-    needs: [compute-affected, code-quality, deploy-matrix, bootstrap-env]
+    needs: [compute-affected, code-quality, deploy-matrix, bootstrap-env, docker-build]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

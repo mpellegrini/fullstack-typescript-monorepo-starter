@@ -1,6 +1,12 @@
 name: ci-cd
 
 on:
+  workflow_dispatch: # This enables the manual execution button
+    inputs:
+      reason:
+        description: 'Reason for running this manually'
+        required: false
+        default: 'Routine check'
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened]

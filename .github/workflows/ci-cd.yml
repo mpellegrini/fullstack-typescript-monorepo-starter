@@ -58,6 +58,7 @@ jobs:
   docker-build:
     needs: [deploy-matrix, bootstrap-env]
     if: needs.deploy-matrix.outputs.has_apps == 'true'
+    name: bootstrap-env (${{ matrix.target.app_name }})
     strategy:
       fail-fast: false
       matrix:

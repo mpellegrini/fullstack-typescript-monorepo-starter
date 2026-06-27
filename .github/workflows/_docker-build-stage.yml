@@ -42,6 +42,7 @@ jobs:
   # Images are pushed by digest (untagged) so they can be scanned, then merged
   # into a single tagged manifest later by `_ecr-publish.yml`.
   multi-platform-build:
+    name: multi-platform-build (${{ matrix.target.platform }})
     strategy:
       fail-fast: false
       matrix:

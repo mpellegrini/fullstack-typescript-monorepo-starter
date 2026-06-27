@@ -54,6 +54,24 @@ jobs:
     with:
       image_name: ${{ matrix.target.image_name }}
 
+  # Build both arches on native runners and push to ECR by digest (untagged).
+  docker-build:
+    needs: [deploy-matrix, bootstrap-env]
+    if: needs.deploy-matrix.outputs.has_apps == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.deploy-matrix.outputs.apps) }}
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/_docker-build-stage.yml
+    with:
+      app_slug: ${{ matrix.target.app_name }}
+      build_args: |
+        APP_NAME=${{ matrix.target.app_name }}
+      image_name: ${{ matrix.target.image_name }}
+
   # ─────────────────────────────────────────────
   # Single aggregate status check. Configure branch protection to require ONLY
   # this job: it rolls up every upstream result, so conditionally-skipped jobs

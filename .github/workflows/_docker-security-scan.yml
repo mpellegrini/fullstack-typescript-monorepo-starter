@@ -1,0 +1,196 @@
+# =============================================================================
+# Reusable Workflow: Docker Security Scan (gate before publish)
+# =============================================================================
+# Vulnerability-scans the per-arch images that `_docker-build-stage.yml` pushed
+# to ECR by digest (untagged). Nothing is rebuilt — Trivy reads the exact bytes
+# from the registry, addressed by digest. This is the gate that decides whether
+# the image is allowed to be tagged/published: if a gate step finds findings
+# at/above the configured severity, the job fails and the downstream `publish`
+# job that `needs:` this one is skipped — so an unverified image never gets a tag.
+#
+# The per-arch digests are resolved from the `digests-*` artifacts uploaded by
+# the build stage (same workflow run).
+#
+# Trivy passes:
+#   1. report — always uploads SARIF to the Security tab (never fails the job)
+#   2. vuln gate per platform (amd64, arm64)
+#   3. misconfig + secret gate
+# The DB and image layers are cached after the first pass, so the rest are cheap.
+# =============================================================================
+name: Docker Security Scan
+
+on:
+  workflow_call:
+    inputs:
+      app_slug:
+        description: "Registry-name-safe app identifier used to select this app's digest artifacts (e.g. effect-api-server)"
+        required: true
+        type: string
+      ignore_unfixed:
+        description: 'Ignore vulnerabilities without a fix available'
+        required: false
+        type: boolean
+        default: true
+      image_name:
+        description: 'Image repository name without registry (e.g. team/service)'
+        required: true
+        type: string
+      severity_threshold:
+        description: 'Comma-separated severities that fail the build'
+        required: false
+        type: string
+        default: 'CRITICAL'
+
+    outputs:
+      scan-passed:
+        description: 'true when all blocking scans succeeded'
+        value: ${{ jobs.scan.outputs.passed }}
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write # assume the AWS role via OIDC
+      security-events: write # upload SARIF to GitHub Security tab
+    outputs:
+      passed: ${{ steps.gate.outputs.passed }}
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_GHA_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Resolve this app's per-arch image refs from its digest artifacts. Each
+      # artifact holds a single empty file named after the digest hex (no
+      # sha256: prefix). Under a matrix, sibling apps upload their own
+      # `digests-<app>-*` artifacts, so the pattern is scoped to this app.
+      - name: Download digest artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: /tmp/digests
+          pattern: digests-${{ inputs.app_slug }}-*
+
+      - name: Resolve per-arch image refs
+        run: |
+          set -euo pipefail
+          repo="${{ steps.ecr-login.outputs.registry }}/${{ inputs.image_name }}"
+          amd64="$(basename "$(ls /tmp/digests/digests-${{ inputs.app_slug }}-linux-amd64/*)")"
+          arm64="$(basename "$(ls /tmp/digests/digests-${{ inputs.app_slug }}-linux-arm64/*)")"
+          {
+            echo "REPO=${repo}"
+            echo "AMD64_REF=${repo}@sha256:${amd64}"
+            echo "ARM64_REF=${repo}@sha256:${arm64}"
+          } >> "$GITHUB_ENV"
+
+      # -------------------------------------------------------------------
+      # Report pass: never fail the build, even if the scan fails,
+      # just feeds the GitHub Security tab. Scans the amd64 image — good
+      # enough for visibility/triage.
+      # -------------------------------------------------------------------
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ env.AMD64_REF }}
+          scanners: 'vuln,secret,misconfig'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+          exit-code: '0'
+
+      - name: Upload Trivy scan results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v4
+        if: always() && hashFiles('trivy-results.sarif') != '' # Upload results even if the scan fails
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: trivy-container
+
+      # -------------------------------------------------------------------
+      # Severity gate (amd64): fail on configured severity threshold
+      # -------------------------------------------------------------------
+      - name: Fail on ${{ inputs.severity_threshold }} vulnerabilities in amd64
+        id: trivy-vuln-amd64
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ env.AMD64_REF }}
+          scanners: 'vuln'
+          format: 'table'
+          severity: ${{ inputs.severity_threshold }}
+          exit-code: '1'
+          ignore-unfixed: ${{ inputs.ignore_unfixed }}
+        continue-on-error: true
+
+      # -------------------------------------------------------------------
+      # Severity gate (arm64): fail on configured severity threshold
+      # -------------------------------------------------------------------
+      - name: Fail on ${{ inputs.severity_threshold }} vulnerabilities in arm64
+        id: trivy-vuln-arm64
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ env.ARM64_REF }}
+          scanners: 'vuln'
+          format: 'table'
+          severity: ${{ inputs.severity_threshold }}
+          exit-code: '1'
+          ignore-unfixed: ${{ inputs.ignore_unfixed }}
+        continue-on-error: true
+
+      - name: Trivy misconfiguration and secret scan
+        id: trivy-config
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ env.AMD64_REF }}
+          scanners: 'misconfig,secret'
+          format: 'table'
+          exit-code: '1'
+        continue-on-error: true
+
+      - name: Gate decision
+        id: gate
+        run: |
+          VULN_AMD64="${{ steps.trivy-vuln-amd64.outcome }}"
+          VULN_ARM64="${{ steps.trivy-vuln-arm64.outcome }}"
+          CONFIG="${{ steps.trivy-config.outcome }}"
+
+          if [[ "$VULN_AMD64" == "success" && "$VULN_ARM64" == "success" && "$CONFIG" == "success" ]]; then
+            PASSED=true
+          else
+            PASSED=false
+          fi
+
+          icon() { [[ "$1" == "success" ]] && echo "✅ pass" || echo "❌ fail"; }
+
+          {
+            echo "### Docker security scan"
+            echo ""
+            echo "**Scanned repo:** \`${REPO}\`"
+            echo "**Severity threshold:** \`${{ inputs.severity_threshold }}\`"
+            echo ""
+            echo "| Scan | Result |"
+            echo "| --- | --- |"
+            echo "| Trivy vulnerability (amd64) | $(icon "$VULN_AMD64") |"
+            echo "| Trivy vulnerability (arm64) | $(icon "$VULN_ARM64") |"
+            echo "| Trivy config/secret | $(icon "$CONFIG") |"
+            echo ""
+            if [[ "$PASSED" == "true" ]]; then
+              echo "**Gate:** ✅ passed — image is eligible for publish"
+            else
+              echo "**Gate:** ❌ failed — image will NOT be published"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [[ "$PASSED" == "true" ]]; then
+            echo "passed=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Scans passed — image is eligible for publish"
+          else
+            echo "passed=false" >> "$GITHUB_OUTPUT"
+            echo "::error::Scans failed — image will NOT be published"
+            exit 1
+          fi

@@ -51,7 +51,6 @@ jobs:
             runner: ubuntu-latest
           - platform: linux/arm64
             runner: ubuntu-24.04-arm
-
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 30
 
@@ -91,14 +90,12 @@ jobs:
 
       # Labels only (no tags here). The per-arch images are pushed by their digest,
       # so the full label set gets baked into each platform's image config. The
-      # publish job recomputes the same metadata to tag the final manifest.
+      # 'publish' job recomputes the same metadata to tag the final manifest.
       - name: Compute labels
         id: meta
         uses: docker/metadata-action@v6
         with:
           images: ${{ steps.repo.outputs.repo }}
-          tags: |
-            type=raw,value=sha-${{ steps.commit-info.outputs.short_sha }}
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
             org.opencontainers.image.revision=${{ steps.commit-info.outputs.full_sha }}
@@ -110,7 +107,7 @@ jobs:
           platform=${{ matrix.platform }}
           echo "PLATFORM_PAIR=${platform//\//-}" >> "$GITHUB_ENV"
 
-      # Push by digest only — no tags here. The publish job stitches the
+      # Push by digest only — no tags here. The 'publish' job stitches the
       # per-platform digests into a single tagged multi-arch manifest.
       - name: Build and push by digest
         id: build
@@ -123,7 +120,7 @@ jobs:
             ${{ inputs.build_args }}
             VCS_REF=${{ steps.commit-info.outputs.full_sha }}
             BUILD_DATE=${{ steps.commit-info.outputs.build_date }}
-            VERSION=${{ steps.meta.outputs.version }}
+            VERSION=sha-${{ steps.commit-info.outputs.full_sha }}
           outputs: type=image,name=${{ steps.repo.outputs.repo }},push-by-digest=true,name-canonical=true,push=true
           labels: ${{ steps.meta.outputs.labels }}
           # Scope the cache per-app AND per-platform so neither the two parallel

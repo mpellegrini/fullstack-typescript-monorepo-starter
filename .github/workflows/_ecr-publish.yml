@@ -7,8 +7,8 @@
 # so an untagged/unverified image can never masquerade as a published one.
 #
 # Tagging strategy:
-#   pull_request → pr-<n>, sha-<short>
-#   push: main   → latest, sha-<short>
+#   pull_request → pr-<n>, sha-<full>
+#   push: main   → latest, sha-<full>
 #
 # SLSA build provenance is attested against the final manifest digest and pushed
 # to ECR as an OCI referrer, so it travels with the image.
@@ -108,7 +108,7 @@ jobs:
         id: inspect
         run: |
           digest=$(docker buildx imagetools inspect \
-            ${{ steps.repo.outputs.repo }}:sha-${{ steps.commit-info.outputs.short_sha }} \
+            ${{ steps.repo.outputs.repo }}:sha-${{ steps.commit-info.outputs.full_sha }} \
             --format '{{.Manifest.Digest}}')
           echo "digest=${digest}" >> "$GITHUB_OUTPUT"
 

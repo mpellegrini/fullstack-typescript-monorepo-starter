@@ -101,6 +101,7 @@ jobs:
   docker-publish:
     needs: [deploy-matrix, docker-scan]
     if: needs.deploy-matrix.outputs.has_apps == 'true'
+    name: docker-publish (${{ matrix.target.app_name }})
     strategy:
       fail-fast: false
       matrix:

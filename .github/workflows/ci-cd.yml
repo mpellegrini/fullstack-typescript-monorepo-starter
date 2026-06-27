@@ -74,7 +74,7 @@ jobs:
       image_name: ${{ matrix.target.image_name }}
 
   # Trivy gate: scan each app's per-arch digests. Failure skips that app's publish.
-  scan:
+  docker-scan:
     needs: [docker-build]
     if: needs.deploy-matrix.outputs.has_apps == 'true'
     name: docker-scan (${{ matrix.target.app_name }})
@@ -97,7 +97,7 @@ jobs:
   # never block a merge while genuine failures and cancellations still do.
   ci-passed:
     if: always() # Ensures this job ALWAYS runs to report status
-    needs: [compute-affected, code-quality, deploy-matrix, bootstrap-env, docker-build]
+    needs: [compute-affected, code-quality, deploy-matrix, bootstrap-env, docker-build, docker-scan]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

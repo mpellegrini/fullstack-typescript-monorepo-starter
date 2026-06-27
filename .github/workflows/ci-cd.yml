@@ -1,6 +1,12 @@
 name: ci-cd
 
 on:
+  workflow_dispatch: # This enables the manual execution button
+    inputs:
+      reason:
+        description: 'Reason for running this manually'
+        required: false
+        default: 'Routine check'
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened]
@@ -8,54 +14,106 @@ on:
     branches: [main]
     tags-ignore: ['**']
 
-# Cancel superseded PR runs on the same ref (e.g. new pushes to a PR), but let
-# main builds run to completion — they push images, attestations, and tags that
-# must not be interrupted mid-publish.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: false
 
 # Default-deny at the workflow root; jobs that need more elevate per job.
-# contents: read is the minimum for affected/code-quality to check out the repo.
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   # ─────────────────────────────────────────────
-  # Computes the affected packages once, up front. Exposes a JSON array
-  # (needs.affected.outputs.packages) for any downstream job to consume.
-  affected:
-    uses: ./.github/workflows/_affected.yml
-
-  # ─────────────────────────────────────────────
   code-quality:
+    permissions:
+      contents: read
     uses: ./.github/workflows/_code-quality.yml
 
   # ─────────────────────────────────────────────
-  docker-build:
-    needs: [code-quality, affected]
-    # Only build the image when its app (or one of its deps) is affected.
-    if: contains(fromJSON(needs.affected.outputs.packages), '@apps/effect-api-server')
+  compute-affected:
     permissions:
-      attestations: write
+      contents: read
+    uses: ./.github/workflows/_compute-affected-packages.yml
+
+  # ─────────────────────────────────────────────
+  # Compute the deployable apps from the set of affected packages.
+  deploy-matrix:
+    needs: [code-quality, compute-affected]
+    permissions:
+      contents: read
+    uses: ./.github/workflows/_compute-deployable-apps.yml
+    with:
+      paths: ${{ needs.compute-affected.outputs.paths }}
+
+  # ─────────────────────────────────────────────
+  bootstrap-env:
+    needs: [deploy-matrix]
+    if: needs.deploy-matrix.outputs.has_apps == 'true'
+    name: bootstrap-env (${{ matrix.target.app_name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.deploy-matrix.outputs.apps) }}
+    permissions:
       contents: read
       id-token: write
-      packages: write
-    uses: ./.github/workflows/_docker-build-stage.yml
+    uses: ./.github/workflows/_ecr-bootstrap.yml
     with:
-      build_args: |
-        APP_NAME=effect-api-server
-      image_name: flight-res/flight-res-mgmt-shop
+      image_name: ${{ matrix.target.image_name }}
 
-  scan:
-    needs: docker-build
+  # Build both arches on native runners and push to ECR by digest (untagged).
+  docker-build:
+    needs: [deploy-matrix, bootstrap-env]
+    if: needs.deploy-matrix.outputs.has_apps == 'true'
+    name: bootstrap-env (${{ matrix.target.app_name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.deploy-matrix.outputs.apps) }}
     permissions:
       contents: read
-      packages: read # pull from GHCR
-      security-events: write # upload SARIF to GitHub Security tab
+      id-token: write
+    uses: ./.github/workflows/_docker-build-stage.yml
+    with:
+      app_slug: ${{ matrix.target.app_name }}
+      build_args: |
+        APP_NAME=${{ matrix.target.app_name }}
+      image_name: ${{ matrix.target.image_name }}
+
+  # Trivy gate: scan each app's per-arch digests. Failure skips that app's publish.
+  docker-scan:
+    needs: [deploy-matrix, docker-build]
+    if: needs.deploy-matrix.outputs.has_apps == 'true'
+    name: docker-scan (${{ matrix.target.app_name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.deploy-matrix.outputs.apps) }}
+    permissions:
+      contents: read
+      id-token: write
+      security-events: write
     uses: ./.github/workflows/_docker-security-scan.yml
     with:
-      image_ref: ${{ needs.docker-build.outputs.image_ref }}
+      app_slug: ${{ matrix.target.app_name }}
+      image_name: ${{ matrix.target.image_name }}
+
+  # Only reached when the gate passes: tag the multi-arch manifest and attest.
+  docker-publish:
+    needs: [deploy-matrix, docker-scan]
+    if: needs.deploy-matrix.outputs.has_apps == 'true'
+    name: docker-publish (${{ matrix.target.app_name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.deploy-matrix.outputs.apps) }}
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    uses: ./.github/workflows/_ecr-publish.yml
+    with:
+      app_slug: ${{ matrix.target.app_name }}
+      image_name: ${{ matrix.target.image_name }}
 
   # ─────────────────────────────────────────────
   # Single aggregate status check. Configure branch protection to require ONLY
@@ -63,7 +121,16 @@ jobs:
   # never block a merge while genuine failures and cancellations still do.
   ci-passed:
     if: always() # Ensures this job ALWAYS runs to report status
-    needs: [affected, code-quality, docker-build, scan]
+    needs:
+      [
+        compute-affected,
+        code-quality,
+        deploy-matrix,
+        bootstrap-env,
+        docker-build,
+        docker-scan,
+        docker-publish,
+      ]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

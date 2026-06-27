@@ -1,0 +1,110 @@
+# =============================================================================
+# ECR Cleanup: prune a PR's images when it closes
+# =============================================================================
+# When a PR is merged OR closed without merging, delete the images that PR's
+# pipeline published to ECR. The set of image repositories is discovered from
+# the base branch by reading every app's `deploy.image` (the same opt-in marker
+# ci-cd uses), so this scales automatically as apps are added. For each repo we
+# delete:
+#   - the mutable pr-<n> tag
+#   - the immutable sha-<short> tag for every commit that was in the PR
+#
+# Deleting the tagged multi-arch manifests leaves their per-arch child layers
+# and attestation referrers untagged. Those are NOT deleted here on purpose:
+# an untagged child can still be referenced by another tagged manifest (e.g.
+# `latest`, or another open PR built from the same bytes), so a naive untagged
+# sweep would corrupt a live image. Reaping orphaned untagged manifests is left
+# to an ECR lifecycle policy (tagStatus=untagged, sinceImagePushed>N days) —
+# see the plan's follow-ups.
+#
+# Auth uses GitHub OIDC. Required repo variables: vars.AWS_REGION,
+# vars.AWS_GHA_ROLE_ARN. Fork PRs never receive OIDC/secrets (and so never
+# pushed images), so the job is skipped for them.
+# =============================================================================
+name: ecr-cleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup:
+    if: github.event.pull_request.head.repo.fork == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write # assume the AWS role via OIDC
+      pull-requests: read # list the PR's commits via the API
+
+    steps:
+      # Read deploy targets from the base branch — it always exists, even after
+      # the PR branch is deleted on merge.
+      - name: Check out base branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_GHA_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Delete the PR's ECR images
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          # pr-<n> is always a candidate; then one sha-<short> per PR commit.
+          # short_sha matches resolve-commit-info: first 12 chars of the SHA.
+          image_ids=( "imageTag=pr-${PR_NUMBER}" )
+          while read -r sha; do
+            [ -n "$sha" ] && image_ids+=( "imageTag=sha-${sha:0:12}" )
+          done < <(gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/commits" --jq '.[].sha')
+
+          # Discover every deployable app's ECR repo from its deploy.image marker.
+          mapfile -t repos < <(for pj in apps/*/package.json; do
+            [ -f "$pj" ] && jq -r '.deploy.image // empty' "$pj"
+          done | sort -u)
+
+          {
+            echo "### ECR cleanup for PR #${PR_NUMBER}"
+            echo ""
+            echo "Candidate tags: \`$(printf '%s ' "${image_ids[@]}")\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          for repo in "${repos[@]}"; do
+            echo "::group::Pruning ${repo}"
+            # batch-delete-image tolerates tags that don't exist (reported under
+            # .failures) and deletes up to 100 ids per call; chunk to stay safe.
+            # A missing repository is not an error here — skip it.
+            if ! aws ecr describe-repositories --repository-names "$repo" >/dev/null 2>&1; then
+              echo "Repository ${repo} does not exist — skipping."
+              echo "::endgroup::"
+              continue
+            fi
+            deleted='[]'
+            for ((i = 0; i < ${#image_ids[@]}; i += 100)); do
+              result="$(aws ecr batch-delete-image \
+                --repository-name "$repo" \
+                --image-ids "${image_ids[@]:i:100}" \
+                --output json)"
+              deleted="$(jq -c --argjson r "$result" '. + ($r.imageIds // [])' <<< "$deleted")"
+            done
+            {
+              echo ""
+              echo "**\`${repo}\`** — deleted:"
+              jq -r 'if length == 0 then "- _(nothing matched)_" else .[] | "- " + (.imageTag // .imageDigest) end' <<< "$deleted"
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "::endgroup::"
+          done

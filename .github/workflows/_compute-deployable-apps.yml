@@ -1,0 +1,93 @@
+name: Compute Deployable Apps
+
+on:
+  workflow_call:
+    inputs:
+      paths:
+        description: JSON array of affected package paths to scan for deployable apps.
+        required: true
+        type: string
+    outputs:
+      apps:
+        description: >-
+          JSON array of deployable apps, each
+          {app_name, dir, image_name, environments}.
+        value: ${{ jobs.deploy-matrix.outputs.apps }}
+      has_apps:
+        description: Boolean string, true when one or more deployable apps were found.
+        value: ${{ jobs.deploy-matrix.outputs.has_apps }}
+
+jobs:
+  # Turn the affected packages into the set of deployable apps to build. An app
+  # opts in by shipping a `deploy.json` in its folder root, which declares its
+  # ECR repository and per-environment ECS targets; apps without it (sandboxes,
+  # libraries, not-yet-containerized servers) are skipped. Emits a JSON matrix
+  # of {app_name, dir, image_name, environments} consumed by the build →
+  # scan → publish chain, plus a has_apps flag so the chain skips cleanly when
+  # empty.
+  deploy-matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      apps: ${{ steps.compute.outputs.apps }}
+      has_apps: ${{ steps.compute.outputs.has_apps }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+
+      - name: Compute deployable affected apps
+        id: compute
+        shell: bash
+        env:
+          PATHS: ${{ inputs.paths }}
+        run: |
+          set -euo pipefail
+          apps='[]'
+          for path in $(jq -r '.[]' <<< "$PATHS"); do
+            # Only apps are containerized, and only those that opt in by shipping
+            # a deploy.json describing their ECR repo + deploy environments.
+            case "$path" in apps/*) ;; *) continue ;; esac
+            cfg="${path}/deploy.json"
+            [ -f "$cfg" ] || continue
+
+            # Fail loud on a malformed opt-in rather than silently skipping it.
+            if ! jq -e . "$cfg" > /dev/null 2>&1; then
+              echo "::error file=${cfg}::deploy.json is not valid JSON."
+              exit 1
+            fi
+            image_name="$(jq -r '.imageName // empty' "$cfg")"
+            if [ -z "$image_name" ]; then
+              echo "::error file=${cfg}::deploy.json is missing required \"imageName\"."
+              exit 1
+            fi
+
+            app_name="$(basename "$path")"
+            envs="$(jq -c '.environments // {} | keys' "$cfg")"
+            apps="$(jq -c \
+              --arg n "$app_name" \
+              --arg d "$path" \
+              --arg e "$image_name" \
+              --argjson v "$envs" \
+              '. + [{app_name:$n, dir:$d, image_name:$e, environments:$v}]' <<< "$apps")"
+          done
+
+          count="$(jq 'length' <<< "$apps")"
+          {
+            echo "apps=${apps}"
+            echo "has_apps=$([ "$count" -gt 0 ] && echo true || echo false)"
+          } >> "$GITHUB_OUTPUT"
+
+          {
+            echo "### 🚢 Deployable affected apps (${count})"
+            echo ""
+            if [ "$count" -eq 0 ]; then
+              echo "_No deployable apps affected._"
+            else
+              echo "| App | Image name | Environments |"
+              echo "| --- | --- | --- |"
+              jq -r '.[] | "| `\(.app_name)` | `\(.image_name)` | \(.environments | join(", ")) |"' <<< "$apps"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

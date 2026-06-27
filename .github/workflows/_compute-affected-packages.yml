@@ -1,26 +1,24 @@
-name: Affected Packages
+name: Compute Affected Packages
 
 on:
   workflow_call:
     outputs:
       packages:
         description: JSON array of affected package names.
-        value: ${{ jobs.affected.outputs.packages }}
+        value: ${{ jobs.compute-affected.outputs.packages }}
       paths:
         description: JSON array of affected package paths.
-        value: ${{ jobs.affected.outputs.paths }}
+        value: ${{ jobs.compute-affected.outputs.paths }}
       count:
         description: Number of affected packages.
-        value: ${{ jobs.affected.outputs.count }}
-
-permissions:
-  contents: read
+        value: ${{ jobs.compute-affected.outputs.count }}
 
 jobs:
-  affected:
-    name: Compute affected
+  compute-affected:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
     outputs:
       packages: ${{ steps.affected.outputs.packages }}
       paths: ${{ steps.affected.outputs.paths }}
@@ -48,7 +46,7 @@ jobs:
           # printing a version banner onto stdout, which would corrupt the JSON.
           #
           # The result includes the workspace root as an item named "//" with an
-          # empty path; we filter it out so the array holds only real packages.
+          # empty path; filter it out so the array holds only real packages.
           raw="$(pnpm exec turbo query affected --packages --skip-infer)"
           items='[.data.affectedPackages.items[] | select(.path != "")]'
 

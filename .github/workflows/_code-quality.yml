@@ -3,14 +3,13 @@ name: Code Quality Checks
 on:
   workflow_call:
 
-permissions:
-  contents: read
-
 jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
 
     steps:
       - name: Check out code
@@ -59,4 +58,4 @@ jobs:
         uses: ./.github/composite-actions/prepare
 
       - name: Run unit tests
-        run: pnpm exec turbo run test --affected
+        run: pnpm exec turbo run test --affected -- --reporter=default

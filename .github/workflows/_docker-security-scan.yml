@@ -97,6 +97,10 @@ jobs:
       # -------------------------------------------------------------------
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@v0.36.0
+        env:
+          # Each digest is an attestation index (provenance/SBOM), so Trivy must
+          # be told which child to scan instead of defaulting to the host arch.
+          TRIVY_PLATFORM: linux/amd64
         with:
           image-ref: ${{ env.AMD64_REF }}
           scanners: 'vuln,secret,misconfig'
@@ -118,6 +122,8 @@ jobs:
       - name: Fail on ${{ inputs.severity_threshold }} vulnerabilities in amd64
         id: trivy-vuln-amd64
         uses: aquasecurity/trivy-action@v0.36.0
+        env:
+          TRIVY_PLATFORM: linux/amd64
         with:
           image-ref: ${{ env.AMD64_REF }}
           scanners: 'vuln'
@@ -133,6 +139,8 @@ jobs:
       - name: Fail on ${{ inputs.severity_threshold }} vulnerabilities in arm64
         id: trivy-vuln-arm64
         uses: aquasecurity/trivy-action@v0.36.0
+        env:
+          TRIVY_PLATFORM: linux/arm64
         with:
           image-ref: ${{ env.ARM64_REF }}
           scanners: 'vuln'
@@ -145,6 +153,8 @@ jobs:
       - name: Trivy misconfiguration and secret scan
         id: trivy-config
         uses: aquasecurity/trivy-action@v0.36.0
+        env:
+          TRIVY_PLATFORM: linux/amd64
         with:
           image-ref: ${{ env.AMD64_REF }}
           scanners: 'misconfig,secret'

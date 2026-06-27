@@ -75,7 +75,7 @@ jobs:
 
   # Trivy gate: scan each app's per-arch digests. Failure skips that app's publish.
   docker-scan:
-    needs: [docker-build]
+    needs: [deploy-matrix, docker-build]
     if: needs.deploy-matrix.outputs.has_apps == 'true'
     name: docker-scan (${{ matrix.target.app_name }})
     strategy:

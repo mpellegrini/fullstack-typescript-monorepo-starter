@@ -45,26 +45,13 @@ jobs:
       paths: ${{ needs.compute-affected.outputs.paths }}
 
   # ─────────────────────────────────────────────
-  bootstrap-env:
+  # Build both arches on native runners and push to ECR by digest (untagged).
+  # The build stage verifies the target ECR repository already exists (provisioned
+  # out-of-band via IaC) and hard-stops if it doesn't.
+  docker-build:
     needs: [deploy-matrix]
     if: needs.deploy-matrix.outputs.has_apps == 'true'
-    name: bootstrap-env (${{ matrix.target.app_name }})
-    strategy:
-      fail-fast: false
-      matrix:
-        target: ${{ fromJSON(needs.deploy-matrix.outputs.apps) }}
-    permissions:
-      contents: read
-      id-token: write
-    uses: ./.github/workflows/_ecr-bootstrap.yml
-    with:
-      image_name: ${{ matrix.target.image_name }}
-
-  # Build both arches on native runners and push to ECR by digest (untagged).
-  docker-build:
-    needs: [deploy-matrix, bootstrap-env]
-    if: needs.deploy-matrix.outputs.has_apps == 'true'
-    name: bootstrap-env (${{ matrix.target.app_name }})
+    name: docker-build (${{ matrix.target.app_name }})
     strategy:
       fail-fast: false
       matrix:
@@ -122,15 +109,7 @@ jobs:
   ci-passed:
     if: always() # Ensures this job ALWAYS runs to report status
     needs:
-      [
-        compute-affected,
-        code-quality,
-        deploy-matrix,
-        bootstrap-env,
-        docker-build,
-        docker-scan,
-        docker-publish,
-      ]
+      [compute-affected, code-quality, deploy-matrix, docker-build, docker-scan, docker-publish]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

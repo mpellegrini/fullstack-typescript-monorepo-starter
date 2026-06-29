@@ -80,6 +80,20 @@ jobs:
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v2
 
+      # The ECR repository (with its lifecycle rules, scan config, and policies)
+      # must be provisioned out-of-band via IaC — CI does NOT create it. Verify it
+      # exists before doing any expensive build work, and hard-stop if it doesn't.
+      - name: Verify ECR repository exists
+        env:
+          REPO_NAME: ${{ inputs.image_name }}
+        run: |
+          set -euo pipefail
+          if ! aws ecr describe-repositories --repository-names "$REPO_NAME" >/dev/null 2>&1; then
+            echo "::error::ECR repository '$REPO_NAME' does not exist. It must be provisioned out-of-band (IaC) with its lifecycle rules, scan config, and policies before this pipeline runs."
+            exit 1
+          fi
+          echo "ECR repository '$REPO_NAME' exists."
+
       - name: Resolve ECR repository
         id: repo
         run: |

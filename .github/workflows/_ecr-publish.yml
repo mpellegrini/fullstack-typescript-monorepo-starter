@@ -27,14 +27,6 @@ on:
         required: true
         type: string
 
-    outputs:
-      image_digest:
-        description: 'Immutable sha256 digest of the published manifest'
-        value: ${{ jobs.publish.outputs.digest }}
-      image_ref:
-        description: 'Pinned reference: registry/image_name@sha256:...'
-        value: ${{ jobs.publish.outputs.image_ref }}
-
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -43,10 +35,6 @@ jobs:
       contents: read
       id-token: write # OIDC: assume AWS role + sign attestations
       attestations: write # actions/attest-build-provenance
-    outputs:
-      digest: ${{ steps.inspect.outputs.digest }}
-      image_ref: ${{ steps.repo.outputs.repo }}@${{ steps.inspect.outputs.digest }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -111,6 +99,12 @@ jobs:
             ${{ steps.repo.outputs.repo }}:sha-${{ steps.commit-info.outputs.full_sha }} \
             --format '{{.Manifest.Digest}}')
           echo "digest=${digest}" >> "$GITHUB_OUTPUT"
+          docker buildx imagetools inspect \
+            ${{ steps.repo.outputs.repo }}:sha-${{ steps.commit-info.outputs.full_sha }} \
+            > /tmp/imagetools-inspect.txt
+          docker buildx imagetools inspect \
+            ${{ steps.repo.outputs.repo }}:sha-${{ steps.commit-info.outputs.full_sha }} \
+            --format '{{json .}}' | jq '.' > /tmp/imagetools-inspect.json
 
       # SLSA build provenance attached to the ECR image as an OCI referrer.
       - name: Attest build provenance
@@ -136,4 +130,15 @@ jobs:
             echo "\`\`\`"
             echo "${{ steps.meta.outputs.tags }}"
             echo "\`\`\`"
+            echo ""
+            echo "**Manifest inspect:**"
+            echo "\`\`\`"
+            cat /tmp/imagetools-inspect.txt
+            echo "\`\`\`"
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload imagetools inspect JSON
+        uses: actions/upload-artifact@v4
+        with:
+          name: imagetools-inspect-${{ inputs.app_slug }}
+          path: /tmp/imagetools-inspect.json

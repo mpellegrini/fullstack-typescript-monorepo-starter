@@ -4,6 +4,37 @@ on:
   workflow_call:
 
 jobs:
+  # Detect whether any dependency manifests changed so the health checks below
+  # can be skipped on runs that don't touch package files. Reuses TURBO_SCM_BASE
+  # and TURBO_SCM_HEAD set by prepare, so the diff range is identical to what
+  # turbo --affected uses throughout the rest of this workflow.
+  detect-changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      deps-changed: ${{ steps.filter.outputs.deps }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Prepare
+        uses: ./.github/composite-actions/prepare
+
+      - name: Detect dependency file changes
+        id: filter
+        run: |
+          set -euo pipefail
+          if git diff --name-only "$TURBO_SCM_BASE" "$TURBO_SCM_HEAD" | grep -qE '(^|/)package\.json$|^pnpm-lock\.yaml$'; then
+            echo "deps=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "deps=false" >> "$GITHUB_OUTPUT"
+          fi
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -63,3 +94,41 @@ jobs:
 
       - name: Run unit tests
         run: pnpm exec turbo run test --affected -- --reporter=default
+
+  one-version-check:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.deps-changed == 'true'
+    name: One Version Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+
+      - name: Prepare
+        uses: ./.github/composite-actions/prepare
+
+      - name: Run One Version check
+        run: pnpm run one-version:check
+
+  duplicate-dependencies-check:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.deps-changed == 'true'
+    name: Duplicate Dependencies Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+
+      - name: Prepare
+        uses: ./.github/composite-actions/prepare
+
+      - name: Check for Duplicate Dependencies
+        run: pnpm dedupe --check

@@ -131,10 +131,13 @@ jobs:
             echo "${{ steps.meta.outputs.tags }}"
             echo "\`\`\`"
             echo ""
-            echo "**Manifest inspect:**"
+            echo "<details><summary>Manifest inspect</summary>"
+            echo ""
             echo "\`\`\`"
             cat /tmp/imagetools-inspect.txt
             echo "\`\`\`"
+            echo ""
+            echo "</details>"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload imagetools inspect JSON

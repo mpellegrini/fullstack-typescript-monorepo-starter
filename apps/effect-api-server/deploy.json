@@ -2,7 +2,7 @@
   "imageName": "monorepo/effect-api-server",
   "environments": {
     "staging": {
-      "ecsCluster": "staging-cluster1",
+      "ecsCluster": "staging-cluster",
       "ecsService": "effect-api-server-svc",
       "containerName": "effect-api-server",
       "taskDefinition": "effect-api-server-task-staging"

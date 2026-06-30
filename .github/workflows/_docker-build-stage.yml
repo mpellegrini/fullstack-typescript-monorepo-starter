@@ -137,10 +137,11 @@ jobs:
             VERSION=sha-${{ steps.commit-info.outputs.full_sha }}
           outputs: type=image,name=${{ steps.repo.outputs.repo }},push-by-digest=true,name-canonical=true,push=true
           labels: ${{ steps.meta.outputs.labels }}
-          # Scope the cache per-app AND per-platform so neither the two parallel
-          # matrix legs nor sibling app builds race to reserve the same GHA key.
-          cache-from: type=gha,scope=buildcache-${{ inputs.app_slug }}-${{ env.PLATFORM_PAIR }}
-          cache-to: type=gha,mode=max,scope=buildcache-${{ inputs.app_slug }}-${{ env.PLATFORM_PAIR }}
+          # Registry cache stored in the app's own ECR repo under a cache-<platform>
+          # tag. Unlike type=gha, ECR cache is not branch-scoped so PR and main
+          # builds share the same warm layers.
+          cache-from: type=registry,ref=${{ steps.repo.outputs.repo }}:cache-${{ env.PLATFORM_PAIR }}
+          cache-to: type=registry,ref=${{ steps.repo.outputs.repo }}:cache-${{ env.PLATFORM_PAIR }},mode=max,image-manifest=true,oci-mediatypes=true
           provenance: mode=max
           sbom: true
 

@@ -16,7 +16,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Default-deny at the workflow root; jobs that need more elevate per job.
 permissions: {}
@@ -87,7 +87,7 @@ jobs:
   # Only reached when the gate passes: tag the multi-arch manifest and attest.
   docker-publish:
     needs: [deploy-matrix, docker-scan]
-    if: needs.deploy-matrix.outputs.has_apps == 'true'
+    if: needs.deploy-matrix.outputs.has_apps == 'true' && needs.docker-scan.result == 'success'
     name: docker-publish (${{ matrix.target.app_name }})
     strategy:
       fail-fast: false

@@ -41,11 +41,6 @@ on:
         type: string
         default: 'CRITICAL'
 
-    outputs:
-      scan-passed:
-        description: 'true when all blocking scans succeeded'
-        value: ${{ jobs.scan.outputs.passed }}
-
 jobs:
   scan:
     runs-on: ubuntu-latest
@@ -54,8 +49,6 @@ jobs:
       contents: read
       id-token: write # assume the AWS role via OIDC
       security-events: write # upload SARIF to GitHub Security tab
-    outputs:
-      passed: ${{ steps.gate.outputs.passed }}
 
     steps:
       - name: Configure AWS credentials
@@ -163,7 +156,6 @@ jobs:
         continue-on-error: true
 
       - name: Gate decision
-        id: gate
         run: |
           VULN_AMD64="${{ steps.trivy-vuln-amd64.outcome }}"
           VULN_ARM64="${{ steps.trivy-vuln-arm64.outcome }}"
@@ -197,10 +189,8 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
           if [[ "$PASSED" == "true" ]]; then
-            echo "passed=true" >> "$GITHUB_OUTPUT"
             echo "::notice::Scans passed — image is eligible for publish"
           else
-            echo "passed=false" >> "$GITHUB_OUTPUT"
             echo "::error::Scans failed — image will NOT be published"
             exit 1
           fi

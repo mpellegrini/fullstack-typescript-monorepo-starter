@@ -1,14 +1,15 @@
-name: Cut Release
-
-# Optional convenience: cut a correctly-tagged release from the Actions UI
-# instead of hand-typing tags in the Releases page. Guarantees tag format
+# Cut a correctly tagged release from the Actions UI instead of
+# hand-typing tags in the Releases page. Guarantees tag format
 # and prevents duplicate versions.
 #
 # The workflow resolves the git SHA that produced the target ECR image (via
-# the org.opencontainers.image.revision label baked into every image build),
-# scopes the changelog to commits reachable from that SHA, and pins the git
+# the org.opencontainers.image.revision label baked into every image build) and
+# scopes the changelog to commits reachable from that SHA. It pins the git
 # tag to that exact commit — so the release always reflects what was actually
 # shipped rather than whatever HEAD happens to be at trigger time.
+
+name: Cut Release
+
 on:
   workflow_dispatch:
     inputs:
@@ -37,7 +38,13 @@ jobs:
     permissions:
       contents: write
       id-token: write # OIDC: assume AWS role to inspect ECR image
+
     steps:
+      - name: Enforce main branch
+        run: |
+          [[ "${{ github.ref }}" == "refs/heads/main" ]] \
+            || { echo "::error::This workflow must be triggered from the main branch (got ${{ github.ref }})"; exit 1; }
+
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0

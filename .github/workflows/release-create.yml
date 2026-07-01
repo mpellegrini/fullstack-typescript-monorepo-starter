@@ -1,4 +1,4 @@
-# Cut a correctly tagged release from the Actions UI instead of
+# Create a correctly tagged release from the Actions UI instead of
 # hand-typing tags in the Releases page. Guarantees tag format
 # and prevents duplicate versions.
 #
@@ -12,7 +12,7 @@
 # be an ancestor of main, so pr-* images (built from unmerged branches) are
 # rejected. Release latest or a sha-* tag from a merged commit.
 
-name: cut-release
+name: release-create
 
 on:
   workflow_dispatch:
@@ -155,9 +155,17 @@ jobs:
             echo "$DELIM"
           } >> "$GITHUB_OUTPUT"
 
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.RELEASE_BOT_APP_ID }}
+          private-key: ${{ secrets.RELEASE_BOT_APP_PRIVATE_KEY }}
+
       - name: Create release (triggers release-deploy.yml)
         env:
-          GH_TOKEN: ${{ secrets.RELEASE_PAT }} # PAT/GitHub App token so the release event fires
+          # App token (not the default GITHUB_TOKEN) so the release event fires downstream
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           APP: ${{ inputs.app }}
           VERSION: ${{ inputs.version }}
           GIT_SHA: ${{ steps.image-info.outputs.git_sha }}

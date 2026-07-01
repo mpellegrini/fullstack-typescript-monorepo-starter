@@ -31,6 +31,12 @@ on:
         type: boolean
         default: false
 
+# Serialize releases of the same app+version so two concurrent runs can't both
+# pass the duplicate-tag check and race to create the tag.
+concurrency:
+  group: cut-release-${{ inputs.app }}-${{ inputs.version }}
+  cancel-in-progress: false
+
 jobs:
   cut:
     runs-on: ubuntu-latest
@@ -48,6 +54,21 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+      # Cheap format/duplicate checks first, before any AWS spend, so a typo'd
+      # version or an already-released tag fails fast.
+      - name: Validate version and tag
+        env:
+          APP: ${{ inputs.app }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]] \
+            || { echo "::error::'$VERSION' is not valid semver"; exit 1; }
+          TAG="$APP@v$VERSION"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "::error::Tag $TAG already exists"; exit 1
+          fi
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -75,7 +96,6 @@ jobs:
           IMAGE_NAME=$(jq -r '.imageName // empty' "$cfg")
           [[ -n "$IMAGE_NAME" ]] || { echo "::error::$cfg is missing the required \"imageName\" field"; exit 1; }
           REPO="$REGISTRY/$IMAGE_NAME"
-          echo "repo=${REPO}" >> "$GITHUB_OUTPUT"
 
           GIT_SHA=$(docker buildx imagetools inspect "$REPO:$IMAGE_TAG" --format '{{json .}}' \
             | jq -r '[.. | objects | select(has("org.opencontainers.image.revision"))
@@ -88,21 +108,18 @@ jobs:
           echo "git_sha=${GIT_SHA}" >> "$GITHUB_OUTPUT"
           echo "Resolved $REPO:$IMAGE_TAG → git SHA ${GIT_SHA}"
 
-      - name: Validate inputs
+      # The image's commit must exist AND be part of main's history — otherwise
+      # we'd tag a release at a commit that was never merged (e.g. an unmerged
+      # pr-* image, or a squash-merged branch whose head SHA no longer exists).
+      - name: Verify image commit is on main
         env:
-          APP: ${{ inputs.app }}
-          VERSION: ${{ inputs.version }}
           GIT_SHA: ${{ steps.image-info.outputs.git_sha }}
         run: |
           set -euo pipefail
-          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]] \
-            || { echo "::error::'$VERSION' is not valid semver"; exit 1; }
-          TAG="$APP@v$VERSION"
-          if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "::error::Tag $TAG already exists"; exit 1
-          fi
-          git cat-file -e "${GIT_SHA}^{commit}" \
-            || { echo "::error::SHA $GIT_SHA (from image label) was not found in this repository"; exit 1; }
+          git cat-file -e "${GIT_SHA}^{commit}" 2>/dev/null \
+            || { echo "::error::SHA $GIT_SHA (from image label) was not found in this repository — it may be an unmerged or squash-merged commit"; exit 1; }
+          git merge-base --is-ancestor "$GIT_SHA" HEAD \
+            || { echo "::error::SHA $GIT_SHA (from image label) is not an ancestor of main — refusing to release an image not built from main"; exit 1; }
 
       - name: Generate changelog since last release of this app
         id: notes
@@ -116,6 +133,10 @@ jobs:
           # Random delimiter so a commit body containing the delimiter line
           # can't corrupt (or inject into) the step output.
           DELIM="EOF_$(openssl rand -hex 8)"
+          # Scope: commits touching this app OR any shared package. This is a
+          # deliberate over-approximation — we don't resolve the app's actual
+          # dependency graph, so changes to packages the app doesn't consume may
+          # appear. Acceptable for a human-readable changelog.
           {
             echo "notes<<$DELIM"
             git log ${RANGE:-$GIT_SHA} --pretty='- %s (%h)' -- "apps/$APP" "packages/" \

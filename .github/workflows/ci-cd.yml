@@ -1,3 +1,5 @@
+name: ci-cd
+
 on:
   workflow_dispatch: # This enables the manual execution button
     inputs:
@@ -104,7 +106,7 @@ jobs:
   # Single aggregate status check. Configure branch protection to require ONLY
   # this job: it rolls up every upstream result, so conditionally-skipped jobs
   # never block a merge while genuine failures and cancellations still do.
-  ci-passed:
+  ci-cd-passed:
     if: always() # Ensures this job ALWAYS runs to report status
     needs:
       [compute-affected, code-quality, deploy-matrix, docker-build, docker-scan, docker-publish]

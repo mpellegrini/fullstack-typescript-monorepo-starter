@@ -12,6 +12,8 @@
 # be an ancestor of main, so pr-* images (built from unmerged branches) are
 # rejected. Release latest or a sha-* tag from a merged commit.
 
+name: cut-release
+
 on:
   workflow_dispatch:
     inputs:

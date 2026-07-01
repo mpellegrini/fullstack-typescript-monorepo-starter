@@ -1,0 +1,165 @@
+# Cut a correctly tagged release from the Actions UI instead of
+# hand-typing tags in the Releases page. Guarantees tag format
+# and prevents duplicate versions.
+#
+# The workflow resolves the git SHA that produced the target ECR image (via
+# the org.opencontainers.image.revision label baked into every image build) and
+# scopes the changelog to commits reachable from that SHA. It pins the git
+# tag to that exact commit — so the release always reflects what was actually
+# shipped rather than whatever HEAD happens to be at trigger time.
+#
+# Policy: only images built from main are releasable. The image's commit must
+# be an ancestor of main, so pr-* images (built from unmerged branches) are
+# rejected. Release latest or a sha-* tag from a merged commit.
+
+name: Cut Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: App to release (must match apps/<name>)
+        required: true
+        type: string
+      version:
+        description: Semver without the v prefix (e.g. 1.4.2)
+        required: true
+        type: string
+      image_tag:
+        description: ECR image tag to release; must resolve to a commit on main (e.g. latest, sha-abc1234)
+        required: false
+        default: latest
+        type: string
+      prerelease:
+        description: Mark as prerelease
+        type: boolean
+        default: false
+
+# Serialize releases of the same app+version so two concurrent runs can't both
+# pass the duplicate-tag check and race to create the tag.
+concurrency:
+  group: cut-release-${{ inputs.app }}-${{ inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  cut:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      id-token: write # OIDC: assume AWS role to inspect ECR image
+
+    steps:
+      - name: Enforce main branch
+        run: |
+          [[ "${{ github.ref }}" == "refs/heads/main" ]] \
+            || { echo "::error::This workflow must be triggered from the main branch (got ${{ github.ref }})"; exit 1; }
+
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      # Cheap format/duplicate checks first, before any AWS spend, so a typo'd
+      # version or an already-released tag fails fast.
+      - name: Validate version and tag
+        env:
+          APP: ${{ inputs.app }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]] \
+            || { echo "::error::'$VERSION' is not valid semver"; exit 1; }
+          TAG="$APP@v$VERSION"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "::error::Tag $TAG already exists"; exit 1
+          fi
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_GHA_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Resolve image and extract git SHA
+        id: image-info
+        env:
+          APP: ${{ inputs.app }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+        run: |
+          set -euo pipefail
+          cfg="apps/$APP/deploy.json"
+          [[ -f "$cfg" ]] || { echo "::error::$cfg not found — does apps/$APP exist and opt in to deployments?"; exit 1; }
+          IMAGE_NAME=$(jq -r '.imageName // empty' "$cfg")
+          [[ -n "$IMAGE_NAME" ]] || { echo "::error::$cfg is missing the required \"imageName\" field"; exit 1; }
+          REPO="$REGISTRY/$IMAGE_NAME"
+
+          GIT_SHA=$(docker buildx imagetools inspect "$REPO:$IMAGE_TAG" --format '{{json .}}' \
+            | jq -r '[.. | objects | select(has("org.opencontainers.image.revision"))
+                      | .["org.opencontainers.image.revision"]] | first // empty')
+
+          if [[ -z "$GIT_SHA" ]]; then
+            echo "::error::org.opencontainers.image.revision label not found in $REPO:$IMAGE_TAG — was this image built by this pipeline?"
+            exit 1
+          fi
+          echo "git_sha=${GIT_SHA}" >> "$GITHUB_OUTPUT"
+          echo "Resolved $REPO:$IMAGE_TAG → git SHA ${GIT_SHA}"
+
+      # The image's commit must exist AND be part of main's history — otherwise
+      # we'd tag a release at a commit that was never merged (e.g. an unmerged
+      # pr-* image, or a squash-merged branch whose head SHA no longer exists).
+      - name: Verify image commit is on main
+        env:
+          GIT_SHA: ${{ steps.image-info.outputs.git_sha }}
+        run: |
+          set -euo pipefail
+          git cat-file -e "${GIT_SHA}^{commit}" 2>/dev/null \
+            || { echo "::error::SHA $GIT_SHA (from image label) was not found in this repository — it may be an unmerged or squash-merged commit"; exit 1; }
+          git merge-base --is-ancestor "$GIT_SHA" HEAD \
+            || { echo "::error::SHA $GIT_SHA (from image label) is not an ancestor of main — refusing to release an image not built from main"; exit 1; }
+
+      - name: Generate changelog since last release of this app
+        id: notes
+        env:
+          APP: ${{ inputs.app }}
+          GIT_SHA: ${{ steps.image-info.outputs.git_sha }}
+        run: |
+          set -euo pipefail
+          LAST_TAG=$(git tag -l "$APP@v*" --sort=-v:refname | head -n1)
+          RANGE=${LAST_TAG:+"$LAST_TAG..$GIT_SHA"}
+          # Random delimiter so a commit body containing the delimiter line
+          # can't corrupt (or inject into) the step output.
+          DELIM="EOF_$(openssl rand -hex 8)"
+          # Scope: commits touching this app OR any shared package. This is a
+          # deliberate over-approximation — we don't resolve the app's actual
+          # dependency graph, so changes to packages the app doesn't consume may
+          # appear. Acceptable for a human-readable changelog.
+          {
+            echo "notes<<$DELIM"
+            git log ${RANGE:-$GIT_SHA} --pretty='- %s (%h)' -- "apps/$APP" "packages/" \
+              || echo "- Initial release"
+            echo "$DELIM"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create release (triggers release-deploy.yml)
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PAT }} # PAT/GitHub App token so the release event fires
+          APP: ${{ inputs.app }}
+          VERSION: ${{ inputs.version }}
+          GIT_SHA: ${{ steps.image-info.outputs.git_sha }}
+          # Passed via env (never inlined into the script) so attacker-controlled
+          # commit subjects in the changelog can't inject shell commands.
+          NOTES: ${{ steps.notes.outputs.notes }}
+        run: |
+          gh release create "$APP@v$VERSION" \
+            --target "$GIT_SHA" \
+            --title "$APP v$VERSION" \
+            --notes "$NOTES" \
+            ${{ inputs.prerelease && '--prerelease' || '' }}

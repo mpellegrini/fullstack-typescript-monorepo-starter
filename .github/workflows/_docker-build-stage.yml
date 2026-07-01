@@ -1,5 +1,3 @@
-name: Build Multi-Arch Image (push by digest to ECR)
-
 # Builds a multi-platform image using native runners (no QEMU emulation):
 #   linux/amd64 → ubuntu-latest
 #   linux/arm64 → ubuntu-24.04-arm

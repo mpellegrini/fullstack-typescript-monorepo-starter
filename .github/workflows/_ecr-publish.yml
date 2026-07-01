@@ -13,7 +13,6 @@
 # SLSA build provenance is attested against the final manifest digest and pushed
 # to ECR as an OCI referrer, so it travels with the image.
 # =============================================================================
-name: Publish to ECR
 
 on:
   workflow_call:

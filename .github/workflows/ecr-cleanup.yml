@@ -21,7 +21,6 @@
 # vars.AWS_GHA_ROLE_ARN. Fork PRs never receive OIDC/secrets (and so never
 # pushed images), so the job is skipped for them.
 # =============================================================================
-name: ecr-cleanup
 
 on:
   pull_request:

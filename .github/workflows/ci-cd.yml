@@ -1,5 +1,3 @@
-name: ci-cd
-
 on:
   workflow_dispatch: # This enables the manual execution button
     inputs:

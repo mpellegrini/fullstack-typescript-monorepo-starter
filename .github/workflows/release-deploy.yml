@@ -1,0 +1,42 @@
+# Fires when release-create.yml creates a GitHub release (gh release create).
+# Placeholder: only echoes the release payload for now — deployment logic
+# gets wired in on top of this once the trigger is confirmed working.
+
+name: release-deploy
+
+on:
+  release:
+    types: [released, prereleased]
+
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Echo release payload
+        # Passed via env (never inlined into the script) so a release name/body
+        # containing shell metacharacters can't inject commands.
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+          TARGET_SHA: ${{ github.event.release.target_commitish }}
+          NAME: ${{ github.event.release.name }}
+          PRERELEASE: ${{ github.event.release.prerelease }}
+          URL: ${{ github.event.release.html_url }}
+        run: |
+          set -euo pipefail
+          echo "tag: $TAG"
+          echo "target_commitish (git sha): $TARGET_SHA"
+          echo "name: $NAME"
+          echo "prerelease: $PRERELEASE"
+          echo "url: $URL"
+
+      - name: Echo parsed app/version from tag
+        # release-create.yml tags releases as "$APP@v$VERSION"
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          APP="${TAG%@v*}"
+          VERSION="${TAG##*@v}"
+          echo "app: $APP"
+          echo "version: $VERSION"

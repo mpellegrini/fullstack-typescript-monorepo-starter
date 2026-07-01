@@ -113,11 +113,14 @@ jobs:
           set -euo pipefail
           LAST_TAG=$(git tag -l "$APP@v*" --sort=-v:refname | head -n1)
           RANGE=${LAST_TAG:+"$LAST_TAG..$GIT_SHA"}
+          # Random delimiter so a commit body containing the delimiter line
+          # can't corrupt (or inject into) the step output.
+          DELIM="EOF_$(openssl rand -hex 8)"
           {
-            echo "notes<<EOF"
+            echo "notes<<$DELIM"
             git log ${RANGE:-$GIT_SHA} --pretty='- %s (%h)' -- "apps/$APP" "packages/" \
               || echo "- Initial release"
-            echo "EOF"
+            echo "$DELIM"
           } >> "$GITHUB_OUTPUT"
 
       - name: Create release (triggers release-deploy.yml)
@@ -126,9 +129,12 @@ jobs:
           APP: ${{ inputs.app }}
           VERSION: ${{ inputs.version }}
           GIT_SHA: ${{ steps.image-info.outputs.git_sha }}
+          # Passed via env (never inlined into the script) so attacker-controlled
+          # commit subjects in the changelog can't inject shell commands.
+          NOTES: ${{ steps.notes.outputs.notes }}
         run: |
           gh release create "$APP@v$VERSION" \
             --target "$GIT_SHA" \
             --title "$APP v$VERSION" \
-            --notes "${{ steps.notes.outputs.notes }}" \
+            --notes "$NOTES" \
             ${{ inputs.prerelease && '--prerelease' || '' }}

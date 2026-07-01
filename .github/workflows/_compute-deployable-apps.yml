@@ -1,5 +1,3 @@
-name: Compute Deployable Apps
-
 on:
   workflow_call:
     inputs:

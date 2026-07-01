@@ -1,3 +1,4 @@
+name: _compute-deployable-apps
 on:
   workflow_call:
     inputs:

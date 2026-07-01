@@ -22,6 +22,8 @@
 # pushed images), so the job is skipped for them.
 # =============================================================================
 
+name: ecr-cleanup
+
 on:
   pull_request:
     types: [closed]

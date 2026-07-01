@@ -14,6 +14,8 @@
 # to ECR as an OCI referrer, so it travels with the image.
 # =============================================================================
 
+name: _ecr-publish
+
 on:
   workflow_call:
     inputs:

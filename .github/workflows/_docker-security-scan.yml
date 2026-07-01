@@ -18,6 +18,8 @@
 # The DB and image layers are cached after the first pass, so the rest are cheap.
 # =============================================================================
 
+name: _docker-security-scan
+
 on:
   workflow_call:
     inputs:

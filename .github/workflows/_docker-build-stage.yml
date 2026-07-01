@@ -7,6 +7,8 @@
 # tagged multi-arch manifest once the scan passes. Each leg uploads its digest as
 # an artifact (`digests-<platform>`) so scan + publish can resolve the bytes.
 
+name: _docker-build-stage
+
 on:
   workflow_call:
     inputs:

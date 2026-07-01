@@ -1,3 +1,5 @@
+name: _code-quality
+
 on:
   workflow_call:
 

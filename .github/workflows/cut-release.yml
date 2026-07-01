@@ -7,6 +7,10 @@
 # scopes the changelog to commits reachable from that SHA. It pins the git
 # tag to that exact commit — so the release always reflects what was actually
 # shipped rather than whatever HEAD happens to be at trigger time.
+#
+# Policy: only images built from main are releasable. The image's commit must
+# be an ancestor of main, so pr-* images (built from unmerged branches) are
+# rejected. Release latest or a sha-* tag from a merged commit.
 
 name: Cut Release
 
@@ -22,7 +26,7 @@ on:
         required: true
         type: string
       image_tag:
-        description: ECR image tag to release (e.g. latest, sha-abc1234)
+        description: ECR image tag to release; must resolve to a commit on main (e.g. latest, sha-abc1234)
         required: false
         default: latest
         type: string

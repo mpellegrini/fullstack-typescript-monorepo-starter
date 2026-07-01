@@ -101,9 +101,16 @@ jobs:
           [[ -n "$IMAGE_NAME" ]] || { echo "::error::$cfg is missing the required \"imageName\" field"; exit 1; }
           REPO="$REGISTRY/$IMAGE_NAME"
 
-          GIT_SHA=$(docker buildx imagetools inspect "$REPO:$IMAGE_TAG" --format '{{json .}}' \
-            | jq -r '[.. | objects | select(has("org.opencontainers.image.revision"))
-                      | .["org.opencontainers.image.revision"]] | first // empty')
+          # Capture inspect separately so a missing tag yields a friendly error
+          # rather than aborting the step on docker's own "not found" (set -e +
+          # pipefail would kill the command substitution before we can check).
+          if ! MANIFEST=$(docker buildx imagetools inspect "$REPO:$IMAGE_TAG" --format '{{json .}}' 2>/dev/null); then
+            echo "::error::Image $REPO:$IMAGE_TAG not found in ECR — check the image_tag input"
+            exit 1
+          fi
+
+          GIT_SHA=$(jq -r '[.. | objects | select(has("org.opencontainers.image.revision"))
+                            | .["org.opencontainers.image.revision"]] | first // empty' <<< "$MANIFEST")
 
           if [[ -z "$GIT_SHA" ]]; then
             echo "::error::org.opencontainers.image.revision label not found in $REPO:$IMAGE_TAG — was this image built by this pipeline?"

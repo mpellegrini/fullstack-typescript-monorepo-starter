@@ -190,7 +190,7 @@ jobs:
           # appear. Acceptable for a human-readable changelog.
           {
             echo "notes<<$DELIM"
-            git log ${RANGE:-$GIT_SHA} --pretty='- %s (%h)' -- "apps/$APP" "packages/" \
+            git log "${RANGE:-$GIT_SHA}" --pretty='- %s (%h)' -- "apps/$APP" "packages/" \
               || echo "- Initial release"
             echo "$DELIM"
           } >> "$GITHUB_OUTPUT"

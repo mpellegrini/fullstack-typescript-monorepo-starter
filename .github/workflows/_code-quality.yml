@@ -91,3 +91,13 @@ jobs:
           min-severity: high
           advanced-security: false
           annotations: true
+
+      # Complements zizmor: actionlint checks workflow correctness (invalid
+      # needs/outputs references, expression type errors, bad runner labels)
+      # and runs shellcheck over run blocks. Security auditing stays with
+      # zizmor above.
+      - name: Run actionlint
+        uses: raven-actions/actionlint@3d39aea434753780c3b3d4a1a31c854b4dbf49d7 # v2.2.0
+        with:
+          # Pinned actionlint version for the same reason as zizmor above.
+          version: 1.7.12

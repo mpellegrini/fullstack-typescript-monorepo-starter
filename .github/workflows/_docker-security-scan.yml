@@ -53,21 +53,21 @@ jobs:
 
     steps:
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6.2.1
         with:
           role-to-assume: ${{ vars.AWS_GHA_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Log in to Amazon ECR
         id: ecr-login
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@d539f0932e70871a027e9d5a9d8fc38589180a64 # v2.1.6
 
       # Resolve this app's per-arch image refs from its digest artifacts. Each
       # artifact holds a single empty file named after the digest hex (no
       # sha256: prefix). Under a matrix, sibling apps upload their own
       # `digests-<app>-*` artifacts, so the pattern is scoped to this app.
       - name: Download digest artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           path: /tmp/digests
           pattern: digests-${{ inputs.app_slug }}-*
@@ -90,7 +90,7 @@ jobs:
       # enough for visibility/triage.
       # -------------------------------------------------------------------
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         env:
           # Each digest is an attestation index (provenance/SBOM), so Trivy must
           # be told which child to scan instead of defaulting to the host arch.
@@ -104,7 +104,7 @@ jobs:
           exit-code: '0'
 
       - name: Upload Trivy scan results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v4.36.2
         if: always() && hashFiles('trivy-results.sarif') != '' # Upload results even if the scan fails
         with:
           sarif_file: 'trivy-results.sarif'
@@ -115,7 +115,7 @@ jobs:
       # -------------------------------------------------------------------
       - name: Fail on ${{ inputs.severity_threshold }} vulnerabilities in amd64
         id: trivy-vuln-amd64
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         env:
           TRIVY_PLATFORM: linux/amd64
         with:
@@ -132,7 +132,7 @@ jobs:
       # -------------------------------------------------------------------
       - name: Fail on ${{ inputs.severity_threshold }} vulnerabilities in arm64
         id: trivy-vuln-arm64
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         env:
           TRIVY_PLATFORM: linux/arm64
         with:
@@ -146,7 +146,7 @@ jobs:
 
       - name: Trivy misconfiguration and secret scan
         id: trivy-config
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         env:
           TRIVY_PLATFORM: linux/amd64
         with:

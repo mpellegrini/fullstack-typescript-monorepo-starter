@@ -1,12 +1,11 @@
 name: ci-cd
 
 on:
-  workflow_dispatch: # This enables the manual execution button
-    inputs:
-      reason:
-        description: 'Reason for running this manually'
-        required: false
-        default: 'Routine check'
+  # No workflow_dispatch: a manual run would treat every package as affected
+  # and re-publish every app, repointing the sha-<sha> and latest tags to
+  # freshly rebuilt digests (provenance/SBOM make rebuilds non-reproducible) —
+  # and it could be dispatched from any branch, publishing sha-tagged images
+  # from unreviewed code. Re-run a failed run via "Re-run all jobs" instead.
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened]
@@ -113,12 +112,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Log manual run reason
-        if: github.event_name == 'workflow_dispatch'
-        env:
-          REASON: ${{ inputs.reason }}
-        run: echo "**Manual run reason:** ${REASON}" >> "$GITHUB_STEP_SUMMARY"
-
       - name: Verify upstream jobs succeeded
         run: |
           if [[ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" == "true" ]]; then

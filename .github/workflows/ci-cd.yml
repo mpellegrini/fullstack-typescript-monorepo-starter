@@ -47,9 +47,17 @@ jobs:
   # Build both arches on native runners and push to ECR by digest (untagged).
   # The build stage verifies the target ECR repository already exists (provisioned
   # out-of-band via IaC) and hard-stops if it doesn't.
+  # Skipped for PRs from forks: fork runs get a read-only token (id-token: write
+  # is refused) and no repository secrets/vars, so the AWS OIDC steps would
+  # hard-fail and block the merge via ci-cd-passed. Skipping here cascades to
+  # docker-scan and docker-publish; ci-cd-passed treats skips as passing. The
+  # full build/scan/publish still runs on the push to main after merge.
   docker-build:
     needs: [deploy-matrix]
-    if: needs.deploy-matrix.outputs.has_apps == 'true'
+    if: >-
+      needs.deploy-matrix.outputs.has_apps == 'true' &&
+      (github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository)
     name: docker-build (${{ matrix.target.app_name }})
     strategy:
       fail-fast: false

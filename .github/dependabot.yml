@@ -1,0 +1,20 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directories:
+      # `/` covers .github/workflows; composite actions must be listed by the
+      # directory containing their action.yml.
+      - /
+      - /.github/composite-actions/*
+    schedule:
+      interval: weekly
+    # One grouped PR per week instead of one PR (and one full CI run) per
+    # action. Dependabot updates the pinned SHA and the trailing version
+    # comment together.
+    groups:
+      github-actions:
+        patterns: ['*']
+    commit-message:
+      # Match the repo's commitlint convention (subject stays lowercase:
+      # "ci(github-actions): bump ...").
+      prefix: ci(github-actions)

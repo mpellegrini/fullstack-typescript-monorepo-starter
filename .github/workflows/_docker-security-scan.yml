@@ -73,11 +73,18 @@ jobs:
           pattern: digests-${{ inputs.app_slug }}-*
 
       - name: Resolve per-arch image refs
+        env:
+          # Via env, not inline expansion: app_slug is a directory basename and
+          # image_name comes from a repo-authored deploy.json, so neither must
+          # reach the shell as code.
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_NAME: ${{ inputs.image_name }}
+          APP_SLUG: ${{ inputs.app_slug }}
         run: |
           set -euo pipefail
-          repo="${{ steps.ecr-login.outputs.registry }}/${{ inputs.image_name }}"
-          amd64="$(basename "$(ls /tmp/digests/digests-${{ inputs.app_slug }}-linux-amd64/*)")"
-          arm64="$(basename "$(ls /tmp/digests/digests-${{ inputs.app_slug }}-linux-arm64/*)")"
+          repo="${REGISTRY}/${IMAGE_NAME}"
+          amd64="$(basename "$(ls "/tmp/digests/digests-${APP_SLUG}-linux-amd64"/*)")"
+          arm64="$(basename "$(ls "/tmp/digests/digests-${APP_SLUG}-linux-arm64"/*)")"
           {
             echo "REPO=${repo}"
             echo "AMD64_REF=${repo}@sha256:${amd64}"
@@ -157,6 +164,10 @@ jobs:
         continue-on-error: true
 
       - name: Gate decision
+        env:
+          # Via env, not inline expansion: the threshold is caller-supplied text
+          # and must not reach the shell as code.
+          SEVERITY_THRESHOLD: ${{ inputs.severity_threshold }}
         run: |
           VULN_AMD64="${{ steps.trivy-vuln-amd64.outcome }}"
           VULN_ARM64="${{ steps.trivy-vuln-arm64.outcome }}"
@@ -174,7 +185,7 @@ jobs:
             echo "### Docker security scan"
             echo ""
             echo "**Scanned repo:** \`${REPO}\`"
-            echo "**Severity threshold:** \`${{ inputs.severity_threshold }}\`"
+            echo "**Severity threshold:** \`${SEVERITY_THRESHOLD}\`"
             echo ""
             echo "| Scan | Result |"
             echo "| --- | --- |"

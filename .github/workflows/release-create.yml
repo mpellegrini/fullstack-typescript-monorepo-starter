@@ -51,9 +51,13 @@ jobs:
 
     steps:
       - name: Enforce main branch
+        env:
+          # Via env, not inline expansion: a crafted branch name must not reach
+          # the shell as code.
+          REF: ${{ github.ref }}
         run: |
-          [[ "${{ github.ref }}" == "refs/heads/main" ]] \
-            || { echo "::error::This workflow must be triggered from the main branch (got ${{ github.ref }})"; exit 1; }
+          [[ "$REF" == "refs/heads/main" ]] \
+            || { echo "::error::This workflow must be triggered from the main branch (got $REF)"; exit 1; }
 
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -199,6 +203,9 @@ jobs:
           private-key: ${{ secrets.RELEASE_BOT_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
           repositories: ${{ github.event.repository.name }}
+          # Scope the token to the one permission `gh release create` needs,
+          # instead of inheriting the app installation's full permission set.
+          permission-contents: write
 
       - name: Create release (triggers release-deploy.yml)
         env:

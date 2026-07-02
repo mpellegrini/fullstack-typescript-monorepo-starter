@@ -74,6 +74,17 @@ jobs:
             echo "::error::Tag $TAG already exists"; exit 1
           fi
 
+          # Reject version regressions early (e.g. releasing v1.0.5 after v1.2.0
+          # already shipped). Approximate semver via sort -V; good enough given
+          # the format enforced above.
+          LAST_TAG=$(git tag -l "$APP@v*" --sort=-v:refname | head -n1)
+          if [[ -n "$LAST_TAG" ]]; then
+            LAST_VERSION="${LAST_TAG#*@v}"
+            HIGHEST=$(printf '%s\n%s\n' "$LAST_VERSION" "$VERSION" | sort -V | tail -n1)
+            [[ "$HIGHEST" == "$VERSION" ]] \
+              || { echo "::error::$VERSION is not newer than the last released version $LAST_VERSION ($LAST_TAG)"; exit 1; }
+          fi
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -132,14 +143,39 @@ jobs:
           git merge-base --is-ancestor "$GIT_SHA" HEAD \
             || { echo "::error::SHA $GIT_SHA (from image label) is not an ancestor of main — refusing to release an image not built from main"; exit 1; }
 
-      - name: Generate changelog since last release of this app
-        id: notes
+      # Guards against releasing a new version number against a commit that's
+      # the same as, or older than, the last release — e.g. re-releasing an
+      # already-shipped image, or accidentally targeting a stale image_tag.
+      - name: Verify release commit is newer than last release
+        id: last-release
         env:
           APP: ${{ inputs.app }}
           GIT_SHA: ${{ steps.image-info.outputs.git_sha }}
         run: |
           set -euo pipefail
           LAST_TAG=$(git tag -l "$APP@v*" --sort=-v:refname | head -n1)
+          echo "last_tag=${LAST_TAG}" >> "$GITHUB_OUTPUT"
+          if [[ -z "$LAST_TAG" ]]; then
+            echo "No previous release for $APP — skipping commit ordering check"
+            exit 0
+          fi
+
+          LAST_SHA=$(git rev-list -n1 "$LAST_TAG")
+          if [[ "$GIT_SHA" == "$LAST_SHA" ]]; then
+            echo "::error::$GIT_SHA is the same commit as $LAST_TAG — no new changes to release"
+            exit 1
+          fi
+          git merge-base --is-ancestor "$LAST_SHA" "$GIT_SHA" \
+            || { echo "::error::$GIT_SHA is not a descendant of $LAST_TAG ($LAST_SHA) — refusing to release an older or diverged commit"; exit 1; }
+
+      - name: Generate changelog since last release of this app
+        id: notes
+        env:
+          APP: ${{ inputs.app }}
+          GIT_SHA: ${{ steps.image-info.outputs.git_sha }}
+          LAST_TAG: ${{ steps.last-release.outputs.last_tag }}
+        run: |
+          set -euo pipefail
           RANGE=${LAST_TAG:+"$LAST_TAG..$GIT_SHA"}
           # Random delimiter so a commit body containing the delimiter line
           # can't corrupt (or inject into) the step output.
@@ -161,6 +197,8 @@ jobs:
         with:
           client-id: ${{ vars.RELEASE_BOT_APP_CLIENT_ID }}
           private-key: ${{ secrets.RELEASE_BOT_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
 
       - name: Create release (triggers release-deploy.yml)
         env:

@@ -9,10 +9,7 @@ export class DatabaseConnectionError extends Data.TaggedError('DatabaseConnectio
 }> {}
 
 type DatabaseErrorType =
-  | 'connection_error'
-  | 'foreign_key_violation'
-  | 'unique_violation'
-  | 'unknown'
+  'connection_error' | 'foreign_key_violation' | 'unique_violation' | 'unknown'
 
 export class DatabaseError extends Data.TaggedError('DatabaseError')<{
   readonly cause: Error

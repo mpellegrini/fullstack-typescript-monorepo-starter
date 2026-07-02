@@ -93,10 +93,19 @@ jobs:
 
       - name: Create and push multi-arch manifest
         working-directory: /tmp/digests
+        env:
+          REPO: ${{ steps.repo.outputs.repo }}
         run: |
-          docker buildx imagetools create \
-            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ steps.repo.outputs.repo }}@sha256:%s ' *)
+          set -euo pipefail
+          args=()
+          while IFS= read -r tag; do
+            args+=(-t "$tag")
+          done < <(jq -r '.tags[]' <<< "$DOCKER_METADATA_OUTPUT_JSON")
+          # Each file in /tmp/digests is named after a per-arch digest hex.
+          for digest in *; do
+            args+=("${REPO}@sha256:${digest}")
+          done
+          docker buildx imagetools create "${args[@]}"
 
       - name: Inspect manifest and capture digest
         id: inspect

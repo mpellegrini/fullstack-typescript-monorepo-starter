@@ -36,11 +36,12 @@ runs:
       run: |
         set -euo pipefail
 
-        # The first push to a branch reports an all-zero "before" SHA: there is
-        # no prior commit to diff against. Fall back to the git empty-tree hash,
-        # which diffs every file as added and forces Turbo to treat all packages
-        # as affected (i.e. run everything).
-        if [[ "${RESOLVED_BASE}" == "0000000000000000000000000000000000000000" ]]; then
+        # The first push to a branch reports an all-zero "before" SHA, and
+        # workflow_dispatch has no "before" at all (empty): in both cases there
+        # is no prior commit to diff against. Fall back to the git empty-tree
+        # hash, which diffs every file as added and forces Turbo to treat all
+        # packages as affected (i.e. run everything).
+        if [[ -z "${RESOLVED_BASE}" || "${RESOLVED_BASE}" == "0000000000000000000000000000000000000000" ]]; then
           RESOLVED_BASE="4b825dc642cb6eb9a060e54bf8d69288fbee4904"
         fi
 

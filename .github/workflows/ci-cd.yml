@@ -113,6 +113,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Log manual run reason
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          REASON: ${{ inputs.reason }}
+        run: echo "**Manual run reason:** ${REASON}" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Verify upstream jobs succeeded
         run: |
           if [[ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" == "true" ]]; then

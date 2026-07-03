@@ -5,8 +5,8 @@
   "description": "SvelteKit Example App",
   "type": "module",
   "scripts": {
-    "build": "svelte-kit sync",
     "clean": "del .turbo coverage .svelte-kit build",
+    "codegen": "svelte-kit sync",
     "dev": "vite dev",
     "lint": "eslint .",
     "test": "vitest run",

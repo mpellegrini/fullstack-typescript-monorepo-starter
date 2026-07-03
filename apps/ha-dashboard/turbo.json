@@ -1,7 +1,7 @@
 {
   "extends": ["//"],
   "tasks": {
-    "build": {
+    "codegen": {
       "outputs": [".svelte-kit/**"]
     }
   }

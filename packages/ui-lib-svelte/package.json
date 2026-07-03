@@ -13,8 +13,8 @@
     "./styles/*": "./src/styles/*"
   },
   "scripts": {
-    "build": "svelte-kit sync",
     "clean": "del .turbo coverage .svelte-kit",
+    "codegen": "svelte-kit sync",
     "dev": "vite dev",
     "lint": "eslint .",
     "test": "vitest run",

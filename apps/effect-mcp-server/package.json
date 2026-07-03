@@ -5,6 +5,9 @@
   "description": "Effect MCP Server Example App",
   "license": "UNLICENSED",
   "type": "module",
+  "files": [
+    "build"
+  ],
   "scripts": {
     "clean": "del .turbo coverage build",
     "dev": "node --watch src/index.ts",

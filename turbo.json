@@ -1,23 +1,26 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": [
+    "toolchain/typescript-config/**",
+    "toolchain/eslint-config/**",
+    "toolchain/vitest-config/**"
+  ],
   "tasks": {
-    "build": {
-      "dependsOn": ["^build"]
+    "codegen": {
+      "dependsOn": ["^codegen"]
     },
     "clean": {
       "cache": false
     },
     "lint": {
-      "dependsOn": ["build"]
+      "dependsOn": ["^codegen", "codegen"]
     },
     "test": {
-      "dependsOn": ["build"],
-      "inputs": ["./src/**"],
+      "dependsOn": ["^codegen", "codegen"],
       "outputs": ["./coverage/**"]
     },
     "typecheck": {
-      "inputs": ["./src/**"],
-      "dependsOn": ["build"]
+      "dependsOn": ["^codegen", "codegen"]
     }
   }
 }

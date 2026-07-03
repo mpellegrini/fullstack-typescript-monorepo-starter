@@ -19,7 +19,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile
 # Now the actual source
 COPY --link --from=pruner /repo/out/full/ .
-RUN pnpm exec turbo run build --filter=@apps/$APP_NAME^...
+RUN pnpm exec turbo run codegen --filter=@apps/$APP_NAME^...
 RUN pnpm --filter=@apps/${APP_NAME} exec vite build
 RUN pnpm --filter=@apps/${APP_NAME} deploy --legacy --prod out
 

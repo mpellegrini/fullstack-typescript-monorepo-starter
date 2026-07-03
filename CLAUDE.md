@@ -45,7 +45,7 @@ toolchain/      # Shared dev configuration
 ## Common Commands
 
 ```bash
-pnpm build          # Build all packages (turbo)
+pnpm codegen        # Run codegen (svelte-kit sync) across workspaces (turbo)
 pnpm test           # Run all tests (turbo)
 pnpm lint           # Lint all packages (turbo)
 pnpm typecheck      # Type-check all packages (turbo)
@@ -57,13 +57,14 @@ To run commands for a specific workspace:
 
 ```bash
 pnpm --filter @apps/sveltekit-example-app dev
-pnpm --filter @packages/api build
+pnpm --filter @apps/sveltekit-example-app codegen
 ```
 
 ## Turbo Task Dependencies
 
-- `lint`, `test`, and `typecheck` all depend on `build` completing first
-- `build` depends on upstream workspace `build` tasks (`^build`)
+- There is no `build` task: packages are consumed as source, so the only generation step is `codegen` (`svelte-kit sync`), which produces each SvelteKit workspace's `.svelte-kit/**`
+- `lint`, `test`, and `typecheck` depend on `codegen` (own package) and `^codegen` (upstream workspaces), so all `svelte-kit sync` output exists before they run
+- `codegen` depends on upstream workspace `codegen` tasks (`^codegen`)
 
 ## Code Style
 

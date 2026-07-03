@@ -1,0 +1,77 @@
+# Defense-in-depth ONLY — not the actual guarantee.
+#
+# The real control that makes release-create.yml the sole path to a release is a
+# GitHub *tag ruleset*: restrict creation of `*@v*` tags to the RELEASE_BOT_APP
+# GitHub App (add the App to the ruleset bypass list, block everyone else).
+# Because creating a release requires creating its tag, that blocks manual
+# releases *before* they exist.
+#
+# This workflow is a reactive backstop for anything that slips past the ruleset
+# (e.g. an admin bypass): it fires after the release is already published, so it
+# can only delete-and-alert, never prevent. release-deploy.yml independently
+# verifies provenance before deploying, so a manual release cannot deploy even in
+# the window before this cleanup runs.
+
+name: release-block-manual
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write # delete the offending release and its tag
+
+jobs:
+  block-manual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Derive the release bot's identity from the App credentials themselves —
+      # the same client-id/private-key release-create.yml uses — so there's a
+      # single source of truth and nothing to keep in sync. The bot login is
+      # always "<app-slug>[bot]". Token scoped to nothing (permission-contents:
+      # none): we only read the app-slug output, we don't act with it.
+      - name: Resolve release bot identity
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.RELEASE_BOT_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_BOT_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          permission-contents: none
+
+      - name: Delete releases not created by the release bot
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          # Passed via env (never inlined) so crafted values can't reach the shell as code.
+          EXPECTED_LOGIN: ${{ steps.app-token.outputs.app-slug }}[bot]
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+          # author.login is the account that created the release (the App bot for a legit release).
+          AUTHOR: ${{ github.event.release.author.login }}
+          TAG: ${{ github.event.release.tag_name }}
+          URL: ${{ github.event.release.html_url }}
+        run: |
+          set -euo pipefail
+
+          # Fail safe: if we couldn't resolve the app slug, delete nothing rather
+          # than risk removing a legitimate release. (The token step failing would
+          # already have aborted the job before here.)
+          if [[ -z "$APP_SLUG" ]]; then
+            echo "::warning::Could not resolve the release bot's app slug — deleting nothing."
+            exit 0
+          fi
+
+          if [[ "$AUTHOR" == "$EXPECTED_LOGIN" ]]; then
+            echo "Release $TAG was created by the release bot (@$AUTHOR) — allowed."
+            exit 0
+          fi
+
+          echo "::error::Manual release detected: $TAG ($URL) was created by @$AUTHOR, not the release bot (@$EXPECTED_LOGIN). Deleting it — use the release-create workflow instead."
+          # --cleanup-tag removes the git tag too, so a re-run of release-create
+          # for the same version isn't blocked by a leftover tag. (If a tag
+          # ruleset also restricts tag *deletion*, add GITHUB_TOKEN's actor to its
+          # bypass list, or the tag will remain.)
+          gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes
+          exit 1

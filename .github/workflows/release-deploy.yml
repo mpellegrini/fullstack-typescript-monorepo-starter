@@ -1,6 +1,14 @@
 # Fires when release-create.yml creates a GitHub release (gh release create).
-# Placeholder: only echoes the release payload for now — deployment logic
-# gets wired in on top of this once the trigger is confirmed working.
+#
+# Before doing anything, verify-provenance re-checks that the release could only
+# have come from release-create.yml — the tag matches the <app>@v<semver> scheme
+# and points at a commit on main. This makes the deploy independent of
+# release-block-manual.yml: a manually-created release (which could tag an
+# arbitrary commit) cannot deploy even in the window before that cleanup workflow
+# deletes it.
+#
+# The deploy job is a placeholder: only echoes the release payload for now —
+# deployment logic gets wired in on top of this once the trigger is confirmed working.
 
 name: release-deploy
 
@@ -8,8 +16,42 @@ on:
   release:
     types: [released, prereleased]
 
+permissions:
+  contents: read
+
 jobs:
-  echo:
+  verify-provenance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0 # full history + tags, so we can resolve the tag and test ancestry
+
+      - name: Verify release provenance
+        env:
+          # Passed via env (never inlined) so a crafted tag can't reach the shell as code.
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+
+          # 1. Tag must match the scheme release-create.yml produces: <app>@v<semver>.
+          [[ "$TAG" =~ ^[a-z0-9][a-z0-9-]*@v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]] \
+            || { echo "::error::Refusing to deploy: tag '$TAG' is not a valid <app>@v<semver> release tag"; exit 1; }
+
+          # 2. The tagged commit must be an ancestor of main — a manual release
+          #    could tag any arbitrary commit. This is the load-bearing check:
+          #    release-create.yml only ever tags commits already on main. Fetch
+          #    main explicitly rather than trusting remote-tracking refs to exist.
+          git fetch --no-tags origin main
+          SHA=$(git rev-list -n1 "$TAG")
+          git merge-base --is-ancestor "$SHA" FETCH_HEAD \
+            || { echo "::error::Refusing to deploy: $TAG points at $SHA, which is not an ancestor of main"; exit 1; }
+
+          echo "Provenance OK: $TAG → $SHA is on main"
+
+  deploy:
+    needs: verify-provenance
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

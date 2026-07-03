@@ -10,8 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          fetch-depth: 0
+        with: { fetch-depth: 0 }
       - name: Mint app token
         id: t
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
@@ -21,17 +20,13 @@ jobs:
           owner: ${{ github.repository_owner }}
           repositories: ${{ github.event.repository.name }}
           permission-contents: write
-      - name: D) gh release create PUBLISHED, NO --repo (auto-detect, like release-create)
+      - name: F) EXACT release-create shape (@v tag, --prerelease, big notes)
         env: { GH_TOKEN: "${{ steps.t.outputs.token }}" }
         run: |
           set -uo pipefail
-          T="zz-d-$RANDOM"; SHA=$(git rev-parse HEAD)
-          gh release create "$T" --target "$SHA" --title diag --notes diag && echo "D auto-detect: OK" || echo "D auto-detect: FAILED"
-          gh release delete "$T" --cleanup-tag --yes 2>/dev/null && echo "  cleaned" || true
-      - name: E) same but WITH --repo
-        env: { GH_TOKEN: "${{ steps.t.outputs.token }}", REPO: "${{ github.repository }}" }
-        run: |
-          set -uo pipefail
-          T="zz-e-$RANDOM"; SHA=$(git rev-parse HEAD)
-          gh release create "$T" --repo "$REPO" --target "$SHA" --title diag --notes diag && echo "E with --repo: OK" || echo "E with --repo: FAILED"
-          gh release delete "$T" --repo "$REPO" --cleanup-tag --yes 2>/dev/null && echo "  cleaned" || true
+          SHA=$(git rev-parse HEAD)
+          NOTES=$(git log "$SHA" --pretty='- %s (%h)' -- "apps/" "packages/")
+          echo "notes bytes: ${#NOTES}"
+          gh release create "zzdiag@v0.0.99" --target "$SHA" --title "zzdiag v0.0.99" --notes "$NOTES" --prerelease \
+            && echo "F: OK" || echo "F: FAILED"
+          gh release delete "zzdiag@v0.0.99" --cleanup-tag --yes 2>/dev/null && echo "  cleaned" || true

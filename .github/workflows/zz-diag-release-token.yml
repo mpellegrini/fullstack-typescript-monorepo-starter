@@ -2,12 +2,17 @@ name: zz-diag-release-token
 on:
   push:
     branches: [diag/release-token]
-permissions: {}
+permissions:
+  contents: write
+  id-token: write
 jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
-      - name: Mint app token (identical to release-create)
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+      - name: Mint app token
         id: t
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
@@ -16,26 +21,17 @@ jobs:
           owner: ${{ github.repository_owner }}
           repositories: ${{ github.event.repository.name }}
           permission-contents: write
-      - name: A) curl DRAFT
-        env: { TOKEN: "${{ steps.t.outputs.token }}", REPO: "${{ github.repository }}" }
+      - name: D) gh release create PUBLISHED, NO --repo (auto-detect, like release-create)
+        env: { GH_TOKEN: "${{ steps.t.outputs.token }}" }
         run: |
           set -uo pipefail
-          code=$(curl -sS -o /tmp/a.json -w '%{http_code}' -X POST -H "Authorization: token $TOKEN" \
-            "https://api.github.com/repos/$REPO/releases" -d '{"tag_name":"zz-a-'"$RANDOM"'","draft":true}')
-          echo "A curl draft: HTTP $code"
-          id=$(jq -r '.id // empty' /tmp/a.json); [ -n "$id" ] && curl -sS -X DELETE -H "Authorization: token $TOKEN" "https://api.github.com/repos/$REPO/releases/$id" >/dev/null && echo "  cleaned"
-      - name: B) gh release create DRAFT
+          T="zz-d-$RANDOM"; SHA=$(git rev-parse HEAD)
+          gh release create "$T" --target "$SHA" --title diag --notes diag && echo "D auto-detect: OK" || echo "D auto-detect: FAILED"
+          gh release delete "$T" --cleanup-tag --yes 2>/dev/null && echo "  cleaned" || true
+      - name: E) same but WITH --repo
         env: { GH_TOKEN: "${{ steps.t.outputs.token }}", REPO: "${{ github.repository }}" }
         run: |
           set -uo pipefail
-          T="zz-b-$RANDOM"
-          gh release create "$T" --repo "$REPO" --draft --title diag --notes diag && echo "B gh draft: OK" || echo "B gh draft: FAILED"
-          gh release delete "$T" --repo "$REPO" --yes 2>/dev/null && echo "  cleaned" || true
-      - name: C) gh release create PUBLISHED (exactly like release-create)
-        env: { GH_TOKEN: "${{ steps.t.outputs.token }}", REPO: "${{ github.repository }}" }
-        run: |
-          set -uo pipefail
-          T="zz-c-$RANDOM"
-          SHA=$(git ls-remote "https://github.com/$REPO" HEAD | cut -f1)
-          gh release create "$T" --repo "$REPO" --target "$SHA" --title diag --notes diag && echo "C gh published: OK" || echo "C gh published: FAILED"
+          T="zz-e-$RANDOM"; SHA=$(git rev-parse HEAD)
+          gh release create "$T" --repo "$REPO" --target "$SHA" --title diag --notes diag && echo "E with --repo: OK" || echo "E with --repo: FAILED"
           gh release delete "$T" --repo "$REPO" --cleanup-tag --yes 2>/dev/null && echo "  cleaned" || true

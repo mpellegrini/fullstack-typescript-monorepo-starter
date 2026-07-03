@@ -7,8 +7,8 @@ const getSignInUrl = (request: Request): string => {
   loginUrl.searchParams.set('response_type', 'code')
   loginUrl.searchParams.set('client_id', request.url)
   loginUrl.searchParams.set('redirect_uri', `${request.url}callback`)
-  loginUrl.searchParams.set('state', `${request.url}`)
-  return loginUrl.toString()
+  loginUrl.searchParams.set('state', request.url)
+  return loginUrl.href
 }
 
 export const load: PageServerLoad = ({ request }) => ({

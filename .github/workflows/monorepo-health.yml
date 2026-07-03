@@ -9,14 +9,60 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  one-version-check:
-    name: One Version Check
+  # Detect which monorepo-global file groups changed so the health checks below
+  # can be skipped on runs that don't touch them. Reuses TURBO_SCM_BASE and
+  # TURBO_SCM_HEAD set by 'prepare', so the diff range is consistent with what
+  # turbo --affected uses in the main 'ci-cd' workflow.
+  detect-changes:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      deps-changed: ${{ steps.filter.outputs.deps }}
+      github-changed: ${{ steps.filter.outputs.github }}
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Prepare
+        uses: ./.github/composite-actions/prepare
+
+      - name: Detect changed file groups
+        id: filter
+        run: |
+          set -euo pipefail
+          changed_files=$(git diff --name-only "$TURBO_SCM_BASE" "$TURBO_SCM_HEAD")
+          if grep -qE '(^|/)package\.json$|^pnpm-lock\.yaml$' <<< "$changed_files"; then
+            echo "deps=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "deps=false" >> "$GITHUB_OUTPUT"
+          fi
+          if grep -qE '^\.github/' <<< "$changed_files"; then
+            echo "github=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "github=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  one-version-check:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.deps-changed == 'true'
+    name: One Version Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Prepare
         uses: ./.github/composite-actions/prepare
@@ -25,15 +71,78 @@ jobs:
         run: pnpm run one-version:check
 
   duplicate-dependencies-check:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.deps-changed == 'true'
     name: Duplicate Dependencies Check
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Prepare
         uses: ./.github/composite-actions/prepare
 
       - name: Check for Duplicate Dependencies
         run: pnpm dedupe --check
+
+  workflow-security:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.github-changed == 'true'
+    name: Workflow Security
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      # Static analysis of the GitHub Actions workflows themselves: rejects
+      # unpinned third-party actions, template injection into run blocks, and
+      # similar workflow-level vulnerabilities. Gated at high severity;
+      # `annotations: true` (instead of the default SARIF upload) keeps the
+      # job's permissions at contents: read.
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@192e21d79ab29983730a13d1382995c2307fbcaa # v0.5.7
+        with:
+          # Pinned zizmor version so a new release with new audits can't start
+          # failing unrelated PRs; bump deliberately.
+          version: '1.26.1'
+          min-severity: high
+          advanced-security: false
+          annotations: true
+
+      # Complements zizmor: actionlint checks workflow correctness (invalid
+      # needs/outputs references, expression type errors, bad runner labels)
+      # and runs shellcheck over run blocks. Security auditing stays with
+      # zizmor above.
+      - name: Run actionlint
+        uses: raven-actions/actionlint@3d39aea434753780c3b3d4a1a31c854b4dbf49d7 # v2.2.0
+        with:
+          # Pinned actionlint version for the same reason as zizmor above.
+          version: 1.7.12
+
+  # Single aggregate status check — configure branch protection to require ONLY
+  # this job. Health checks skipped because their file group didn't change still
+  # count as passing; actual failures and cancellations fail the gate.
+  monorepo-health-passed:
+    if: always()
+    needs: [detect-changes, one-version-check, duplicate-dependencies-check, workflow-security]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Verify health checks passed
+        run: |
+          if [[ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            echo "::error::One or more monorepo health checks failed or were cancelled."
+            exit 1
+          fi
+          echo "Monorepo health checks passed (skipped checks are allowed)."

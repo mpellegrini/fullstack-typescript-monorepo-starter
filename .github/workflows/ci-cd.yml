@@ -1,6 +1,11 @@
 name: ci-cd
 
 on:
+  # No workflow_dispatch: a manual run would treat every package as affected
+  # and re-publish every app, repointing the sha-<sha> and latest tags to
+  # freshly rebuilt digests (provenance/SBOM make rebuilds non-reproducible) —
+  # and it could be dispatched from any branch, publishing sha-tagged images
+  # from unreviewed code. Re-run a failed run via "Re-run all jobs" instead.
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened]
@@ -8,26 +13,123 @@ on:
     branches: [main]
     tags-ignore: ['**']
 
-# Cancel superseded runs on the same ref (e.g. new pushes to a PR)
+# PRs: one run per ref, the newest push wins. Pushes to main: one group per commit —
+# a shared main group would let GitHub's single-slot pending queue supersede a
+# queued run when merges land quickly, leaving that commit with no sha-<sha>
+# image (unreleasable) and a spurious red X. Parallel main runs racing to tag
+# `latest` are handled in _ecr-publish.yml, which only applies `latest` when
+# its commit is still the head of main.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Default-deny at the workflow root; jobs that need more elevate per job.
+permissions: {}
 
 jobs:
   # ─────────────────────────────────────────────
   code-quality:
+    permissions:
+      contents: read
     uses: ./.github/workflows/_code-quality.yml
 
   # ─────────────────────────────────────────────
-  build:
-    needs: code-quality
+  compute-affected:
     permissions:
-      attestations: write
+      contents: read
+    uses: ./.github/workflows/_compute-affected-packages.yml
+
+  # ─────────────────────────────────────────────
+  # Compute the deployable apps from the set of affected packages.
+  deploy-matrix:
+    needs: [code-quality, compute-affected]
+    permissions:
+      contents: read
+    uses: ./.github/workflows/_compute-deployable-apps.yml
+    with:
+      paths: ${{ needs.compute-affected.outputs.paths }}
+
+  # ─────────────────────────────────────────────
+  # Build both arches on native runners and push to ECR by digest (untagged).
+  # The build stage verifies the target ECR repository already exists (provisioned
+  # out-of-band via IaC) and hard-stops if it doesn't.
+  # Skipped for PRs from forks: fork runs get a read-only token (id-token: write
+  # is refused) and no repository secrets/vars, so the AWS OIDC steps would
+  # hard-fail and block the merge via ci-cd-passed. Skipping here cascades to
+  # docker-scan and docker-publish; ci-cd-passed treats skips as passing. The
+  # full build/scan/publish still runs on the push to main after merge.
+  docker-build:
+    needs: [deploy-matrix]
+    if: >-
+      needs.deploy-matrix.outputs.has_apps == 'true' &&
+      (github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository)
+    name: docker-build (${{ matrix.target.app_name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.deploy-matrix.outputs.apps) }}
+    permissions:
       contents: read
       id-token: write
-      packages: write
     uses: ./.github/workflows/_docker-build-stage.yml
     with:
+      app_slug: ${{ matrix.target.app_name }}
       build_args: |
-        APP_NAME=effect-api-server
-      image_name: flight-res/flight-res-mgmt-shop
+        APP_NAME=${{ matrix.target.app_name }}
+      image_name: ${{ matrix.target.image_name }}
+
+  # Trivy gate: scan each app's per-arch digests. Failure skips that app's publish.
+  docker-scan:
+    needs: [deploy-matrix, docker-build]
+    if: needs.deploy-matrix.outputs.has_apps == 'true'
+    name: docker-scan (${{ matrix.target.app_name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.deploy-matrix.outputs.apps) }}
+    permissions:
+      contents: read
+      id-token: write
+      security-events: write
+    uses: ./.github/workflows/_docker-security-scan.yml
+    with:
+      app_slug: ${{ matrix.target.app_name }}
+      image_name: ${{ matrix.target.image_name }}
+
+  # Only reached when the gate passes: tag the multi-arch manifest and attest.
+  docker-publish:
+    needs: [deploy-matrix, docker-scan]
+    if: needs.deploy-matrix.outputs.has_apps == 'true' && needs.docker-scan.result == 'success'
+    name: docker-publish (${{ matrix.target.app_name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.deploy-matrix.outputs.apps) }}
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    uses: ./.github/workflows/_ecr-publish.yml
+    with:
+      app_slug: ${{ matrix.target.app_name }}
+      image_name: ${{ matrix.target.image_name }}
+
+  # ─────────────────────────────────────────────
+  # Single aggregate status check. Configure branch protection to require ONLY
+  # this job: it rolls up every upstream result, so conditionally-skipped jobs
+  # never block a merge while genuine failures and cancellations still do.
+  ci-cd-passed:
+    if: always() # Ensures this job ALWAYS runs to report status
+    needs:
+      [compute-affected, code-quality, deploy-matrix, docker-build, docker-scan, docker-publish]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify upstream jobs succeeded
+        run: |
+          if [[ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            echo "::error::One or more required jobs failed or were cancelled."
+            exit 1
+          fi
+          echo "All required jobs passed (skipped jobs are allowed)."

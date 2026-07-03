@@ -9,10 +9,7 @@ export class DatabaseConnectionError extends Data.TaggedError('DatabaseConnectio
 }> {}
 
 type DatabaseErrorType =
-  | 'connection_error'
-  | 'foreign_key_violation'
-  | 'unique_violation'
-  | 'unknown'
+  'connection_error' | 'foreign_key_violation' | 'unique_violation' | 'unknown'
 
 export class DatabaseError extends Data.TaggedError('DatabaseError')<{
   readonly cause: Error
@@ -45,7 +42,9 @@ export const toTaggedErrorOrThrow = (cause: unknown): DatabaseConnectionError | 
     if (rootCause instanceof pg.DatabaseError) {
       const type = matchPgError(rootCause)
       return new DatabaseError({ cause: rootCause, params: cause.params, query: cause.query, type })
-    } else if (
+    }
+
+    if (
       rootCause instanceof AggregateError &&
       rootCause.errors.some(
         (err) => err instanceof Error && 'code' in err && err.code === 'ECONNREFUSED',

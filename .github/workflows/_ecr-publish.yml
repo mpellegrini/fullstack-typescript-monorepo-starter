@@ -1,0 +1,183 @@
+# =============================================================================
+# Reusable Workflow: Publish multi-arch image to ECR (post-gate)
+# =============================================================================
+# Runs ONLY after the security scan gate has passed. Stitches the per-arch
+# digests (pushed untagged by the build stage) into a single multi-arch manifest
+# and applies the human-facing tags — this is the ONLY place tags are applied,
+# so an untagged/unverified image can never masquerade as a published one.
+#
+# Tagging strategy:
+#   pull_request → pr-<n>, sha-<full>
+#   push: main   → latest, sha-<full>
+#
+# SLSA build provenance is attested against the final manifest digest and pushed
+# to ECR as an OCI referrer, so it travels with the image.
+# =============================================================================
+
+name: _ecr-publish
+
+on:
+  workflow_call:
+    inputs:
+      app_slug:
+        description: "Registry-name-safe app identifier used to select this app's digest artifacts (e.g. effect-api-server)"
+        required: true
+        type: string
+      image_name:
+        description: 'ECR repository name without registry (e.g. team/service)'
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write # OIDC: assume AWS role + sign attestations
+      attestations: write # actions/attest-build-provenance
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          # Same ref the build stage checked out (PR head, not the ephemeral
+          # merge ref) so the recomputed tags/labels describe the commit the
+          # image bytes were actually built from.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Resolve commit SHA and build date
+        id: commit-info
+        uses: ./.github/composite-actions/resolve-commit-info
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6.2.1
+        with:
+          role-to-assume: ${{ vars.AWS_GHA_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@d539f0932e70871a027e9d5a9d8fc38589180a64 # v2.1.6
+
+      - name: Resolve ECR repository
+        id: repo
+        env:
+          # Via env, not inline expansion: image_name comes from a repo-authored
+          # deploy.json, so it must not reach the shell as code.
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_NAME: ${{ inputs.image_name }}
+        run: |
+          echo "repo=${REGISTRY}/${IMAGE_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Download digest artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: /tmp/digests
+          pattern: digests-${{ inputs.app_slug }}-*
+          merge-multiple: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+
+      # Main runs are concurrency-grouped per commit (see ci-cd.yml), so two can
+      # publish in parallel. Only the run whose commit is still the head of
+      # main applies `latest` — otherwise an older commit's slower run
+      # finishing last would repoint `latest` backwards. When this run skips
+      # it, the newer commit's own run applies `latest` instead.
+      - name: Check whether this commit is still the head of main
+        id: head-check
+        if: github.event_name == 'push'
+        env:
+          SHA: ${{ steps.commit-info.outputs.full_sha }}
+        run: |
+          set -euo pipefail
+          head="$(git ls-remote origin refs/heads/main | cut -f1)"
+          is_head=false
+          [[ "$head" == "$SHA" ]] && is_head=true
+          echo "is_head=${is_head}" >> "$GITHUB_OUTPUT"
+          echo "Commit ${SHA} vs main head ${head} — is_head=${is_head}"
+
+      - name: Compute tags and labels
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: ${{ steps.repo.outputs.repo }}
+          tags: |
+            type=raw,value=sha-${{ steps.commit-info.outputs.full_sha }}
+            type=ref,event=pr,prefix=pr-
+            type=raw,value=latest,enable=${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.head-check.outputs.is_head == 'true' }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ steps.commit-info.outputs.full_sha }}
+            org.opencontainers.image.created=${{ steps.commit-info.outputs.build_date }}
+            org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
+
+      - name: Create and push multi-arch manifest
+        working-directory: /tmp/digests
+        env:
+          REPO: ${{ steps.repo.outputs.repo }}
+        run: |
+          set -euo pipefail
+          args=()
+          while IFS= read -r tag; do
+            args+=(-t "$tag")
+          done < <(jq -r '.tags[]' <<< "$DOCKER_METADATA_OUTPUT_JSON")
+          # Each file in /tmp/digests is named after a per-arch digest hex.
+          for digest in *; do
+            args+=("${REPO}@sha256:${digest}")
+          done
+          docker buildx imagetools create "${args[@]}"
+
+      - name: Inspect manifest and capture digest
+        id: inspect
+        run: |
+          digest=$(docker buildx imagetools inspect \
+            ${{ steps.repo.outputs.repo }}:sha-${{ steps.commit-info.outputs.full_sha }} \
+            --format '{{.Manifest.Digest}}')
+          echo "digest=${digest}" >> "$GITHUB_OUTPUT"
+          docker buildx imagetools inspect \
+            ${{ steps.repo.outputs.repo }}:sha-${{ steps.commit-info.outputs.full_sha }} \
+            > /tmp/imagetools-inspect.txt
+          docker buildx imagetools inspect \
+            ${{ steps.repo.outputs.repo }}:sha-${{ steps.commit-info.outputs.full_sha }} \
+            --format '{{json .}}' | jq '.' > /tmp/imagetools-inspect.json
+
+      # SLSA build provenance attached to the ECR image as an OCI referrer.
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
+        with:
+          subject-name: ${{ steps.repo.outputs.repo }}
+          subject-digest: ${{ steps.inspect.outputs.digest }}
+          push-to-registry: true
+
+      - name: Summary
+        run: |
+          {
+            echo "### Published to ECR"
+            echo ""
+            echo "**Digest:** \`${{ steps.inspect.outputs.digest }}\`"
+            echo ""
+            echo "**Pinned ref:**"
+            echo "\`\`\`"
+            echo "${{ steps.repo.outputs.repo }}@${{ steps.inspect.outputs.digest }}"
+            echo "\`\`\`"
+            echo ""
+            echo "**Tags:**"
+            echo "\`\`\`"
+            echo "${{ steps.meta.outputs.tags }}"
+            echo "\`\`\`"
+            echo ""
+            echo "<details><summary>Manifest inspect</summary>"
+            echo ""
+            echo "\`\`\`"
+            cat /tmp/imagetools-inspect.txt
+            echo "\`\`\`"
+            echo ""
+            echo "</details>"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload imagetools inspect JSON
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: imagetools-inspect-${{ inputs.app_slug }}
+          path: /tmp/imagetools-inspect.json

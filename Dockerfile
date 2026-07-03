@@ -1,4 +1,4 @@
-FROM node:24.15.0-trixie-slim AS base
+FROM node:24.17.0-trixie-slim AS base
 RUN corepack enable pnpm
 WORKDIR /repo
 
@@ -8,7 +8,6 @@ ARG APP_NAME
 COPY . .
 RUN TURBO_VERSION=$(node -p "require('./package.json').devDependencies.turbo") && \
     pnpm dlx turbo@${TURBO_VERSION} prune @apps/${APP_NAME} --docker
-
 
 # ---- Install deps & build using only the pruned subset ----
 FROM base AS builder
@@ -20,7 +19,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile
 # Now the actual source
 COPY --link --from=pruner /repo/out/full/ .
-RUN pnpm exec turbo run build --filter=@apps/$APP_NAME^...
+RUN pnpm exec turbo run codegen --filter=@apps/$APP_NAME^...
 RUN pnpm --filter=@apps/${APP_NAME} exec vite build
 RUN pnpm --filter=@apps/${APP_NAME} deploy --legacy --prod out
 
@@ -30,6 +29,15 @@ WORKDIR /app
 ENV NODE_ENV=production
 COPY --chown=nonroot:nonroot --from=builder /repo/out/ .
 USER nonroot
+
+ARG APP_NAME=unknown
+ARG VERSION=unknown
+ARG VCS_REF=unknown
+ARG BUILD_DATE=unknown
+ENV APP_NAME=${APP_NAME} \
+    VCS_REF=${VCS_REF} \
+    BUILD_DATE=${BUILD_DATE} \
+    VERSION=${VERSION}
 
 EXPOSE 3000
 ENV PORT=3000

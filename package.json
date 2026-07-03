@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "turbo run build",
     "clean": "turbo run clean",
+    "codegen": "turbo run codegen",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "turbo run lint",
@@ -14,21 +14,21 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "@commitlint/cli": "21.0.2",
-    "@commitlint/config-conventional": "21.0.2",
+    "@commitlint/cli": "21.1.0",
+    "@commitlint/config-conventional": "21.1.0",
     "@effect/language-service": "0.86.2",
-    "@turbo/gen": "2.9.18",
+    "@turbo/gen": "2.10.0",
     "del-cli": "7.0.0",
     "husky": "9.1.7",
-    "lint-staged": "17.0.7",
+    "lint-staged": "17.0.8",
     "one-version": "0.3.1",
-    "prettier": "3.8.4",
+    "prettier": "3.9.3",
     "prettier-plugin-packagejson": "3.0.2",
-    "prettier-plugin-svelte": "4.1.0",
+    "prettier-plugin-svelte": "4.1.1",
     "prettier-plugin-tailwindcss": "0.8.0",
-    "turbo": "2.9.18"
+    "turbo": "2.10.0"
   },
-  "packageManager": "pnpm@11.6.0+sha512.9a36518224080c6fe5165afdcfe79bfa118c29be703f3f462b1e32efe1e98e47e8750b148e08286250aad4113cc7993ca413c4e2cd447752708c2ee5751bc95f",
+  "packageManager": "pnpm@11.9.0+sha512.bd682d5d03fe525ef7c9fd6780c6884d1e756ac4c9c9fe00c538782824310dcf90e3ddc4f53835f06dfaebd5085e41855e0bcbb3b60de2ac5bbab89e5036f03b",
   "engines": {
     "node": ">= 24.14.x < 25.x.x"
   }

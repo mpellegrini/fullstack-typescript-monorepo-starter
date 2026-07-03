@@ -31,6 +31,8 @@ export default config(
       'unicorn/custom-error-definition': ['error'],
 
       // Turn off the following recommended rules
+      'unicorn/max-nested-calls': 'off', // Builder-style APIs (Zod schemas, Effect, AI SDK `tool()`) are idiomatically deeply nested.
+      'unicorn/name-replacements': 'off',
       'unicorn/no-array-reduce': 'off',
       'unicorn/no-null': 'off',
       'unicorn/prevent-abbreviations': 'off',

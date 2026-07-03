@@ -2,7 +2,15 @@ import type { RequestHandler } from '@sveltejs/kit'
 
 import { env } from '$env/dynamic/private'
 import { createOpenAI } from '@ai-sdk/openai'
-import { type UIMessage, convertToModelMessages, stepCountIs, streamText, tool } from 'ai'
+import {
+  type UIMessage,
+  convertToModelMessages,
+  createUIMessageStreamResponse,
+  stepCountIs,
+  streamText,
+  tool,
+  toUIMessageStream,
+} from 'ai'
 import { z } from 'zod'
 
 const openai = createOpenAI({ apiKey: env['OPENAI_API_KEY'] })
@@ -44,5 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }),
     },
   })
-  return result.toUIMessageStreamResponse()
+  return createUIMessageStreamResponse({
+    stream: toUIMessageStream({ stream: result.stream }),
+  })
 }

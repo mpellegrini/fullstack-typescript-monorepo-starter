@@ -17,19 +17,19 @@
   },
   "dependencies": {
     "@effect/opentelemetry": "0.63.0",
-    "@effect/platform": "0.96.1",
+    "@effect/platform": "0.96.2",
     "@effect/platform-node": "0.107.0",
     "@opentelemetry/exporter-trace-otlp-http": "0.219.0",
     "@opentelemetry/sdk-trace-base": "2.8.0",
     "@opentelemetry/sdk-trace-node": "2.8.0",
     "@packages/api-impl": "workspace:*",
-    "effect": "3.21.3"
+    "effect": "3.21.4"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "tsx": "4.22.4",
-    "vite": "8.0.16"
+    "vite": "8.1.0"
   }
 }

@@ -1,15 +1,21 @@
-name: Build and Stage to GHCR
-
 # Builds a multi-platform image using native runners (no QEMU emulation):
 #   linux/amd64 → ubuntu-latest
 #   linux/arm64 → ubuntu-24.04-arm
-# Both platforms build in parallel, then a merge job combines them into a
-# single multi-arch manifest. Outputs the immutable digest so downstream
-# jobs operate on the exact bytes that were built.
+# Both platforms build in parallel and are pushed to ECR BY DIGEST ONLY — no
+# tags. Nothing is publicly addressable yet: the per-arch digests are scanned
+# downstream (the gate) and only the `_ecr-publish.yml` job stitches them into a
+# tagged multi-arch manifest once the scan passes. Each leg uploads its digest as
+# an artifact (`digests-<platform>`) so scan + publish can resolve the bytes.
+
+name: _docker-build-stage
 
 on:
   workflow_call:
     inputs:
+      app_slug:
+        description: 'Registry-name-safe app identifier used to namespace digest artifacts and the build cache (e.g. effect-api-server)'
+        required: true
+        type: string
       build_args:
         description: 'Newline-separated build args (KEY=VALUE)'
         required: false
@@ -26,29 +32,17 @@ on:
         type: string
         default: './Dockerfile'
       image_name:
-        description: 'Image name without registry (e.g. my-service)'
+        description: 'Image repository name without registry (e.g. team/service)'
         required: true
         type: string
-
-    outputs:
-      image_digest:
-        description: 'Immutable sha256 digest of the pushed manifest'
-        value: ${{ jobs.merge.outputs.digest }}
-      image_ref:
-        description: 'Fully qualified Docker image pinned reference: registry/owner/name@sha256:...'
-        value: ${{ jobs.merge.outputs.image_ref }}
-      ghcr_repo:
-        description: 'GHCR repository (no tag)'
-        value: ${{ jobs.merge.outputs.ghcr_repo }}
-
-env:
-  REGISTRY: ghcr.io
 
 jobs:
   # ─────────────────────────────────────────────
   # Build each platform on its native runner in parallel.
-  # Images are pushed by digest (no tag) so they can be merged below.
+  # Images are pushed by digest (untagged) so they can be scanned, then merged
+  # into a single tagged manifest later by `_ecr-publish.yml`.
   multi-platform-build:
+    name: multi-platform-build (${{ matrix.platform }})
     strategy:
       fail-fast: false
       matrix:
@@ -57,76 +51,136 @@ jobs:
             runner: ubuntu-latest
           - platform: linux/arm64
             runner: ubuntu-24.04-arm
-
     runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
 
     permissions:
       contents: read
-      packages: write # push to GHCR
+      id-token: write # assume the AWS role via OIDC
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          # Need the PR head commit (a parent of the merge ref) available
-          # locally so `git show` can read its committer date for BUILD_DATE.
-          fetch-depth: 2
+          # Build from the PR head commit, not the ephemeral merge ref that
+          # pull_request events check out by default: the image is tagged
+          # sha-<head sha> and labeled with that revision, so the bytes must
+          # come from exactly that commit. Building the merge ref would claim
+          # a commit the image wasn't built from, and re-running the job after
+          # main moves would repoint the same sha- tag to different bytes.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Resolve commit SHA and build date
         id: commit-info
         uses: ./.github/composite-actions/resolve-commit-info
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
-
-      - name: Log in to GHCR
-        uses: docker/login-action@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6.2.1
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          role-to-assume: ${{ vars.AWS_GHA_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@d539f0932e70871a027e9d5a9d8fc38589180a64 # v2.1.6
+
+      # The ECR repository (with its lifecycle rules, scan config, and policies)
+      # must be provisioned out-of-band via IaC — CI does NOT create it. Verify it
+      # exists before doing any expensive build work, and hard-stop if it doesn't.
+      - name: Verify ECR repository exists
+        env:
+          REPO_NAME: ${{ inputs.image_name }}
+        run: |
+          set -euo pipefail
+          if ! aws ecr describe-repositories --repository-names "$REPO_NAME" >/dev/null 2>&1; then
+            echo "::error::ECR repository '$REPO_NAME' does not exist. It must be provisioned out-of-band (IaC) with its lifecycle rules, scan config, and policies before this pipeline runs."
+            exit 1
+          fi
+          echo "ECR repository '$REPO_NAME' exists."
+
+      - name: Resolve ECR repository
+        id: repo
+        env:
+          # Via env, not inline expansion: image_name comes from a repo-authored
+          # deploy.json, so it must not reach the shell as code.
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_NAME: ${{ inputs.image_name }}
+        run: |
+          echo "repo=${REGISTRY}/${IMAGE_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
 
       # Labels only (no tags here). The per-arch images are pushed by their digest,
-      # so the full label set gets baked into each platform's image config.
-      # The merge job recomputes the same metadata to tag the final manifest.
+      # so the full label set gets baked into each platform's image config. The
+      # 'publish' job recomputes the same metadata to tag the final manifest.
       - name: Compute labels
         id: meta
-        uses: docker/metadata-action@v6
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}
-          tags: |
-            type=raw,value=sha-${{ steps.commit-info.outputs.short_sha }}
+          images: ${{ steps.repo.outputs.repo }}
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
             org.opencontainers.image.revision=${{ steps.commit-info.outputs.full_sha }}
             org.opencontainers.image.created=${{ steps.commit-info.outputs.build_date }}
             org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
-            # TODO: Check if this is really needed
-            io.pipeline.scan-status=pending
-            io.pipeline.promoted=false
 
       - name: Sanitize platform name
         run: |
           platform=${{ matrix.platform }}
           echo "PLATFORM_PAIR=${platform//\//-}" >> "$GITHUB_ENV"
 
-      # Push by digest only — no tags here. The merge job stitches the
+      # PR builds must not write the cache that main builds consume: an
+      # unreviewed PR could otherwise seed poisoned layers that the next main
+      # build — the one that publishes `latest` — would trust. PRs read their
+      # own cache-pr-<n>-<platform> tag first (warm across pushes to the same
+      # PR), fall back to main's cache read-only, and write only their own
+      # pr-scoped tag, which ecr-cleanup.yml deletes when the PR closes. Main
+      # builds keep the unscoped cache-<platform> tag, so existing cache stays
+      # valid.
+      - name: Resolve build cache refs
+        id: cache
+        env:
+          REPO: ${{ steps.repo.outputs.repo }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          main_ref="${REPO}:cache-${PLATFORM_PAIR}"
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            pr_ref="${REPO}:cache-pr-${PR_NUMBER}-${PLATFORM_PAIR}"
+            {
+              echo "cache_from<<EOF"
+              echo "type=registry,ref=${pr_ref}"
+              echo "type=registry,ref=${main_ref}"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+            echo "cache_to=type=registry,ref=${pr_ref},mode=max,image-manifest=true,oci-mediatypes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "cache_from=type=registry,ref=${main_ref}" >> "$GITHUB_OUTPUT"
+            echo "cache_to=type=registry,ref=${main_ref},mode=max,image-manifest=true,oci-mediatypes=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Push by digest only — no tags here. The 'publish' job stitches the
       # per-platform digests into a single tagged multi-arch manifest.
       - name: Build and push by digest
         id: build
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           context: ${{ inputs.context }}
           file: ${{ inputs.dockerfile }}
           platforms: ${{ matrix.platform }}
           build-args: |
             ${{ inputs.build_args }}
-          outputs: type=image,name=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }},push-by-digest=true,name-canonical=true,push=true
+            VCS_REF=${{ steps.commit-info.outputs.full_sha }}
+            BUILD_DATE=${{ steps.commit-info.outputs.build_date }}
+            VERSION=sha-${{ steps.commit-info.outputs.full_sha }}
+          outputs: type=image,name=${{ steps.repo.outputs.repo }},push-by-digest=true,name-canonical=true,push=true
           labels: ${{ steps.meta.outputs.labels }}
-          # Scope the cache per-platform so the two parallel matrix legs don't
-          # race to reserve the same GHA cache key.
-          cache-from: type=gha,scope=buildcache-${{ env.PLATFORM_PAIR }}
-          cache-to: type=gha,mode=max,scope=buildcache-${{ env.PLATFORM_PAIR }}
+          # Registry cache stored in the app's own ECR repo. Refs are computed
+          # above: PR builds read pr-scoped + main cache but write only their
+          # own pr-scoped tag; main builds read/write the unscoped tag.
+          cache-from: ${{ steps.cache.outputs.cache_from }}
+          cache-to: ${{ steps.cache.outputs.cache_to }}
           provenance: mode=max
           sbom: true
 
@@ -137,119 +191,9 @@ jobs:
           touch "/tmp/digests/${digest#sha256:}"
 
       - name: Upload digest artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: digests-${{ env.PLATFORM_PAIR }}
+          name: digests-${{ inputs.app_slug }}-${{ env.PLATFORM_PAIR }}
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
-
-  # ─────────────────────────────────────────────
-  # Combine the per-platform digests into a single multi-arch manifest,
-  # apply tags and labels, attest provenance, and emit the final digest.
-  merge:
-    runs-on: ubuntu-latest
-    needs: multi-platform-build
-
-    permissions:
-      contents: read
-      packages: write # push to GHCR
-      id-token: write # cosign keyless + OIDC attestations
-      attestations: write # actions/attest-build-provenance
-
-    outputs:
-      digest: ${{ steps.inspect.outputs.digest }}
-      image_ref: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}@${{ steps.inspect.outputs.digest }}
-      ghcr_repo: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 2
-
-      - name: Resolve commit SHA and build date
-        id: commit-info
-        uses: ./.github/composite-actions/resolve-commit-info
-
-      - name: Download digest artifacts
-        uses: actions/download-artifact@v8
-        with:
-          path: /tmp/digests
-          pattern: digests-*
-          merge-multiple: true
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
-
-      - name: Log in to GHCR
-        uses: docker/login-action@v4
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      # Tagging strategy for GHCR (staging):
-      #   sha-<short>          immutable, every build, the canonical handle
-      #   <branch>             mutable, useful for "latest from main"
-      #   pr-<n>               mutable, ephemeral PR builds
-      #   unverified-<run_id>  loud signal that this hasn't passed scans yet
-      - name: Compute tags and labels
-        id: meta
-        uses: docker/metadata-action@v6
-        with:
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}
-          tags: |
-            type=raw,value=sha-${{ steps.commit-info.outputs.short_sha }}
-            type=ref,event=branch
-            type=ref,event=pr,prefix=pr-
-            type=raw,value=unverified-${{ github.run_id }}
-          labels: |
-            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
-            org.opencontainers.image.revision=${{ steps.commit-info.outputs.full_sha }}
-            org.opencontainers.image.created=${{ steps.commit-info.outputs.build_date }}
-            org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
-            io.pipeline.scan-status=pending
-            io.pipeline.promoted=false
-
-      - name: Create and push multi-arch manifest
-        working-directory: /tmp/digests
-        run: |
-          docker buildx imagetools create \
-            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}@sha256:%s ' *)
-
-      - name: Inspect manifest and capture digest
-        id: inspect
-        run: |
-          digest=$(docker buildx imagetools inspect \
-            ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}:sha-${{ steps.commit-info.outputs.short_sha }} \
-            --format '{{.Manifest.Digest}}')
-          echo "digest=${digest}" >> "$GITHUB_OUTPUT"
-
-      # SLSA build provenance attached to the registry image.
-      # Travels with the manifest when crane copies it to ECR later.
-      - name: Attest build provenance
-        uses: actions/attest-build-provenance@v4
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}
-          subject-digest: ${{ steps.inspect.outputs.digest }}
-          push-to-registry: true
-
-      - name: Summary
-        run: |
-          {
-            echo "### Built and staged to GHCR"
-            echo ""
-            echo "**Digest:** \`${{ steps.inspect.outputs.digest }}\`"
-            echo ""
-            echo "**Pinned ref:**"
-            echo "\`\`\`"
-            echo "${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.image_name }}@${{ steps.inspect.outputs.digest }}"
-            echo "\`\`\`"
-            echo ""
-            echo "**Tags:**"
-            echo "\`\`\`"
-            echo "${{ steps.meta.outputs.tags }}"
-            echo "\`\`\`"
-          } >> "$GITHUB_STEP_SUMMARY"

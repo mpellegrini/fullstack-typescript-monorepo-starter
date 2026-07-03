@@ -74,4 +74,5 @@ export const HttpLayer = HttpLayerRouter.serve(HttpLayerRoutes).pipe(
   Layer.provide(NodeHttpServer.layer(createServer, { port: 3000 })),
 )
 
+// eslint-disable-next-line unicorn/no-top-level-side-effects -- demo purposes only
 HttpLayer.pipe(Layer.launch, NodeRuntime.runMain)

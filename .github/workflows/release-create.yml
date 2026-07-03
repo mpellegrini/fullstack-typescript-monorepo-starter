@@ -1,0 +1,225 @@
+# Create a correctly tagged release from the Actions UI instead of
+# hand-typing tags in the Releases page. Guarantees tag format
+# and prevents duplicate versions.
+#
+# The workflow resolves the git SHA that produced the target ECR image (via
+# the org.opencontainers.image.revision label baked into every image build) and
+# scopes the changelog to commits reachable from that SHA. It pins the git
+# tag to that exact commit — so the release always reflects what was actually
+# shipped rather than whatever HEAD happens to be at trigger time.
+#
+# Policy: only images built from main are releasable. The image's commit must
+# be an ancestor of main, so pr-* images (built from unmerged branches) are
+# rejected. Release latest or a sha-* tag from a merged commit.
+
+name: release-create
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: App to release (must match apps/<name>)
+        required: true
+        type: string
+      version:
+        description: Semver without the v prefix (e.g. 1.4.2)
+        required: true
+        type: string
+      image_tag:
+        description: ECR image tag to release; must resolve to a commit on main (e.g. latest, sha-abc1234)
+        required: false
+        default: latest
+        type: string
+      prerelease:
+        description: Mark as prerelease
+        type: boolean
+        default: false
+
+# Serialize releases of the same app+version so two concurrent runs can't both
+# pass the duplicate-tag check and race to create the tag.
+concurrency:
+  group: cut-release-${{ inputs.app }}-${{ inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  cut:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      id-token: write # OIDC: assume AWS role to inspect ECR image
+
+    steps:
+      - name: Enforce main branch
+        env:
+          # Via env, not inline expansion: a crafted branch name must not reach
+          # the shell as code.
+          REF: ${{ github.ref }}
+        run: |
+          [[ "$REF" == "refs/heads/main" ]] \
+            || { echo "::error::This workflow must be triggered from the main branch (got $REF)"; exit 1; }
+
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+
+      # Cheap format/duplicate checks first, before any AWS spend, so a typo'd
+      # version or an already-released tag fails fast.
+      - name: Validate version and tag
+        env:
+          APP: ${{ inputs.app }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]] \
+            || { echo "::error::'$VERSION' is not valid semver"; exit 1; }
+          TAG="$APP@v$VERSION"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "::error::Tag $TAG already exists"; exit 1
+          fi
+
+          # Reject version regressions early (e.g. releasing v1.0.5 after v1.2.0
+          # already shipped). Approximate semver via sort -V; good enough given
+          # the format enforced above.
+          LAST_TAG=$(git tag -l "$APP@v*" --sort=-v:refname | head -n1)
+          if [[ -n "$LAST_TAG" ]]; then
+            LAST_VERSION="${LAST_TAG#*@v}"
+            HIGHEST=$(printf '%s\n%s\n' "$LAST_VERSION" "$VERSION" | sort -V | tail -n1)
+            [[ "$HIGHEST" == "$VERSION" ]] \
+              || { echo "::error::$VERSION is not newer than the last released version $LAST_VERSION ($LAST_TAG)"; exit 1; }
+          fi
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6.2.1
+        with:
+          role-to-assume: ${{ vars.AWS_GHA_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@d539f0932e70871a027e9d5a9d8fc38589180a64 # v2.1.6
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+
+      - name: Resolve image and extract git SHA
+        id: image-info
+        env:
+          APP: ${{ inputs.app }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+        run: |
+          set -euo pipefail
+          cfg="apps/$APP/deploy.json"
+          [[ -f "$cfg" ]] || { echo "::error::$cfg not found — does apps/$APP exist and opt in to deployments?"; exit 1; }
+          IMAGE_NAME=$(jq -r '.imageName // empty' "$cfg")
+          [[ -n "$IMAGE_NAME" ]] || { echo "::error::$cfg is missing the required \"imageName\" field"; exit 1; }
+          REPO="$REGISTRY/$IMAGE_NAME"
+
+          # Capture inspect separately so a missing tag yields a friendly error
+          # rather than aborting the step on docker's own "not found" (set -e +
+          # pipefail would kill the command substitution before we can check).
+          if ! MANIFEST=$(docker buildx imagetools inspect "$REPO:$IMAGE_TAG" --format '{{json .}}' 2>/dev/null); then
+            echo "::error::Image $REPO:$IMAGE_TAG not found in ECR — check the image_tag input"
+            exit 1
+          fi
+
+          GIT_SHA=$(jq -r '[.. | objects | select(has("org.opencontainers.image.revision"))
+                            | .["org.opencontainers.image.revision"]] | first // empty' <<< "$MANIFEST")
+
+          if [[ -z "$GIT_SHA" ]]; then
+            echo "::error::org.opencontainers.image.revision label not found in $REPO:$IMAGE_TAG — was this image built by this pipeline?"
+            exit 1
+          fi
+          echo "git_sha=${GIT_SHA}" >> "$GITHUB_OUTPUT"
+          echo "Resolved $REPO:$IMAGE_TAG → git SHA ${GIT_SHA}"
+
+      # The image's commit must exist AND be part of main's history — otherwise
+      # we'd tag a release at a commit that was never merged (e.g. an unmerged
+      # pr-* image, or a squash-merged branch whose head SHA no longer exists).
+      - name: Verify image commit is on main
+        env:
+          GIT_SHA: ${{ steps.image-info.outputs.git_sha }}
+        run: |
+          set -euo pipefail
+          git cat-file -e "${GIT_SHA}^{commit}" 2>/dev/null \
+            || { echo "::error::SHA $GIT_SHA (from image label) was not found in this repository — it may be an unmerged or squash-merged commit"; exit 1; }
+          git merge-base --is-ancestor "$GIT_SHA" HEAD \
+            || { echo "::error::SHA $GIT_SHA (from image label) is not an ancestor of main — refusing to release an image not built from main"; exit 1; }
+
+      # Guards against releasing a new version number against a commit that's
+      # the same as, or older than, the last release — e.g. re-releasing an
+      # already-shipped image, or accidentally targeting a stale image_tag.
+      - name: Verify release commit is newer than last release
+        id: last-release
+        env:
+          APP: ${{ inputs.app }}
+          GIT_SHA: ${{ steps.image-info.outputs.git_sha }}
+        run: |
+          set -euo pipefail
+          LAST_TAG=$(git tag -l "$APP@v*" --sort=-v:refname | head -n1)
+          echo "last_tag=${LAST_TAG}" >> "$GITHUB_OUTPUT"
+          if [[ -z "$LAST_TAG" ]]; then
+            echo "No previous release for $APP — skipping commit ordering check"
+            exit 0
+          fi
+
+          LAST_SHA=$(git rev-list -n1 "$LAST_TAG")
+          if [[ "$GIT_SHA" == "$LAST_SHA" ]]; then
+            echo "::error::$GIT_SHA is the same commit as $LAST_TAG — no new changes to release"
+            exit 1
+          fi
+          git merge-base --is-ancestor "$LAST_SHA" "$GIT_SHA" \
+            || { echo "::error::$GIT_SHA is not a descendant of $LAST_TAG ($LAST_SHA) — refusing to release an older or diverged commit"; exit 1; }
+
+      - name: Generate changelog since last release of this app
+        id: notes
+        env:
+          APP: ${{ inputs.app }}
+          GIT_SHA: ${{ steps.image-info.outputs.git_sha }}
+          LAST_TAG: ${{ steps.last-release.outputs.last_tag }}
+        run: |
+          set -euo pipefail
+          RANGE=${LAST_TAG:+"$LAST_TAG..$GIT_SHA"}
+          # Random delimiter so a commit body containing the delimiter line
+          # can't corrupt (or inject into) the step output.
+          DELIM="EOF_$(openssl rand -hex 8)"
+          # Scope: commits touching this app OR any shared package. This is a
+          # deliberate over-approximation — we don't resolve the app's actual
+          # dependency graph, so changes to packages the app doesn't consume may
+          # appear. Acceptable for a human-readable changelog.
+          {
+            echo "notes<<$DELIM"
+            git log "${RANGE:-$GIT_SHA}" --pretty='- %s (%h)' -- "apps/$APP" "packages/" \
+              || echo "- Initial release"
+            echo "$DELIM"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.RELEASE_BOT_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_BOT_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          # Scope the token to the one permission `gh release create` needs,
+          # instead of inheriting the app installation's full permission set.
+          permission-contents: write
+
+      - name: Create release (triggers release-deploy.yml)
+        env:
+          # App token (not the default GITHUB_TOKEN) so the release event fires downstream
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          APP: ${{ inputs.app }}
+          VERSION: ${{ inputs.version }}
+          GIT_SHA: ${{ steps.image-info.outputs.git_sha }}
+          # Passed via env (never inlined into the script) so attacker-controlled
+          # commit subjects in the changelog can't inject shell commands.
+          NOTES: ${{ steps.notes.outputs.notes }}
+        run: |
+          gh release create "$APP@v$VERSION" \
+            --target "$GIT_SHA" \
+            --title "$APP v$VERSION" \
+            --notes "$NOTES" \
+            ${{ inputs.prerelease && '--prerelease' || '' }}

@@ -62,9 +62,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          # Need the PR head commit (a parent of the merge ref) available
-          # locally so `git show` can read its committer date for BUILD_DATE.
-          fetch-depth: 2
+          # Build from the PR head commit, not the ephemeral merge ref that
+          # pull_request events check out by default: the image is tagged
+          # sha-<head sha> and labeled with that revision, so the bytes must
+          # come from exactly that commit. Building the merge ref would claim
+          # a commit the image wasn't built from, and re-running the job after
+          # main moves would repoint the same sha- tag to different bytes.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Resolve commit SHA and build date
         id: commit-info

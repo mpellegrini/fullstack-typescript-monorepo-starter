@@ -5,6 +5,9 @@
   "description": "Effect platform fundamentals",
   "license": "UNLICENSED",
   "type": "module",
+  "files": [
+    "build"
+  ],
   "scripts": {
     "clean": "del .turbo coverage",
     "dev": "tsx --watch src/index.ts",

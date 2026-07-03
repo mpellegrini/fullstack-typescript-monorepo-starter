@@ -5,9 +5,9 @@
   "description": "Hono Node API Server",
   "license": "UNLICENSED",
   "type": "module",
-  "exports": {
-    ".": "./src/index.ts"
-  },
+  "files": [
+    "build"
+  ],
   "scripts": {
     "clean": "del .turbo coverage",
     "dev": "tsx watch src/index.ts",

@@ -1,9 +1,8 @@
 {
   "extends": ["//"],
   "tasks": {
-    "build": {
-      "outputs": [".svelte-kit/**"],
-      "env": ["OPENAI_API_KEY"]
+    "codegen": {
+      "outputs": [".svelte-kit/**"]
     }
   }
 }

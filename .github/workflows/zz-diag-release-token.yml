@@ -1,5 +1,7 @@
 name: zz-diag-release-token
-on: workflow_dispatch
+on:
+  push:
+    branches: [diag/release-token]
 permissions: {}
 jobs:
   diag:

@@ -203,9 +203,14 @@ jobs:
           private-key: ${{ secrets.RELEASE_BOT_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
           repositories: ${{ github.event.repository.name }}
-          # Scope the token to the one permission `gh release create` needs,
-          # instead of inheriting the app installation's full permission set.
+          # contents: write to create the release + tag. workflows: write is
+          # required because the tag is pinned to the image's commit (--target
+          # $GIT_SHA), which can be behind a later commit that changed
+          # .github/workflows/**; GitHub blocks an App token from creating a ref
+          # pointing at a differing workflow tree without the workflows scope,
+          # failing with "Resource not accessible by integration".
           permission-contents: write
+          permission-workflows: write
 
       - name: Create release (triggers release-deploy.yml)
         env:

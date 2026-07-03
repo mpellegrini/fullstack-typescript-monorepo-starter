@@ -1,0 +1,37 @@
+name: zz-diag-release-token
+on: workflow_dispatch
+permissions: {}
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mint app token (identical to release-create)
+        id: t
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.RELEASE_BOT_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_BOT_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          permission-contents: write
+      - name: Inspect token
+        env:
+          TOKEN: ${{ steps.t.outputs.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -uo pipefail
+          echo "token length: ${#TOKEN}"
+          echo "== who am I (installation/repositories) =="
+          curl -sS -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github+json" \
+            https://api.github.com/installation/repositories \
+            | jq '{total: .total_count, repos: [.repositories[].full_name]}' || true
+          echo "== attempt DRAFT release with THIS token =="
+          code=$(curl -sS -o /tmp/r.json -w '%{http_code}' -X POST \
+            -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPO/releases" \
+            -d '{"tag_name":"zz-diag-draft-'"$RANDOM"'","draft":true,"name":"diag"}')
+          echo "draft create HTTP: $code"
+          jq '{message, id, documentation_url}' /tmp/r.json || cat /tmp/r.json
+          id=$(jq -r '.id // empty' /tmp/r.json)
+          [ -n "$id" ] && curl -sS -X DELETE -H "Authorization: token $TOKEN" \
+            "https://api.github.com/repos/$REPO/releases/$id" && echo "cleaned up draft $id"

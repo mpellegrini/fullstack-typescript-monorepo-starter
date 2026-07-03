@@ -11,6 +11,16 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with: { fetch-depth: 0 }
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6.2.1
+        with:
+          role-to-assume: ${{ vars.AWS_GHA_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Log in to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@d539f0932e70871a027e9d5a9d8fc38589180a64 # v2.1.6
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
       - name: Mint app token
         id: t
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
@@ -20,13 +30,12 @@ jobs:
           owner: ${{ github.repository_owner }}
           repositories: ${{ github.event.repository.name }}
           permission-contents: write
-      - name: F) EXACT release-create shape (@v tag, --prerelease, big notes)
+      - name: G) after AWS/ECR/buildx — try release
         env: { GH_TOKEN: "${{ steps.t.outputs.token }}" }
         run: |
           set -uo pipefail
+          echo "token length: ${#GH_TOKEN}"
           SHA=$(git rev-parse HEAD)
-          NOTES=$(git log "$SHA" --pretty='- %s (%h)' -- "apps/" "packages/")
-          echo "notes bytes: ${#NOTES}"
-          gh release create "zzdiag@v0.0.99" --target "$SHA" --title "zzdiag v0.0.99" --notes "$NOTES" --prerelease \
-            && echo "F: OK" || echo "F: FAILED"
-          gh release delete "zzdiag@v0.0.99" --cleanup-tag --yes 2>/dev/null && echo "  cleaned" || true
+          gh release create "zzdiag-g@v0.0.99" --target "$SHA" --title diag --notes diag --prerelease \
+            && echo "G: OK" || echo "G: FAILED"
+          gh release delete "zzdiag-g@v0.0.99" --cleanup-tag --yes 2>/dev/null && echo "  cleaned" || true

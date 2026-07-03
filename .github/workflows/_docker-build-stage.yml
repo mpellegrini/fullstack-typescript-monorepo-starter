@@ -126,6 +126,36 @@ jobs:
           platform=${{ matrix.platform }}
           echo "PLATFORM_PAIR=${platform//\//-}" >> "$GITHUB_ENV"
 
+      # PR builds must not write the cache that main builds consume: an
+      # unreviewed PR could otherwise seed poisoned layers that the next main
+      # build — the one that publishes `latest` — would trust. PRs read their
+      # own cache-pr-<n>-<platform> tag first (warm across pushes to the same
+      # PR), fall back to main's cache read-only, and write only their own
+      # pr-scoped tag, which ecr-cleanup.yml deletes when the PR closes. Main
+      # builds keep the unscoped cache-<platform> tag, so existing cache stays
+      # valid.
+      - name: Resolve build cache refs
+        id: cache
+        env:
+          REPO: ${{ steps.repo.outputs.repo }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          main_ref="${REPO}:cache-${PLATFORM_PAIR}"
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            pr_ref="${REPO}:cache-pr-${PR_NUMBER}-${PLATFORM_PAIR}"
+            {
+              echo "cache_from<<EOF"
+              echo "type=registry,ref=${pr_ref}"
+              echo "type=registry,ref=${main_ref}"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+            echo "cache_to=type=registry,ref=${pr_ref},mode=max,image-manifest=true,oci-mediatypes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "cache_from=type=registry,ref=${main_ref}" >> "$GITHUB_OUTPUT"
+            echo "cache_to=type=registry,ref=${main_ref},mode=max,image-manifest=true,oci-mediatypes=true" >> "$GITHUB_OUTPUT"
+          fi
+
       # Push by digest only — no tags here. The 'publish' job stitches the
       # per-platform digests into a single tagged multi-arch manifest.
       - name: Build and push by digest
@@ -142,11 +172,11 @@ jobs:
             VERSION=sha-${{ steps.commit-info.outputs.full_sha }}
           outputs: type=image,name=${{ steps.repo.outputs.repo }},push-by-digest=true,name-canonical=true,push=true
           labels: ${{ steps.meta.outputs.labels }}
-          # Registry cache stored in the app's own ECR repo under a cache-<platform>
-          # tag. Unlike type=gha, ECR cache is not branch-scoped so PR and main
-          # builds share the same warm layers.
-          cache-from: type=registry,ref=${{ steps.repo.outputs.repo }}:cache-${{ env.PLATFORM_PAIR }}
-          cache-to: type=registry,ref=${{ steps.repo.outputs.repo }}:cache-${{ env.PLATFORM_PAIR }},mode=max,image-manifest=true,oci-mediatypes=true
+          # Registry cache stored in the app's own ECR repo. Refs are computed
+          # above: PR builds read pr-scoped + main cache but write only their
+          # own pr-scoped tag; main builds read/write the unscoped tag.
+          cache-from: ${{ steps.cache.outputs.cache_from }}
+          cache-to: ${{ steps.cache.outputs.cache_to }}
           provenance: mode=max
           sbom: true
 

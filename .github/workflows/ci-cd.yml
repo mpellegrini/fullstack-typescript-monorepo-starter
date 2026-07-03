@@ -13,8 +13,14 @@ on:
     branches: [main]
     tags-ignore: ['**']
 
+# PRs: one run per ref, the newest push wins. Pushes to main: one group per commit —
+# a shared main group would let GitHub's single-slot pending queue supersede a
+# queued run when merges land quickly, leaving that commit with no sha-<sha>
+# image (unreleasable) and a spurious red X. Parallel main runs racing to tag
+# `latest` are handled in _ecr-publish.yml, which only applies `latest` when
+# its commit is still the head of main.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Default-deny at the workflow root; jobs that need more elevate per job.

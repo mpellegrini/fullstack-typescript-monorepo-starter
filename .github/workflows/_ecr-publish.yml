@@ -79,6 +79,24 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
 
+      # Main runs are concurrency-grouped per commit (see ci-cd.yml), so two can
+      # publish in parallel. Only the run whose commit is still the head of
+      # main applies `latest` — otherwise an older commit's slower run
+      # finishing last would repoint `latest` backwards. When this run skips
+      # it, the newer commit's own run applies `latest` instead.
+      - name: Check whether this commit is still the head of main
+        id: head-check
+        if: github.event_name == 'push'
+        env:
+          SHA: ${{ steps.commit-info.outputs.full_sha }}
+        run: |
+          set -euo pipefail
+          head="$(git ls-remote origin refs/heads/main | cut -f1)"
+          is_head=false
+          [[ "$head" == "$SHA" ]] && is_head=true
+          echo "is_head=${is_head}" >> "$GITHUB_OUTPUT"
+          echo "Commit ${SHA} vs main head ${head} — is_head=${is_head}"
+
       - name: Compute tags and labels
         id: meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
@@ -87,7 +105,7 @@ jobs:
           tags: |
             type=raw,value=sha-${{ steps.commit-info.outputs.full_sha }}
             type=ref,event=pr,prefix=pr-
-            type=raw,value=latest,enable=${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+            type=raw,value=latest,enable=${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.head-check.outputs.is_head == 'true' }}
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
             org.opencontainers.image.revision=${{ steps.commit-info.outputs.full_sha }}

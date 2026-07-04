@@ -10,6 +10,10 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+    outputs:
+      cached: ${{ steps.turbo.outputs.cached }}
+      attempted: ${{ steps.turbo.outputs.attempted }}
+      time-saved-ms: ${{ steps.turbo.outputs.time-saved-ms }}
 
     steps:
       - name: Check out code
@@ -25,9 +29,10 @@ jobs:
           rm -rf .turbo/runs
           pnpm exec turbo run lint --affected --summarize
 
-      - name: Summarize Turbo cache
+      - name: Collect Turbo cache metrics
+        id: turbo
         if: always()
-        uses: ./.github/composite-actions/turbo-cache-summary
+        uses: ./.github/composite-actions/turbo-cache-metrics
 
       - name: Run Prettier check
         run: pnpm run format:check
@@ -38,6 +43,10 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+    outputs:
+      cached: ${{ steps.turbo.outputs.cached }}
+      attempted: ${{ steps.turbo.outputs.attempted }}
+      time-saved-ms: ${{ steps.turbo.outputs.time-saved-ms }}
 
     steps:
       - name: Check out code
@@ -53,9 +62,10 @@ jobs:
           rm -rf .turbo/runs
           pnpm exec turbo run typecheck --affected --summarize
 
-      - name: Summarize Turbo cache
+      - name: Collect Turbo cache metrics
+        id: turbo
         if: always()
-        uses: ./.github/composite-actions/turbo-cache-summary
+        uses: ./.github/composite-actions/turbo-cache-metrics
 
   test:
     name: Unit Test
@@ -63,6 +73,10 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+    outputs:
+      cached: ${{ steps.turbo.outputs.cached }}
+      attempted: ${{ steps.turbo.outputs.attempted }}
+      time-saved-ms: ${{ steps.turbo.outputs.time-saved-ms }}
 
     steps:
       - name: Check out code
@@ -78,6 +92,66 @@ jobs:
           rm -rf .turbo/runs
           pnpm exec turbo run test --affected --summarize -- --reporter=default
 
-      - name: Summarize Turbo cache
+      - name: Collect Turbo cache metrics
+        id: turbo
         if: always()
-        uses: ./.github/composite-actions/turbo-cache-summary
+        uses: ./.github/composite-actions/turbo-cache-metrics
+
+  # Single consolidated cache report across the three quality jobs above.
+  # It must be its own job (not a step) because those jobs run in parallel on
+  # separate runners; this one waits on all three and renders their outputs
+  # once. Runs even if a quality job fails, and never fails the workflow.
+  cache-summary:
+    name: Turbo cache summary
+    runs-on: ubuntu-latest
+    needs: [lint, type-check, test]
+    if: always()
+    permissions: {}
+
+    steps:
+      - name: Render combined cache summary
+        shell: bash
+        env:
+          LINT_CACHED: ${{ needs.lint.outputs.cached }}
+          LINT_ATTEMPTED: ${{ needs.lint.outputs.attempted }}
+          LINT_SAVED: ${{ needs.lint.outputs.time-saved-ms }}
+          TYPECHECK_CACHED: ${{ needs.type-check.outputs.cached }}
+          TYPECHECK_ATTEMPTED: ${{ needs.type-check.outputs.attempted }}
+          TYPECHECK_SAVED: ${{ needs.type-check.outputs.time-saved-ms }}
+          TEST_CACHED: ${{ needs.test.outputs.cached }}
+          TEST_ATTEMPTED: ${{ needs.test.outputs.attempted }}
+          TEST_SAVED: ${{ needs.test.outputs.time-saved-ms }}
+        run: |
+          set -euo pipefail
+
+          total_cached=0
+          total_attempted=0
+          total_saved=0
+
+          row() {
+            # $1 label, $2 cached, $3 attempted, $4 saved-ms
+            local cached="${2:-0}" attempted="${3:-0}" saved="${4:-0}"
+            cached="${cached:-0}"; attempted="${attempted:-0}"; saved="${saved:-0}"
+            total_cached=$((total_cached + cached))
+            total_attempted=$((total_attempted + attempted))
+            total_saved=$((total_saved + saved))
+            printf '| %s | %s/%s | %s |\n' \
+              "$1" "${cached}" "${attempted}" "$(fmt "${saved}")"
+          }
+
+          fmt() {
+            # milliseconds -> "N.Ns"
+            awk -v ms="${1:-0}" 'BEGIN { printf "%.1fs", ms / 1000 }'
+          }
+
+          {
+            echo "## Turbo cache summary"
+            echo ""
+            echo "| Job | Tasks cached | Time saved |"
+            echo "| --- | --- | --- |"
+            row "Lint"       "${LINT_CACHED}"      "${LINT_ATTEMPTED}"      "${LINT_SAVED}"
+            row "Type Check" "${TYPECHECK_CACHED}" "${TYPECHECK_ATTEMPTED}" "${TYPECHECK_SAVED}"
+            row "Unit Test"  "${TEST_CACHED}"      "${TEST_ATTEMPTED}"      "${TEST_SAVED}"
+            printf '| **Total** | **%s/%s** | **%s** |\n' \
+              "${total_cached}" "${total_attempted}" "$(fmt "${total_saved}")"
+          } >> "$GITHUB_STEP_SUMMARY"

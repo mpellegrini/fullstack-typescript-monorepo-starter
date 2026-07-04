@@ -1,0 +1,41 @@
+name: Turbo cache metrics
+description: Reads the latest Turbo run summary and emits cache rollup numbers as step outputs
+
+outputs:
+  cached:
+    description: Number of tasks served from cache
+    value: ${{ steps.metrics.outputs.cached }}
+  attempted:
+    description: Number of tasks in scope this run
+    value: ${{ steps.metrics.outputs.attempted }}
+  time-saved-ms:
+    description: Total wall-clock time replayed from cache, in milliseconds
+    value: ${{ steps.metrics.outputs.time_saved_ms }}
+
+runs:
+  using: composite
+  steps:
+    - id: metrics
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        # Newest run summary produced by `turbo run ... --summarize`. Each job
+        # clears .turbo/runs before running, so at most one file exists here.
+        # If the turbo step failed before writing one, fall back to zeros.
+        f=$(ls -t .turbo/runs/*.json 2>/dev/null | head -n1 || true)
+        if [[ -z "${f}" ]]; then
+          cached=0
+          attempted=0
+          saved=0
+        else
+          cached=$(jq '.execution.cached' "${f}")
+          attempted=$(jq '.execution.attempted' "${f}")
+          saved=$(jq '[.tasks[].cache.timeSaved // 0] | add // 0' "${f}")
+        fi
+
+        {
+          echo "cached=${cached}"
+          echo "attempted=${attempted}"
+          echo "time_saved_ms=${saved}"
+        } >> "$GITHUB_OUTPUT"

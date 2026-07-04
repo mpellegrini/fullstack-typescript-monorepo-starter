@@ -40,7 +40,10 @@ on:
         description: 'Comma-separated severities that fail the build'
         required: false
         type: string
-        default: 'CRITICAL'
+        # HIGH included deliberately: with ignore_unfixed=true the gate only
+        # fails on findings that have a fix available, so a failure is always
+        # actionable (usually `pnpm update <pkg>` or a base-image bump).
+        default: 'CRITICAL,HIGH'
 
 jobs:
   scan:

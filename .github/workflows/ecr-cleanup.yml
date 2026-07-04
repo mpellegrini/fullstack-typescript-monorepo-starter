@@ -36,8 +36,12 @@
 
 name: ecr-cleanup
 
+# Deliberate pull_request_target (see header): runs the base branch's reviewed
+# workflow code so the delete-capable trusted role is never exposed to a PR's
+# copy of this file. Safe because no PR-controlled code executes — base-branch
+# checkout only, PR metadata consumed as data via the API.
 on:
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
     types: [closed]
 
 concurrency:

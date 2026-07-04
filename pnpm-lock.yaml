@@ -4,6 +4,15 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  effect4:
+    '@effect/platform-node':
+      specifier: 4.0.0-beta.92
+      version: 4.0.0-beta.92
+    effect:
+      specifier: 4.0.0-beta.92
+      version: 4.0.0-beta.92
+
 importers:
 
   .:
@@ -151,11 +160,11 @@ importers:
   apps/effect-mcp-server:
     dependencies:
       '@effect/platform-node':
-        specifier: 4.0.0-beta.91
-        version: 4.0.0-beta.91(effect@4.0.0-beta.91)(ioredis@5.10.1)
+        specifier: catalog:effect4
+        version: 4.0.0-beta.92(effect@4.0.0-beta.92)(ioredis@5.10.1)
       effect:
-        specifier: 4.0.0-beta.91
-        version: 4.0.0-beta.91
+        specifier: catalog:effect4
+        version: 4.0.0-beta.92
     devDependencies:
       '@modelcontextprotocol/inspector':
         specifier: 0.22.0
@@ -1031,11 +1040,11 @@ packages:
       '@effect/sql': ^0.51.1
       effect: ^3.21.2
 
-  '@effect/platform-node-shared@4.0.0-beta.91':
-    resolution: {integrity: sha512-JX++yhomaOEpQmnTYuhn+pKAgKg5MQvycAf1rXGtyVKi202Nc5nK37xbywDcugfwrc1FrPxrxa3BY3lbSc74cw==}
+  '@effect/platform-node-shared@4.0.0-beta.92':
+    resolution: {integrity: sha512-156ADSfmWcqz0mC8VxlHN9IHyT97AbYsBc3wJxyz2ceiWyGJOWkIRd6H/n5Be4hd6dQ4IegSt6J3HinBIJ9S/A==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      effect: ^4.0.0-beta.91
+      effect: ^4.0.0-beta.92
 
   '@effect/platform-node@0.107.0':
     resolution: {integrity: sha512-VWUD9SCcnsrXYqED2jIwDHHDGb3QePNsHlX7HfqQGD2/AgnfX9jNnecaFrJj7Rf2gK5VbRE+i/2oNFoC/DkhcA==}
@@ -1046,11 +1055,11 @@ packages:
       '@effect/sql': ^0.51.1
       effect: ^3.21.2
 
-  '@effect/platform-node@4.0.0-beta.91':
-    resolution: {integrity: sha512-gP7Xlmce/HJxg3WaacmrRMJtRw2j6uJ4UrLEDy596tokdXcMoakz2oAtULSXiLzihLeQnt9nrm9K5nHhqKdBdA==}
+  '@effect/platform-node@4.0.0-beta.92':
+    resolution: {integrity: sha512-ZNcwKqBb99yw+cj+KQBMgw0xoQl3GDbUtQjnN3cLsIRpfYS/AVcSp4wfURMczvX5PzoR131yOWkqds5Vmm5tLg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      effect: ^4.0.0-beta.91
+      effect: ^4.0.0-beta.92
       ioredis: ^5.7.0
 
   '@effect/platform@0.96.2':
@@ -4106,8 +4115,8 @@ packages:
   effect@3.21.4:
     resolution: {integrity: sha512-B89v/xSgPbl1J2Ai2u18jxq3odpFauU1rC6/eSs4FeNHi72kwKdJp12VGigvRV2lK+kRnx+OOz41XV8guZd4gQ==}
 
-  effect@4.0.0-beta.91:
-    resolution: {integrity: sha512-FFlkWiy1QK4xuHd/nui9LKD/5qkpSHJdMcbsEY7jl9V27+txye6W+RAIlmWjuA2vvtUyZmzGKarVtdU0l1pdBQ==}
+  effect@4.0.0-beta.92:
+    resolution: {integrity: sha512-et6Fy8X9cxhzV/w4U372lB7YCP/B9a8FYVxlx9UMzSgnmwWKxpldnaHz7mHpZHh+OU+ENhU9DO/rTAakmT0sEA==}
 
   electron-to-chromium@1.5.378:
     resolution: {integrity: sha512-VinvOAuuPmdD1guEgGv5f2Qp7/vlfqOrUOMYNnOD4wj3pit8kRsQHzfIf6teyUGWo15Tg5+bOJaRunvyltpVWQ==}
@@ -7014,10 +7023,10 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform-node-shared@4.0.0-beta.91(effect@4.0.0-beta.91)':
+  '@effect/platform-node-shared@4.0.0-beta.92(effect@4.0.0-beta.92)':
     dependencies:
       '@types/ws': 8.18.1
-      effect: 4.0.0-beta.91
+      effect: 4.0.0-beta.92
       ws: 8.21.0
     transitivePeerDependencies:
       - bufferutil
@@ -7038,10 +7047,10 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform-node@4.0.0-beta.91(effect@4.0.0-beta.91)(ioredis@5.10.1)':
+  '@effect/platform-node@4.0.0-beta.92(effect@4.0.0-beta.92)(ioredis@5.10.1)':
     dependencies:
-      '@effect/platform-node-shared': 4.0.0-beta.91(effect@4.0.0-beta.91)
-      effect: 4.0.0-beta.91
+      '@effect/platform-node-shared': 4.0.0-beta.92(effect@4.0.0-beta.92)
+      effect: 4.0.0-beta.92
       ioredis: 5.10.1
       mime: 4.1.0
       undici: 8.5.0
@@ -9599,7 +9608,7 @@ snapshots:
       '@standard-schema/spec': 1.1.0
       fast-check: 3.23.2
 
-  effect@4.0.0-beta.91:
+  effect@4.0.0-beta.92:
     dependencies:
       '@standard-schema/spec': 1.1.0
       fast-check: 4.8.0

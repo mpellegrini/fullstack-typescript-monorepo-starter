@@ -74,10 +74,17 @@ jobs:
         id: commit-info
         uses: ./.github/composite-actions/resolve-commit-info
 
+      # PR runs assume the least-privilege PR role (push/pull only, no delete).
+      # pull_request executes the PR branch's copy of this workflow, so YAML-side
+      # guards are advisory: the real boundary is IAM. The trusted role's trust
+      # policy is pinned to sub=repo:<org>/<repo>:ref:refs/heads/main, and the
+      # OIDC sub claim is set by the trigger — a PR-modified workflow presenting
+      # a sub of repo:…:pull_request cannot assume it. See
+      # .github/docs/aws-oidc-roles.md for the role definitions.
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6.2.1
         with:
-          role-to-assume: ${{ vars.AWS_GHA_ROLE_ARN }}
+          role-to-assume: ${{ github.event_name == 'pull_request' && vars.AWS_GHA_PR_ROLE_ARN || vars.AWS_GHA_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Log in to Amazon ECR

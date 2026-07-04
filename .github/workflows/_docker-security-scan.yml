@@ -52,10 +52,13 @@ jobs:
       security-events: write # upload SARIF to GitHub Security tab
 
     steps:
+      # PR runs assume the least-privilege PR role; the trusted role is pinned
+      # to main by its IAM trust policy (the OIDC sub claim is set by the
+      # trigger, not the YAML). See .github/docs/aws-oidc-roles.md.
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6.2.1
         with:
-          role-to-assume: ${{ vars.AWS_GHA_ROLE_ARN }}
+          role-to-assume: ${{ github.event_name == 'pull_request' && vars.AWS_GHA_PR_ROLE_ARN || vars.AWS_GHA_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Log in to Amazon ECR

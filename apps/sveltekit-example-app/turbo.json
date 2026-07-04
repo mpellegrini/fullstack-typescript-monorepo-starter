@@ -1,8 +1,0 @@
-{
-  "extends": ["//"],
-  "tasks": {
-    "codegen": {
-      "outputs": [".svelte-kit/**"]
-    }
-  }
-}

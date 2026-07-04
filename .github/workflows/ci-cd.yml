@@ -79,7 +79,12 @@ jobs:
         APP_NAME=${{ matrix.target.app_name }}
       image_name: ${{ matrix.target.image_name }}
 
-  # Trivy gate: scan each app's per-arch digests. Failure skips that app's publish.
+  # Trivy gate: scan each app's per-arch digests. Deliberately all-or-nothing:
+  # the matrix legs aggregate into this single job's result, so ANY app's scan
+  # failure fails docker-scan and skips docker-publish for EVERY app — no image
+  # is tagged for this commit until all affected apps scan clean. Per-app
+  # isolation would need the build→scan→publish chain restructured into one
+  # per-app reusable workflow; failing closed is the chosen trade-off.
   docker-scan:
     needs: [deploy-matrix, docker-build]
     if: needs.deploy-matrix.outputs.has_apps == 'true'
@@ -97,7 +102,8 @@ jobs:
       app_slug: ${{ matrix.target.app_name }}
       image_name: ${{ matrix.target.image_name }}
 
-  # Only reached when the gate passes: tag the multi-arch manifest and attest.
+  # Only reached when the gate passes for every app: tag each multi-arch
+  # manifest and attest.
   docker-publish:
     needs: [deploy-matrix, docker-scan]
     if: needs.deploy-matrix.outputs.has_apps == 'true' && needs.docker-scan.result == 'success'

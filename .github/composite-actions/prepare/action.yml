@@ -20,6 +20,20 @@ runs:
       shell: bash
       run: pnpm install --ignore-scripts --frozen-lockfile
 
+    # Persist Turbo's local cache across runs so unchanged tasks replay
+    # instead of re-executing. Scoped per job (github.job) so the parallel
+    # code-quality jobs don't clobber each other's task outputs; the sha
+    # suffix keeps keys write-unique, and restore-keys falls back to the
+    # newest prior cache for this job — which GitHub already prefers from
+    # the same branch/PR, then the base branch.
+    - name: Cache Turbo local artifacts
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: .turbo
+        key: turbo-${{ runner.os }}-${{ github.job }}-${{ github.sha }}
+        restore-keys: |
+          turbo-${{ runner.os }}-${{ github.job }}-
+
     - name: Copy env files
       shell: bash
       run: find apps -name ".env.example" -execdir cp {} .env \;

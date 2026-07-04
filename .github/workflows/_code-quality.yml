@@ -21,7 +21,13 @@ jobs:
         uses: ./.github/composite-actions/prepare
 
       - name: Run ESLint check
-        run: pnpm exec turbo run lint --affected
+        run: |
+          rm -rf .turbo/runs
+          pnpm exec turbo run lint --affected --summarize
+
+      - name: Summarize Turbo cache
+        if: always()
+        uses: ./.github/composite-actions/turbo-cache-summary
 
       - name: Run Prettier check
         run: pnpm run format:check
@@ -43,7 +49,13 @@ jobs:
         uses: ./.github/composite-actions/prepare
 
       - name: Run type checks
-        run: pnpm exec turbo run typecheck --affected
+        run: |
+          rm -rf .turbo/runs
+          pnpm exec turbo run typecheck --affected --summarize
+
+      - name: Summarize Turbo cache
+        if: always()
+        uses: ./.github/composite-actions/turbo-cache-summary
 
   test:
     name: Unit Test
@@ -62,4 +74,10 @@ jobs:
         uses: ./.github/composite-actions/prepare
 
       - name: Run unit tests
-        run: pnpm exec turbo run test --affected -- --reporter=default
+        run: |
+          rm -rf .turbo/runs
+          pnpm exec turbo run test --affected --summarize -- --reporter=default
+
+      - name: Summarize Turbo cache
+        if: always()
+        uses: ./.github/composite-actions/turbo-cache-summary

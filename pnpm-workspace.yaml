@@ -21,6 +21,15 @@ engineStrict: true
 #  immediately pulled in before the community detects it.
 minimumReleaseAge: 4320 # 72 hours
 
+# Single source of truth for the Effect 4.0 beta line: workspaces declare
+# `catalog:effect4`, so bumping a beta is a one-line edit here — package.json
+# and one-version.config.json (which keys its override on the literal
+# `catalog:effect4` string) stay untouched.
+catalogs:
+  effect4:
+    '@effect/platform-node': 4.0.0-beta.92
+    effect: 4.0.0-beta.92
+
 packages:
   - 'apps/*'
   - 'packages/*'
@@ -42,7 +51,11 @@ trustPolicy: no-downgrade
 trustPolicyExclude:
   - 'chokidar@4.0.3'
   - 'semver@6.3.1'
-  - 'effect@4.0.0-beta.91'
-  - '@effect/platform-node@4.0.0-beta.91'
-  - '@effect/platform-node-shared@4.0.0-beta.91'
+  # Bare names (no version) exclude every version: pnpm only accepts exact
+  # versions here (no ranges), so this is the only way to track the Effect 4.0
+  # betas without editing this list on each release. Rollback protection is off
+  # for these three packages only — re-pin to exact versions once 4.0.0 stable lands.
+  - 'effect'
+  - '@effect/platform-node'
+  - '@effect/platform-node-shared'
   - 'tailwind-merge@2.6.1'

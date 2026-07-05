@@ -18,3 +18,15 @@ updates:
       # Match the repo's commitlint convention (subject stays lowercase:
       # "ci(github-actions): bump ...").
       prefix: ci(github-actions)
+  - package-ecosystem: docker
+    directories:
+      - /
+    schedule:
+      interval: weekly
+    # One grouped PR so the builder image tag and the digest-pinned distroless
+    # runtime image move together instead of drifting across separate PRs.
+    groups:
+      docker:
+        patterns: ['*']
+    commit-message:
+      prefix: ci(docker)

@@ -28,5 +28,9 @@ updates:
     groups:
       docker:
         patterns: ['*']
+    # Runtime is pinned to Node 24; never let Dependabot bump past it.
+    ignore:
+      - dependency-name: node
+        versions: ['>=25']
     commit-message:
       prefix: ci(docker)

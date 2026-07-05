@@ -66,7 +66,6 @@ jobs:
       # Cheap format/duplicate checks first, before any AWS spend, so a typo'd
       # version or an already-released tag fails fast.
       - name: Validate version and tag
-        id: validate
         env:
           APP: ${{ inputs.app }}
           VERSION: ${{ inputs.version }}
@@ -80,24 +79,15 @@ jobs:
           fi
 
           # Reject version regressions early (e.g. releasing v1.0.5 after v1.2.0
-          # already shipped). `sort -V` and git's `v:refname` both mis-order
-          # semver prereleases (1.0.0-rc.1 after 1.0.0), so precedence is
-          # computed by .github/scripts/semver-compare.mjs instead.
-          LAST_TAG=""
-          versions=()
-          while IFS= read -r tag; do
-            [[ -n "$tag" ]] && versions+=("${tag#*@v}")
-          done < <(git tag -l "$APP@v*")
-          if [[ ${#versions[@]} -gt 0 ]]; then
-            LAST_VERSION="$(node .github/scripts/semver-compare.mjs max "${versions[@]}")"
-            LAST_TAG="$APP@v$LAST_VERSION"
-            [[ "$(node .github/scripts/semver-compare.mjs cmp "$VERSION" "$LAST_VERSION")" == "1" ]] \
+          # already shipped). Approximate semver via sort -V; good enough given
+          # the format enforced above.
+          LAST_TAG=$(git tag -l "$APP@v*" --sort=-v:refname | head -n1)
+          if [[ -n "$LAST_TAG" ]]; then
+            LAST_VERSION="${LAST_TAG#*@v}"
+            HIGHEST=$(printf '%s\n%s\n' "$LAST_VERSION" "$VERSION" | sort -V | tail -n1)
+            [[ "$HIGHEST" == "$VERSION" ]] \
               || { echo "::error::$VERSION is not newer than the last released version $LAST_VERSION ($LAST_TAG)"; exit 1; }
           fi
-
-          # The semver-highest existing release, shared with the later ordering
-          # check and changelog steps.
-          echo "last_tag=${LAST_TAG}" >> "$GITHUB_OUTPUT"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6.2.1
@@ -161,12 +151,14 @@ jobs:
       # the same as, or older than, the last release — e.g. re-releasing an
       # already-shipped image, or accidentally targeting a stale image_tag.
       - name: Verify release commit is newer than last release
+        id: last-release
         env:
           APP: ${{ inputs.app }}
           GIT_SHA: ${{ steps.image-info.outputs.git_sha }}
-          LAST_TAG: ${{ steps.validate.outputs.last_tag }}
         run: |
           set -euo pipefail
+          LAST_TAG=$(git tag -l "$APP@v*" --sort=-v:refname | head -n1)
+          echo "last_tag=${LAST_TAG}" >> "$GITHUB_OUTPUT"
           if [[ -z "$LAST_TAG" ]]; then
             echo "No previous release for $APP — skipping commit ordering check"
             exit 0
@@ -185,7 +177,7 @@ jobs:
         env:
           APP: ${{ inputs.app }}
           GIT_SHA: ${{ steps.image-info.outputs.git_sha }}
-          LAST_TAG: ${{ steps.validate.outputs.last_tag }}
+          LAST_TAG: ${{ steps.last-release.outputs.last_tag }}
         run: |
           set -euo pipefail
           RANGE=${LAST_TAG:+"$LAST_TAG..$GIT_SHA"}

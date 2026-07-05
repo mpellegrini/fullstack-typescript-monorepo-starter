@@ -1,6 +1,6 @@
-# Builds a single SvelteKit app (APP_NAME) from the monorepo. The app must use
-# @sveltejs/adapter-node: the builder runs `vite build` and the runtime executes the
-# adapter's `build/index.js` output. Other adapters and non-SvelteKit apps won't work.
+# Builds a single app (APP_NAME) from the monorepo. Works for any workspace whose
+# production bundle is produced by `vite build`. The default CMD runs `node build`
+# (e.g. sveltekit adapter-node output); override it for apps with a different entry.
 FROM node:24.17.0-trixie-slim AS base
 RUN corepack enable pnpm
 WORKDIR /repo

@@ -1,3 +1,6 @@
+# Builds a single SvelteKit app (APP_NAME) from the monorepo. The app must use
+# @sveltejs/adapter-node: the builder runs `vite build` and the runtime executes the
+# adapter's `build/index.js` output. Other adapters and non-SvelteKit apps won't work.
 FROM node:24.17.0-trixie-slim AS base
 RUN corepack enable pnpm
 WORKDIR /repo
@@ -6,6 +9,7 @@ WORKDIR /repo
 FROM base AS pruner
 ARG APP_NAME
 COPY . .
+RUN test -n "${APP_NAME}" || { echo "APP_NAME build arg is required" >&2; exit 1; }
 RUN TURBO_VERSION=$(node -p "require('./package.json').devDependencies.turbo") && \
     pnpm dlx turbo@${TURBO_VERSION} prune @apps/${APP_NAME} --docker
 
@@ -19,15 +23,20 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile
 # Now the actual source
 COPY --link --from=pruner /repo/out/full/ .
-RUN pnpm exec turbo run codegen --filter=@apps/$APP_NAME^...
+# Inclusive filter (`...`) runs codegen for the app itself and all upstream workspaces
+RUN pnpm exec turbo run codegen --filter=@apps/${APP_NAME}...
 RUN pnpm --filter=@apps/${APP_NAME} exec vite build
 RUN pnpm --filter=@apps/${APP_NAME} deploy --legacy --prod out
 
 # ---- Minimal runtime ----
-FROM gcr.io/distroless/nodejs24-debian13 AS deployer
+# Distroless publishes no Node patch-version tags, so pin by digest to keep the runtime
+# Node version reproducible and in step with the builder image above.
+FROM gcr.io/distroless/nodejs24-debian13@sha256:ef5f3caf80da1630edd1a4df7b307a8f7d4553f8eec1dd29852b76e793593903 AS deployer
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --chown=nonroot:nonroot --from=builder /repo/out/ .
+# Left root-owned deliberately: the app only reads its own files, and the nonroot
+# runtime user must not be able to modify them
+COPY --from=builder /repo/out/ .
 USER nonroot
 
 ARG APP_NAME=unknown

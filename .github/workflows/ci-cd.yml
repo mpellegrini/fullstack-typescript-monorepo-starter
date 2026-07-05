@@ -107,7 +107,6 @@ jobs:
     uses: ./.github/workflows/_docker-security-scan.yml
     with:
       app_slug: ${{ matrix.target.app_name }}
-      healthcheck: ${{ toJSON(matrix.target.healthcheck) }}
       image_name: ${{ matrix.target.image_name }}
 
   # Only reached when the gate passes for every app: tag each multi-arch

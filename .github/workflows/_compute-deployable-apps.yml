@@ -90,3 +90,42 @@ jobs:
               jq -r '.[] | "| `\(.app_name)` | `\(.image_name)` | \(.environments | join(", ")) |"' <<< "$apps"
             fi
           } >> "$GITHUB_STEP_SUMMARY"
+
+  # Tag the PR with deploy:<app-name> for each app found affected above.
+  # Skipped for fork PRs: GITHUB_TOKEN is read-only there, so writing labels
+  # would just fail.
+  label-pr:
+    needs: [deploy-matrix]
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Sync deploy:<app> labels with the affected apps
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          APPS: ${{ needs.deploy-matrix.outputs.apps }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          wanted_file="$(mktemp)"
+          current_file="$(mktemp)"
+
+          jq -r '.[].app_name' <<< "$APPS" | sed 's/^/deploy:/' | sort -u > "$wanted_file"
+          gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name' \
+            | { grep '^deploy:' || true; } | sort -u > "$current_file"
+
+          comm -13 "$current_file" "$wanted_file" | while IFS= read -r label; do
+            gh label create "$label" --color 1d76db \
+              --description "This PR affects the deployable app ${label#deploy:}." --force
+            gh pr edit "$PR_NUMBER" --add-label "$label"
+          done
+
+          comm -23 "$current_file" "$wanted_file" | while IFS= read -r label; do
+            gh pr edit "$PR_NUMBER" --remove-label "$label"
+          done

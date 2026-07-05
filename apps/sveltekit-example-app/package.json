@@ -5,6 +5,9 @@
   "description": "SvelteKit Example App",
   "type": "module",
   "main": "build/index.js",
+  "files": [
+    "build"
+  ],
   "scripts": {
     "clean": "del .turbo coverage .svelte-kit build",
     "codegen": "svelte-kit sync",

@@ -1,3 +1,9 @@
+# Builds a single app (APP_NAME) from the monorepo. Works for any workspace whose
+# production bundle is produced by `vite build`. The runtime runs `node .`, so the
+# app's package.json must declare both:
+#   "main": pointing at its built server entry (e.g. "build/index.js")
+#   "files": including the build output directory (e.g. "files": ["build"]),
+#            otherwise `pnpm deploy` won't copy the bundle into the runtime image
 FROM node:24.17.0-trixie-slim AS base
 RUN corepack enable pnpm
 WORKDIR /repo
@@ -6,6 +12,7 @@ WORKDIR /repo
 FROM base AS pruner
 ARG APP_NAME
 COPY . .
+RUN test -n "${APP_NAME}" || { echo "APP_NAME build arg is required" >&2; exit 1; }
 RUN TURBO_VERSION=$(node -p "require('./package.json').devDependencies.turbo") && \
     pnpm dlx turbo@${TURBO_VERSION} prune @apps/${APP_NAME} --docker
 
@@ -22,12 +29,21 @@ COPY --link --from=pruner /repo/out/full/ .
 RUN pnpm exec turbo run codegen --filter=@apps/$APP_NAME^...
 RUN pnpm --filter=@apps/${APP_NAME} exec vite build
 RUN pnpm --filter=@apps/${APP_NAME} deploy --legacy --prod out
+# Fail the build if the deployed package can't be started with `node .` in the runtime
+# stage: `main` must be declared and the file it points at must have been packed
+RUN node -e "const p = require('/repo/out/package.json'); \
+    if (!p.main) throw new Error('package.json needs a main field pointing at the built server entry'); \
+    require('fs').accessSync('/repo/out/' + p.main)"
 
 # ---- Minimal runtime ----
-FROM gcr.io/distroless/nodejs24-debian13 AS deployer
+# Distroless publishes no Node patch-version tags, so pin by digest to keep the runtime
+# Node version reproducible and in step with the builder image above.
+FROM gcr.io/distroless/nodejs24-debian13@sha256:ef5f3caf80da1630edd1a4df7b307a8f7d4553f8eec1dd29852b76e793593903 AS deployer
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --chown=nonroot:nonroot --from=builder /repo/out/ .
+# Left root-owned deliberately: the app only reads its own files, and the nonroot
+# runtime user must not be able to modify them
+COPY --from=builder /repo/out/ .
 USER nonroot
 
 ARG APP_NAME=unknown
@@ -41,4 +57,7 @@ ENV APP_NAME=${APP_NAME} \
 
 EXPOSE 3000
 ENV PORT=3000
-CMD ["build"]
+# `node .` resolves the app's entry point from the `main` field of its package.json,
+# so each app declares where its server entry lives instead of the Dockerfile
+# assuming a fixed output path
+CMD ["."]

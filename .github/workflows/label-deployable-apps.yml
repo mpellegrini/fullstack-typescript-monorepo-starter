@@ -1,0 +1,52 @@
+name: label-deployable-apps
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Default-deny at the workflow root; the job elevates only what it needs.
+permissions: {}
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      # Deployable apps opt in by shipping a deploy.json (same rule
+      # _compute-deployable-apps.yml uses), so the label set here tracks that
+      # opt-in automatically instead of needing a manual entry per app.
+      - name: Generate labeler config from deploy.json opt-ins
+        id: config
+        shell: bash
+        run: |
+          set -euo pipefail
+          config_path="${RUNNER_TEMP}/labeler.yml"
+          : > "$config_path"
+          for dir in apps/*/; do
+            [ -f "${dir}deploy.json" ] || continue
+            app_name="$(basename "$dir")"
+            {
+              echo "\"deploy:${app_name}\":"
+              echo "  - changed-files:"
+              echo "      - any-glob-to-any-file: '${dir}**'"
+            } >> "$config_path"
+          done
+          echo "path=${config_path}" >> "$GITHUB_OUTPUT"
+
+      - name: Label PR with touched deployable apps
+        uses: actions/labeler@f27b608878404679385c85cfa523b85ccb86e213 # v6.1.0
+        with:
+          configuration-path: ${{ steps.config.outputs.path }}
+          sync-labels: true

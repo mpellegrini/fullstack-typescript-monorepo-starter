@@ -1,6 +1,6 @@
 # Builds a single app (APP_NAME) from the monorepo. Works for any workspace whose
-# production bundle is produced by `vite build`. The default CMD runs `node build`
-# (e.g. sveltekit adapter-node output); override it for apps with a different entry.
+# production bundle is produced by `vite build`. The runtime runs `node .`, so the
+# app's package.json `main` field must point at its built server entry.
 FROM node:24.17.0-trixie-slim AS base
 RUN corepack enable pnpm
 WORKDIR /repo
@@ -50,4 +50,7 @@ ENV APP_NAME=${APP_NAME} \
 
 EXPOSE 3000
 ENV PORT=3000
-CMD ["build"]
+# `node .` resolves the app's entry point from the `main` field of its package.json,
+# so each app declares where its server entry lives instead of the Dockerfile
+# assuming a fixed output path
+CMD ["."]

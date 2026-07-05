@@ -8,7 +8,7 @@
 # repo we delete:
 #   - the mutable pr-<n> tag
 #   - the PR's per-arch build cache tags (cache-pr-<n>-<platform>)
-#   - the immutable sha-<full> tag for every commit that was in the PR
+#   - the pr-<n>-sha-<full> tag for every commit that was in the PR
 #
 # Deleting the tagged multi-arch manifests leaves their per-arch child layers
 # and attestation referrers untagged. Those are NOT deleted here on purpose:
@@ -69,14 +69,14 @@ jobs:
 
           # pr-<n> is always a candidate, as are the PR's per-arch build cache
           # tags (the platform list mirrors the build matrix in
-          # _docker-build-stage.yml); then one sha-<full> per PR commit.
+          # _docker-build-stage.yml); then one pr-<n>-sha-<full> per PR commit.
           # The commits API returns the full 40-char SHA, matching the publish tag.
           image_ids=( "imageTag=pr-${PR_NUMBER}" )
           for platform_pair in linux-amd64 linux-arm64; do
             image_ids+=( "imageTag=cache-pr-${PR_NUMBER}-${platform_pair}" )
           done
           while read -r sha; do
-            [ -n "$sha" ] && image_ids+=( "imageTag=sha-${sha}" )
+            [ -n "$sha" ] && image_ids+=( "imageTag=pr-${PR_NUMBER}-sha-${sha}" )
           done < <(gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/commits" --jq '.[].sha')
 
           # Discover every deployable app's ECR repo from its deploy.json opt-in

@@ -53,6 +53,46 @@ jobs:
       paths: ${{ needs.compute-affected.outputs.paths }}
 
   # ─────────────────────────────────────────────
+  # Tag the PR with deploy:<app-name> for each deployable app deploy-matrix
+  # found affected, reusing its output instead of re-deriving the deploy.json
+  # opt-in set from path globs. Skipped for fork PRs: GITHUB_TOKEN is read-only
+  # there, so writing labels would just fail.
+  label-deployable-apps:
+    needs: [deploy-matrix]
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Sync deploy:<app> labels with the affected apps
+        env:
+          GH_TOKEN: ${{ github.token }}
+          APPS: ${{ needs.deploy-matrix.outputs.apps }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          wanted_file="$(mktemp)"
+          current_file="$(mktemp)"
+
+          jq -r '.[].app_name' <<< "$APPS" | sed 's/^/deploy:/' | sort -u > "$wanted_file"
+          gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name' \
+            | { grep '^deploy:' || true; } | sort -u > "$current_file"
+
+          comm -13 "$current_file" "$wanted_file" | while IFS= read -r label; do
+            gh label create "$label" --color 1d76db \
+              --description "This PR affects the deployable app ${label#deploy:}." --force
+            gh pr edit "$PR_NUMBER" --add-label "$label"
+          done
+
+          comm -23 "$current_file" "$wanted_file" | while IFS= read -r label; do
+            gh pr edit "$PR_NUMBER" --remove-label "$label"
+          done
+
+  # ─────────────────────────────────────────────
   # Build both arches on native runners and push to ECR by digest (untagged).
   # Deliberate asymmetry on PRs: the quality jobs above test the ephemeral merge
   # ref (the result of merging into main), while the image is built from the PR

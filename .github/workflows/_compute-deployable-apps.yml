@@ -10,7 +10,7 @@ on:
       apps:
         description: >-
           JSON array of deployable apps, each
-          {app_name, dir, image_name, environments}.
+          {app_name, dir, image_name, environments, healthcheck}.
         value: ${{ jobs.deploy-matrix.outputs.apps }}
       has_apps:
         description: Boolean string, true when one or more deployable apps were found.
@@ -19,11 +19,12 @@ on:
 jobs:
   # Turn the affected packages into the set of deployable apps to build. An app
   # opts in by shipping a `deploy.json` in its folder root, which declares its
-  # ECR repository and per-environment ECS targets; apps without it (sandboxes,
-  # libraries, not-yet-containerized servers) are skipped. Emits a JSON matrix
-  # of {app_name, dir, image_name, environments} consumed by the build →
-  # scan → publish chain, plus a has_apps flag so the chain skips cleanly when
-  # empty.
+  # ECR repository, per-environment ECS targets, and (optionally) a container
+  # smoke-test healthcheck {port, path, timeoutSeconds}; apps without it
+  # (sandboxes, libraries, not-yet-containerized servers) are skipped. Emits a
+  # JSON matrix of {app_name, dir, image_name, environments, healthcheck}
+  # consumed by the build → scan → publish chain, plus a has_apps flag so the
+  # chain skips cleanly when empty.
   deploy-matrix:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -63,6 +64,15 @@ jobs:
               exit 1
             fi
 
+            # Optional container smoke test config, passed through to the scan
+            # gate. When present it must at least declare a numeric port.
+            healthcheck="$(jq -c '.healthcheck // null' "$cfg")"
+            if [ "$healthcheck" != "null" ] && \
+               ! jq -e '.healthcheck.port | type == "number"' "$cfg" > /dev/null; then
+              echo "::error file=${cfg}::deploy.json \"healthcheck\" requires a numeric \"port\"."
+              exit 1
+            fi
+
             app_name="$(basename "$path")"
             envs="$(jq -c '.environments // {} | keys' "$cfg")"
             apps="$(jq -c \
@@ -70,7 +80,8 @@ jobs:
               --arg d "$path" \
               --arg e "$image_name" \
               --argjson v "$envs" \
-              '. + [{app_name:$n, dir:$d, image_name:$e, environments:$v}]' <<< "$apps")"
+              --argjson h "$healthcheck" \
+              '. + [{app_name:$n, dir:$d, image_name:$e, environments:$v, healthcheck:$h}]' <<< "$apps")"
           done < <(jq -r '.[]' <<< "$PATHS")
 
           count="$(jq 'length' <<< "$apps")"

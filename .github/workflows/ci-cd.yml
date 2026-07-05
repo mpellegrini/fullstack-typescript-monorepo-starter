@@ -1,6 +1,9 @@
 name: ci-cd
 
 on:
+  # If a merge queue is ever enabled, a merge_group trigger must be added here —
+  # ci-cd-passed is the required check, so without it nothing could merge.
+  #
   # No workflow_dispatch: a manual run would treat every package as affected
   # and re-publish every app, repointing the sha-<sha> and latest tags to
   # freshly rebuilt digests (provenance/SBOM make rebuilds non-reproducible) —
@@ -51,6 +54,10 @@ jobs:
 
   # ─────────────────────────────────────────────
   # Build both arches on native runners and push to ECR by digest (untagged).
+  # Deliberate asymmetry on PRs: the quality jobs above test the ephemeral merge
+  # ref (the result of merging into main), while the image is built from the PR
+  # head so its bytes are traceable to a real commit; on main pushes both are
+  # the same SHA.
   # The build stage verifies the target ECR repository already exists (provisioned
   # out-of-band via IaC) and hard-stops if it doesn't.
   # Skipped for PRs from forks: fork runs get a read-only token (id-token: write
@@ -100,6 +107,7 @@ jobs:
     uses: ./.github/workflows/_docker-security-scan.yml
     with:
       app_slug: ${{ matrix.target.app_name }}
+      healthcheck: ${{ toJSON(matrix.target.healthcheck) }}
       image_name: ${{ matrix.target.image_name }}
 
   # Only reached when the gate passes for every app: tag each multi-arch

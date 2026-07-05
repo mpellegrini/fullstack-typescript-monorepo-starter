@@ -11,10 +11,12 @@
 # The per-arch digests are resolved from the `digests-*` artifacts uploaded by
 # the build stage (same workflow run).
 #
-# Trivy passes:
-#   1. report — always uploads SARIF to the Security tab (never fails the job)
-#   2. vuln gate per platform (amd64, arm64)
-#   3. misconfig + secret gate
+# Gate passes:
+#   1. Trivy report — always uploads SARIF to the Security tab (never fails the job)
+#   2. Trivy vuln gate per platform (amd64, arm64)
+#   3. Trivy misconfig + secret gate
+#   4. container smoke test (amd64) — only when the app opts in via a
+#      deploy.json `healthcheck` {port, path?, timeoutSeconds?}
 # The DB and image layers are cached after the first pass, so the rest are cheap.
 # =============================================================================
 
@@ -27,6 +29,14 @@ on:
         description: "Registry-name-safe app identifier used to select this app's digest artifacts (e.g. effect-api-server)"
         required: true
         type: string
+      healthcheck:
+        description: >-
+          JSON healthcheck config from the app's deploy.json
+          ({port, path?, timeoutSeconds?}), or the string "null" to skip the
+          container smoke test.
+        required: false
+        type: string
+        default: 'null'
       ignore_unfixed:
         description: 'Ignore vulnerabilities without a fix available'
         required: false
@@ -182,6 +192,50 @@ jobs:
           exit-code: '1'
         continue-on-error: true
 
+      # -------------------------------------------------------------------
+      # Smoke test (amd64): opt-in via deploy.json `healthcheck`. Boots the
+      # exact image being gated and polls the declared endpoint — an image
+      # that can't even start never gets published. Skipped (and treated as
+      # passing) when the app declares no healthcheck.
+      # -------------------------------------------------------------------
+      - name: Smoke test (amd64)
+        id: smoke-test
+        if: inputs.healthcheck != 'null' && inputs.healthcheck != ''
+        env:
+          # Via env, not inline expansion: the healthcheck JSON comes from a
+          # repo-authored deploy.json, so it must not reach the shell as code.
+          HEALTHCHECK: ${{ inputs.healthcheck }}
+        run: |
+          set -euo pipefail
+          port="$(jq -r '.port' <<< "$HEALTHCHECK")"
+          path="$(jq -r '.path // "/"' <<< "$HEALTHCHECK")"
+          timeout="$(jq -r '.timeoutSeconds // 30' <<< "$HEALTHCHECK")"
+
+          # Defense in depth: the deploy matrix already validated port is a
+          # number, but these values feed docker/curl arguments — re-check.
+          [[ "$port" =~ ^[0-9]+$ && "$timeout" =~ ^[0-9]+$ ]] \
+            || { echo "::error::healthcheck port/timeoutSeconds must be numeric (got port='${port}', timeoutSeconds='${timeout}')"; exit 1; }
+
+          url="http://127.0.0.1:${port}${path}"
+          echo "Booting ${AMD64_REF} and polling ${url} for up to ${timeout}s"
+          cid="$(docker run -d -p "127.0.0.1:${port}:${port}" "$AMD64_REF")"
+          trap 'docker rm -f "$cid" >/dev/null 2>&1 || true' EXIT
+
+          for ((i = 0; i < timeout; i++)); do
+            if curl -fsS -o /dev/null "$url"; then
+              echo "Smoke test passed after $((i + 1))s."
+              exit 0
+            fi
+            sleep 1
+          done
+
+          echo "::error::Smoke test failed: no 2xx from ${url} within ${timeout}s"
+          echo "::group::Container logs"
+          docker logs "$cid" 2>&1 || true
+          echo "::endgroup::"
+          exit 1
+        continue-on-error: true
+
       - name: Gate decision
         env:
           # Via env, not inline expansion: the threshold is caller-supplied text
@@ -191,14 +245,24 @@ jobs:
           VULN_AMD64="${{ steps.trivy-vuln-amd64.outcome }}"
           VULN_ARM64="${{ steps.trivy-vuln-arm64.outcome }}"
           CONFIG="${{ steps.trivy-config.outcome }}"
+          # 'skipped' passes: the smoke test only runs when the app opts in
+          # via a deploy.json healthcheck.
+          SMOKE="${{ steps.smoke-test.outcome }}"
 
-          if [[ "$VULN_AMD64" == "success" && "$VULN_ARM64" == "success" && "$CONFIG" == "success" ]]; then
+          if [[ "$VULN_AMD64" == "success" && "$VULN_ARM64" == "success" && "$CONFIG" == "success" \
+                && ( "$SMOKE" == "success" || "$SMOKE" == "skipped" ) ]]; then
             PASSED=true
           else
             PASSED=false
           fi
 
-          icon() { [[ "$1" == "success" ]] && echo "✅ pass" || echo "❌ fail"; }
+          icon() {
+            case "$1" in
+              success) echo "✅ pass" ;;
+              skipped) echo "➖ skipped" ;;
+              *) echo "❌ fail" ;;
+            esac
+          }
 
           {
             echo "### Docker security scan"
@@ -211,6 +275,7 @@ jobs:
             echo "| Trivy vulnerability (amd64) | $(icon "$VULN_AMD64") |"
             echo "| Trivy vulnerability (arm64) | $(icon "$VULN_ARM64") |"
             echo "| Trivy config/secret | $(icon "$CONFIG") |"
+            echo "| Smoke test (amd64) | $(icon "$SMOKE") |"
             echo ""
             if [[ "$PASSED" == "true" ]]; then
               echo "**Gate:** ✅ passed — image is eligible for publish"

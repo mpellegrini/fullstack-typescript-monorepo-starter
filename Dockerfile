@@ -30,6 +30,11 @@ COPY --link --from=pruner /repo/out/full/ .
 RUN pnpm exec turbo run codegen --filter=@apps/${APP_NAME}...
 RUN pnpm --filter=@apps/${APP_NAME} exec vite build
 RUN pnpm --filter=@apps/${APP_NAME} deploy --legacy --prod out
+# Fail the build if the deployed package can't be started with `node .` in the runtime
+# stage: `main` must be declared and the file it points at must have been packed
+RUN node -e "const p = require('/repo/out/package.json'); \
+    if (!p.main) throw new Error('package.json needs a main field pointing at the built server entry'); \
+    require('fs').accessSync('/repo/out/' + p.main)"
 
 # ---- Minimal runtime ----
 # Distroless publishes no Node patch-version tags, so pin by digest to keep the runtime

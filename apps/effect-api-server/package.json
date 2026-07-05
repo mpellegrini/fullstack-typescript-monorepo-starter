@@ -5,6 +5,7 @@
   "description": "Effect Node API Server",
   "license": "UNLICENSED",
   "type": "module",
+  "main": "build/index.js",
   "files": [
     "build"
   ],

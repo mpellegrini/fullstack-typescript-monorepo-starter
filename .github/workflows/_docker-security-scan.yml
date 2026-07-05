@@ -53,6 +53,11 @@ jobs:
       contents: read
       id-token: write # assume the AWS role via OIDC
       security-events: write # upload SARIF to GitHub Security tab
+    env:
+      # ghcr.io rate-limits the Trivy DBs hard under CI fan-out (every matrix
+      # leg pulls them). Prefer the ECR Public mirror, fall back to ghcr.
+      TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db,ghcr.io/aquasecurity/trivy-db
+      TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db,ghcr.io/aquasecurity/trivy-java-db
 
     steps:
       - name: Configure AWS credentials
@@ -67,13 +72,21 @@ jobs:
 
       # Resolve this app's per-arch image refs from its digest artifacts. Each
       # artifact holds a single empty file named after the digest hex (no
-      # sha256: prefix). Under a matrix, sibling apps upload their own
-      # `digests-<app>-*` artifacts, so the pattern is scoped to this app.
-      - name: Download digest artifacts
+      # sha256: prefix). Downloaded by exact name (one per platform, mirroring
+      # the build matrix) rather than a `digests-<app>-*` pattern: under a
+      # matrix, an app slug that is a prefix of a sibling's (e.g. `api` and
+      # `api-server`) would make the pattern match the sibling's artifacts too.
+      - name: Download amd64 digest artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          path: /tmp/digests
-          pattern: digests-${{ inputs.app_slug }}-*
+          path: /tmp/digests/digests-${{ inputs.app_slug }}-linux-amd64
+          name: digests-${{ inputs.app_slug }}-linux-amd64
+
+      - name: Download arm64 digest artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: /tmp/digests/digests-${{ inputs.app_slug }}-linux-arm64
+          name: digests-${{ inputs.app_slug }}-linux-arm64
 
       - name: Resolve per-arch image refs
         env:
@@ -118,7 +131,10 @@ jobs:
         if: always() && hashFiles('trivy-results.sarif') != '' # Upload results even if the scan fails
         with:
           sarif_file: 'trivy-results.sarif'
-          category: trivy-container
+          # Per-app category: code scanning keys analyses by (ref, tool,
+          # category), so a shared category would let each matrix leg's upload
+          # supersede the previous app's results for the same commit.
+          category: trivy-container-${{ inputs.app_slug }}
 
       # -------------------------------------------------------------------
       # Severity gate (amd64): fail on configured severity threshold

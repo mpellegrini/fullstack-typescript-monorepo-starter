@@ -6,6 +6,12 @@
 # downstream (the gate) and only the `_ecr-publish.yml` job stitches them into a
 # tagged multi-arch manifest once the scan passes. Each leg uploads its digest as
 # an artifact (`digests-<platform>`) so scan + publish can resolve the bytes.
+#
+# Note: PR runs publish real sha-<head sha> tags for unreviewed (same-repo)
+# branches. Their containment relies on squash-only merges: PR head SHAs never
+# become ancestors of main, so release-create.yml rejects them and
+# ecr-cleanup.yml deletes them when the PR closes. If the repo ever allows
+# merge-commit merges, revisit this (e.g. tag PR images pr-<n>-sha-<sha>).
 
 name: _docker-build-stage
 
@@ -126,9 +132,12 @@ jobs:
             org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
 
       - name: Sanitize platform name
+        env:
+          # Via env, not inline expansion — keeps the no-inline-interpolation
+          # discipline uniform even though the matrix values are static.
+          PLATFORM: ${{ matrix.platform }}
         run: |
-          platform=${{ matrix.platform }}
-          echo "PLATFORM_PAIR=${platform//\//-}" >> "$GITHUB_ENV"
+          echo "PLATFORM_PAIR=${PLATFORM//\//-}" >> "$GITHUB_ENV"
 
       # PR builds must not write the cache that main builds consume: an
       # unreviewed PR could otherwise seed poisoned layers that the next main

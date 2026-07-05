@@ -44,6 +44,10 @@ jobs:
           # merge ref) so the recomputed tags/labels describe the commit the
           # image bytes were actually built from.
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          # Full history: the latest-ordering check below runs
+          # `git merge-base --is-ancestor` against the commit currently
+          # published as `latest`.
+          fetch-depth: 0
 
       - name: Resolve commit SHA and build date
         id: commit-info
@@ -69,33 +73,63 @@ jobs:
         run: |
           echo "repo=${REGISTRY}/${IMAGE_NAME}" >> "$GITHUB_OUTPUT"
 
-      - name: Download digest artifacts
+      # Downloaded by exact name (one per platform, mirroring the build matrix)
+      # rather than a `digests-<app>-*` pattern: the manifest step below stitches
+      # EVERY downloaded digest into this app's manifest, so an app slug that is
+      # a prefix of a sibling's (e.g. `api` and `api-server`) would silently pull
+      # the sibling's digests in via the pattern. Exact names also fail loudly if
+      # a build leg's artifact is missing.
+      - name: Download amd64 digest artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           path: /tmp/digests
-          pattern: digests-${{ inputs.app_slug }}-*
-          merge-multiple: true
+          name: digests-${{ inputs.app_slug }}-linux-amd64
+
+      - name: Download arm64 digest artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: /tmp/digests
+          name: digests-${{ inputs.app_slug }}-linux-arm64
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
 
       # Main runs are concurrency-grouped per commit (see ci-cd.yml), so two can
-      # publish in parallel. Only the run whose commit is still the head of
-      # main applies `latest` — otherwise an older commit's slower run
-      # finishing last would repoint `latest` backwards. When this run skips
-      # it, the newer commit's own run applies `latest` instead.
-      - name: Check whether this commit is still the head of main
-        id: head-check
+      # publish this app in parallel. Apply `latest` only if this commit is a
+      # descendant of the commit `latest` currently points at (read from the
+      # org.opencontainers.image.revision label, same as release-create.yml) —
+      # otherwise an older commit's slower run finishing last would repoint
+      # `latest` backwards. A repo-wide head-of-main check is NOT enough: if the
+      # newer head commit doesn't affect this app (or fails its scan gate), its
+      # run never publishes this app, and `latest` would stay stale forever.
+      - name: Check whether this commit should take latest
+        id: latest-check
         if: github.event_name == 'push'
         env:
+          REPO: ${{ steps.repo.outputs.repo }}
           SHA: ${{ steps.commit-info.outputs.full_sha }}
         run: |
           set -euo pipefail
-          head="$(git ls-remote origin refs/heads/main | cut -f1)"
-          is_head=false
-          [[ "$head" == "$SHA" ]] && is_head=true
-          echo "is_head=${is_head}" >> "$GITHUB_OUTPUT"
-          echo "Commit ${SHA} vs main head ${head} — is_head=${is_head}"
+          apply_latest=true
+          reason="no current latest — this commit takes it"
+
+          if manifest="$(docker buildx imagetools inspect "${REPO}:latest" --format '{{json .}}' 2>/dev/null)"; then
+            current_sha="$(jq -r '[.. | objects | select(has("org.opencontainers.image.revision"))
+                                   | .["org.opencontainers.image.revision"]] | first // empty' <<< "$manifest")"
+            if [[ -z "$current_sha" ]]; then
+              reason="current latest has no revision label — assuming this pipeline should own it"
+            elif ! git cat-file -e "${current_sha}^{commit}" 2>/dev/null; then
+              reason="current latest revision ${current_sha} not found in history — assuming this commit is newer"
+            elif git merge-base --is-ancestor "$current_sha" "$SHA"; then
+              reason="current latest revision ${current_sha} is an ancestor of ${SHA}"
+            else
+              apply_latest=false
+              reason="current latest revision ${current_sha} is NOT an ancestor of ${SHA} — a newer commit already took latest"
+            fi
+          fi
+
+          echo "apply_latest=${apply_latest}" >> "$GITHUB_OUTPUT"
+          echo "apply_latest=${apply_latest}: ${reason}"
 
       - name: Compute tags and labels
         id: meta
@@ -105,7 +139,7 @@ jobs:
           tags: |
             type=raw,value=sha-${{ steps.commit-info.outputs.full_sha }}
             type=ref,event=pr,prefix=pr-
-            type=raw,value=latest,enable=${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.head-check.outputs.is_head == 'true' }}
+            type=raw,value=latest,enable=${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.latest-check.outputs.apply_latest == 'true' }}
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
             org.opencontainers.image.revision=${{ steps.commit-info.outputs.full_sha }}
@@ -130,17 +164,16 @@ jobs:
 
       - name: Inspect manifest and capture digest
         id: inspect
+        env:
+          # Via env, not inline expansion: the repo derives from a repo-authored
+          # deploy.json, so it must not reach the shell as code.
+          SHA_REF: ${{ steps.repo.outputs.repo }}:sha-${{ steps.commit-info.outputs.full_sha }}
         run: |
-          digest=$(docker buildx imagetools inspect \
-            ${{ steps.repo.outputs.repo }}:sha-${{ steps.commit-info.outputs.full_sha }} \
-            --format '{{.Manifest.Digest}}')
+          set -euo pipefail
+          digest=$(docker buildx imagetools inspect "$SHA_REF" --format '{{.Manifest.Digest}}')
           echo "digest=${digest}" >> "$GITHUB_OUTPUT"
-          docker buildx imagetools inspect \
-            ${{ steps.repo.outputs.repo }}:sha-${{ steps.commit-info.outputs.full_sha }} \
-            > /tmp/imagetools-inspect.txt
-          docker buildx imagetools inspect \
-            ${{ steps.repo.outputs.repo }}:sha-${{ steps.commit-info.outputs.full_sha }} \
-            --format '{{json .}}' | jq '.' > /tmp/imagetools-inspect.json
+          docker buildx imagetools inspect "$SHA_REF" > /tmp/imagetools-inspect.txt
+          docker buildx imagetools inspect "$SHA_REF" --format '{{json .}}' | jq '.' > /tmp/imagetools-inspect.json
 
       # SLSA build provenance attached to the ECR image as an OCI referrer.
       - name: Attest build provenance
@@ -151,20 +184,27 @@ jobs:
           push-to-registry: true
 
       - name: Summary
+        env:
+          # Via env, not inline expansion: the repo (and the tags derived from
+          # it) comes from a repo-authored deploy.json, so it must not reach the
+          # shell as code.
+          REPO: ${{ steps.repo.outputs.repo }}
+          DIGEST: ${{ steps.inspect.outputs.digest }}
+          TAGS: ${{ steps.meta.outputs.tags }}
         run: |
           {
             echo "### Published to ECR"
             echo ""
-            echo "**Digest:** \`${{ steps.inspect.outputs.digest }}\`"
+            echo "**Digest:** \`${DIGEST}\`"
             echo ""
             echo "**Pinned ref:**"
             echo "\`\`\`"
-            echo "${{ steps.repo.outputs.repo }}@${{ steps.inspect.outputs.digest }}"
+            echo "${REPO}@${DIGEST}"
             echo "\`\`\`"
             echo ""
             echo "**Tags:**"
             echo "\`\`\`"
-            echo "${{ steps.meta.outputs.tags }}"
+            echo "$TAGS"
             echo "\`\`\`"
             echo ""
             echo "<details><summary>Manifest inspect</summary>"

@@ -1,13 +1,17 @@
+# Unlike .gitignore, a bare name here only matches at the context root, so
+# workspace-level artifacts need the `**/` prefix to be excluded at any depth.
 .git
 .github
 .gitignore
-node_modules
+**/node_modules
 
 .husky
-.turbo
+**/.turbo
 
-.svelte-kit
-build
+**/.svelte-kit
+**/build
 
-.env
-.env.*
+**/coverage
+
+**/.env
+**/.env.*

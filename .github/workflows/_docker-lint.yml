@@ -17,6 +17,16 @@
 # Both arches are tested. The config's commandTests execute the container
 # (they verify the `node .` runtime contract), so QEMU is registered to let
 # the arm64 image run on this amd64 runner.
+#
+# Smoke test (opt-in): when `apps/<app_slug>/smoke-test.json` exists, the amd64
+# image is booted and must answer HTTP on the configured path — any status
+# counts, since a response at all proves the entrypoint, boot-time config, and
+# listener work. No config file means the step is skipped, not failed. amd64
+# only: booting a full server under QEMU is slow and timing-flaky, and the
+# structure commandTests already prove the arm64 image executes.
+# The config is repo-committed, so its env values must be dummies (an app that
+# validates e.g. a DB connection string at boot gets a syntactically valid
+# placeholder — lazy connection pools mean the server still boots and serves).
 
 name: _docker-lint
 
@@ -149,33 +159,106 @@ jobs:
           docker pull --platform linux/amd64 "$AMD64_REF"
           docker pull --platform linux/arm64 "$ARM64_REF"
 
+      # --platform must match each image: c-s-t defaults it to the host arch
+      # and passes it through to container creation, so without it the daemon
+      # refuses to create commandTest containers from the arm64 image.
       - name: Run container structure tests (amd64)
         id: cst-amd64
         run: |
-          container-structure-test test --image "$AMD64_REF" --config "$STRUCTURE_TEST_CONFIG"
+          container-structure-test test --image "$AMD64_REF" --platform linux/amd64 --config "$STRUCTURE_TEST_CONFIG"
         continue-on-error: true
 
       - name: Run container structure tests (arm64)
         id: cst-arm64
         run: |
-          container-structure-test test --image "$ARM64_REF" --config "$STRUCTURE_TEST_CONFIG"
+          container-structure-test test --image "$ARM64_REF" --platform linux/arm64 --config "$STRUCTURE_TEST_CONFIG"
+        continue-on-error: true
+
+      # Smoke test is opt-in per app: no smoke-test.json means the step below
+      # is skipped and the gate treats it as passing.
+      - name: Resolve smoke-test config
+        id: smoke-config
+        env:
+          # Via env, not inline expansion: app_slug is a directory basename and
+          # must not reach the shell as code.
+          APP_SLUG: ${{ inputs.app_slug }}
+        run: |
+          set -euo pipefail
+          config="apps/${APP_SLUG}/smoke-test.json"
+          if [[ ! -f "$config" ]]; then
+            echo "::notice::No ${config} — smoke test skipped (opt-in)."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Fail loud on a malformed opt-in rather than silently skipping it.
+          if ! jq -e . "$config" > /dev/null 2>&1; then
+            echo "::error file=${config}::smoke-test.json is not valid JSON."
+            exit 1
+          fi
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
+          echo "SMOKE_CONFIG=${config}" >> "$GITHUB_ENV"
+
+      - name: Run smoke test (amd64)
+        id: smoke
+        if: steps.smoke-config.outputs.enabled == 'true'
+        run: |
+          set -euo pipefail
+          container_port="$(jq -r '.containerPort // 3000' "$SMOKE_CONFIG")"
+          http_path="$(jq -r '.path // "/"' "$SMOKE_CONFIG")"
+          timeout="$(jq -r '.startupTimeoutSeconds // 30' "$SMOKE_CONFIG")"
+          # Env via --env-file, not shell-built --env flags: values never pass
+          # through shell parsing.
+          jq -r '.env // {} | to_entries[] | "\(.key)=\(.value)"' "$SMOKE_CONFIG" > /tmp/smoke.env
+
+          trap 'docker rm -f smoke-test >/dev/null 2>&1 || true' EXIT
+          docker run -d --name smoke-test \
+            -p "127.0.0.1::${container_port}" \
+            --env-file /tmp/smoke.env \
+            "$AMD64_REF"
+          # Ephemeral host port — no collisions with anything else on the runner.
+          addr="$(docker port smoke-test "${container_port}/tcp" | head -n 1)"
+
+          # Poll until the server answers HTTP (any status proves boot) instead
+          # of sleeping a fixed startup budget; bail early if the container dies.
+          deadline=$((SECONDS + timeout))
+          until status="$(curl -s -o /dev/null --max-time 5 -w '%{http_code}' "http://${addr}${http_path}")"; do
+            if [[ "$(docker inspect -f '{{.State.Running}}' smoke-test)" != "true" ]]; then
+              echo "::error::Container exited before responding on ${http_path}"
+              docker logs smoke-test
+              exit 1
+            fi
+            if (( SECONDS >= deadline )); then
+              echo "::error::No HTTP response on ${http_path} within ${timeout}s"
+              docker logs smoke-test
+              exit 1
+            fi
+            sleep 1
+          done
+          echo "Smoke test passed: HTTP ${status} from ${http_path}"
         continue-on-error: true
 
       - name: Gate decision
         run: |
           AMD64="${{ steps.cst-amd64.outcome }}"
           ARM64="${{ steps.cst-arm64.outcome }}"
+          SMOKE="${{ steps.smoke.outcome }}" # 'skipped' when the app has no smoke-test.json
 
-          if [[ "$AMD64" == "success" && "$ARM64" == "success" ]]; then
+          if [[ "$AMD64" == "success" && "$ARM64" == "success" && "$SMOKE" != "failure" ]]; then
             PASSED=true
           else
             PASSED=false
           fi
 
-          icon() { [[ "$1" == "success" ]] && echo "✅ pass" || echo "❌ fail"; }
+          icon() {
+            case "$1" in
+              success) echo "✅ pass" ;;
+              skipped) echo "⏭️ skipped (opt-in)" ;;
+              *) echo "❌ fail" ;;
+            esac
+          }
 
           {
-            echo "### Docker structure tests"
+            echo "### Docker image lint"
             echo ""
             echo "**Tested repo:** \`${REPO}\`"
             echo "**Config:** \`${STRUCTURE_TEST_CONFIG}\`"
@@ -184,6 +267,7 @@ jobs:
             echo "| --- | --- |"
             echo "| Structure tests (amd64) | $(icon "$AMD64") |"
             echo "| Structure tests (arm64) | $(icon "$ARM64") |"
+            echo "| Smoke test (amd64) | $(icon "$SMOKE") |"
             echo ""
             if [[ "$PASSED" == "true" ]]; then
               echo "**Gate:** ✅ passed — image is eligible for publish"
@@ -193,8 +277,8 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
           if [[ "$PASSED" == "true" ]]; then
-            echo "::notice::Structure tests passed — image is eligible for publish"
+            echo "::notice::Image lint passed — image is eligible for publish"
           else
-            echo "::error::Structure tests failed — image will NOT be published"
+            echo "::error::Image lint failed — image will NOT be published"
             exit 1
           fi

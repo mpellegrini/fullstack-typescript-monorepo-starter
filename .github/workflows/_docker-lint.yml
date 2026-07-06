@@ -159,16 +159,19 @@ jobs:
           docker pull --platform linux/amd64 "$AMD64_REF"
           docker pull --platform linux/arm64 "$ARM64_REF"
 
+      # --platform must match each image: c-s-t defaults it to the host arch
+      # and passes it through to container creation, so without it the daemon
+      # refuses to create commandTest containers from the arm64 image.
       - name: Run container structure tests (amd64)
         id: cst-amd64
         run: |
-          container-structure-test test --image "$AMD64_REF" --config "$STRUCTURE_TEST_CONFIG"
+          container-structure-test test --image "$AMD64_REF" --platform linux/amd64 --config "$STRUCTURE_TEST_CONFIG"
         continue-on-error: true
 
       - name: Run container structure tests (arm64)
         id: cst-arm64
         run: |
-          container-structure-test test --image "$ARM64_REF" --config "$STRUCTURE_TEST_CONFIG"
+          container-structure-test test --image "$ARM64_REF" --platform linux/arm64 --config "$STRUCTURE_TEST_CONFIG"
         continue-on-error: true
 
       # Smoke test is opt-in per app: no smoke-test.json means the step below

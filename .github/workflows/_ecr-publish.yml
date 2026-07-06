@@ -1,7 +1,8 @@
 # =============================================================================
 # Reusable Workflow: Publish multi-arch image to ECR (post-gate)
 # =============================================================================
-# Runs ONLY after the security scan gate has passed. Stitches the per-arch
+# Runs ONLY after both pre-publish gates (security scan + structure-test lint)
+# have passed. Stitches the per-arch
 # digests (pushed untagged by the build stage) into a single multi-arch manifest
 # and applies the human-facing tags — this is the ONLY place tags are applied,
 # so an untagged/unverified image can never masquerade as a published one.

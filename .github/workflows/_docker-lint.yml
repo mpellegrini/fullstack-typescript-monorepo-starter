@@ -1,0 +1,200 @@
+# =============================================================================
+# Reusable Workflow: Docker Lint — container structure tests (gate before publish)
+# =============================================================================
+# Runs container-structure-test against the per-arch images that
+# `_docker-build-stage.yml` pushed to ECR by digest (untagged). Nothing is
+# rebuilt — the exact bytes are pulled from the registry by digest, resolved
+# from the `digests-*` artifacts uploaded by the build stage (same workflow
+# run), mirroring `_docker-security-scan.yml`.
+#
+# Together with the security scan this job gates publish: `_ecr-publish.yml`
+# only runs when BOTH pass, so a structurally broken image never gets a tag.
+#
+# Config resolution: `apps/<app_slug>/container-structure-test.yaml` wins if it
+# exists, otherwise the repo-root default (`structure_test_config`). This lets
+# an app override the shared expectations without touching the pipeline.
+#
+# Both arches are tested. The config's commandTests execute the container
+# (they verify the `node .` runtime contract), so QEMU is registered to let
+# the arm64 image run on this amd64 runner.
+
+name: _docker-lint
+
+on:
+  workflow_call:
+    inputs:
+      app_slug:
+        description: "Registry-name-safe app identifier used to select this app's digest artifacts (e.g. effect-api-server)"
+        required: true
+        type: string
+      image_name:
+        description: 'Image repository name without registry (e.g. team/service)'
+        required: true
+        type: string
+      structure_test_config:
+        description: 'Fallback container-structure-test config used when the app has no apps/<app_slug>/container-structure-test.yaml'
+        required: false
+        type: string
+        default: 'container-structure-test.yaml'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write # assume the AWS role via OIDC
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          # Same ref the build stage checked out (PR head, not the ephemeral
+          # merge ref) so the structure-test config matches the commit the
+          # image bytes were actually built from.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6.2.1
+        with:
+          role-to-assume: ${{ vars.AWS_GHA_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@d539f0932e70871a027e9d5a9d8fc38589180a64 # v2.1.6
+
+      # Resolve this app's per-arch image refs from its digest artifacts. Each
+      # artifact holds a single empty file named after the digest hex (no
+      # sha256: prefix). Downloaded by exact name (one per platform, mirroring
+      # the build matrix) rather than a `digests-<app>-*` pattern: under a
+      # matrix, an app slug that is a prefix of a sibling's (e.g. `api` and
+      # `api-server`) would make the pattern match the sibling's artifacts too.
+      - name: Download amd64 digest artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: /tmp/digests/digests-${{ inputs.app_slug }}-linux-amd64
+          name: digests-${{ inputs.app_slug }}-linux-amd64
+
+      - name: Download arm64 digest artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: /tmp/digests/digests-${{ inputs.app_slug }}-linux-arm64
+          name: digests-${{ inputs.app_slug }}-linux-arm64
+
+      - name: Resolve per-arch image refs
+        env:
+          # Via env, not inline expansion: app_slug is a directory basename and
+          # image_name comes from a repo-authored deploy.json, so neither must
+          # reach the shell as code.
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_NAME: ${{ inputs.image_name }}
+          APP_SLUG: ${{ inputs.app_slug }}
+        run: |
+          set -euo pipefail
+          repo="${REGISTRY}/${IMAGE_NAME}"
+          amd64="$(basename "$(ls "/tmp/digests/digests-${APP_SLUG}-linux-amd64"/*)")"
+          arm64="$(basename "$(ls "/tmp/digests/digests-${APP_SLUG}-linux-arm64"/*)")"
+          {
+            echo "REPO=${repo}"
+            echo "AMD64_REF=${repo}@sha256:${amd64}"
+            echo "ARM64_REF=${repo}@sha256:${arm64}"
+          } >> "$GITHUB_ENV"
+
+      # Per-app config wins over the repo-root fallback so apps with different
+      # runtime layouts (entrypoint path, ports, users) can assert their own
+      # structure without loosening the shared default.
+      - name: Resolve structure-test config
+        env:
+          # Via env, not inline expansion: both paths are repo-authored text
+          # and must not reach the shell as code.
+          APP_SLUG: ${{ inputs.app_slug }}
+          FALLBACK_CONFIG: ${{ inputs.structure_test_config }}
+        run: |
+          set -euo pipefail
+          app_config="apps/${APP_SLUG}/container-structure-test.yaml"
+          if [[ -f "$app_config" ]]; then
+            config="$app_config"
+          elif [[ -f "$FALLBACK_CONFIG" ]]; then
+            config="$FALLBACK_CONFIG"
+          else
+            echo "::error::No structure-test config found (looked for ${app_config} and ${FALLBACK_CONFIG})."
+            exit 1
+          fi
+          echo "Using structure-test config: ${config}"
+          echo "STRUCTURE_TEST_CONFIG=${config}" >> "$GITHUB_ENV"
+
+      - name: Install container-structure-test
+        env:
+          CST_VERSION: v1.22.1
+          CST_SHA256: fa35e89512a8978585f76cf41397956d2e3a30c62c2ad3fb857b1597074d14ca
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 \
+            "https://github.com/GoogleContainerTools/container-structure-test/releases/download/${CST_VERSION}/container-structure-test-linux-amd64" \
+            --output container-structure-test
+          echo "${CST_SHA256}  container-structure-test" | sha256sum --check --quiet
+          chmod +x container-structure-test
+          sudo mv container-structure-test /usr/local/bin/container-structure-test
+
+      # QEMU binfmt handlers let the arm64 leg's commandTests execute the
+      # container on this amd64 runner.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
+
+      # Each digest is an attestation-bearing OCI index (provenance/SBOM), so
+      # pull with an explicit --platform to select the image child.
+      - name: Pull per-arch images
+        run: |
+          set -euo pipefail
+          docker pull --platform linux/amd64 "$AMD64_REF"
+          docker pull --platform linux/arm64 "$ARM64_REF"
+
+      - name: Run container structure tests (amd64)
+        id: cst-amd64
+        run: |
+          container-structure-test test --image "$AMD64_REF" --config "$STRUCTURE_TEST_CONFIG"
+        continue-on-error: true
+
+      - name: Run container structure tests (arm64)
+        id: cst-arm64
+        run: |
+          container-structure-test test --image "$ARM64_REF" --config "$STRUCTURE_TEST_CONFIG"
+        continue-on-error: true
+
+      - name: Gate decision
+        run: |
+          AMD64="${{ steps.cst-amd64.outcome }}"
+          ARM64="${{ steps.cst-arm64.outcome }}"
+
+          if [[ "$AMD64" == "success" && "$ARM64" == "success" ]]; then
+            PASSED=true
+          else
+            PASSED=false
+          fi
+
+          icon() { [[ "$1" == "success" ]] && echo "✅ pass" || echo "❌ fail"; }
+
+          {
+            echo "### Docker structure tests"
+            echo ""
+            echo "**Tested repo:** \`${REPO}\`"
+            echo "**Config:** \`${STRUCTURE_TEST_CONFIG}\`"
+            echo ""
+            echo "| Test | Result |"
+            echo "| --- | --- |"
+            echo "| Structure tests (amd64) | $(icon "$AMD64") |"
+            echo "| Structure tests (arm64) | $(icon "$ARM64") |"
+            echo ""
+            if [[ "$PASSED" == "true" ]]; then
+              echo "**Gate:** ✅ passed — image is eligible for publish"
+            else
+              echo "**Gate:** ❌ failed — image will NOT be published"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [[ "$PASSED" == "true" ]]; then
+            echo "::notice::Structure tests passed — image is eligible for publish"
+          else
+            echo "::error::Structure tests failed — image will NOT be published"
+            exit 1
+          fi

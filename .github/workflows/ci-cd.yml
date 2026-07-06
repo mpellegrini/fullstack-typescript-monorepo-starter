@@ -63,8 +63,8 @@ jobs:
   # Skipped for PRs from forks: fork runs get a read-only token (id-token: write
   # is refused) and no repository secrets/vars, so the AWS OIDC steps would
   # hard-fail and block the merge via ci-cd-passed. Skipping here cascades to
-  # docker-scan and docker-publish; ci-cd-passed treats skips as passing. The
-  # full build/scan/publish still runs on the push to main after merge.
+  # docker-scan, docker-lint, and docker-publish; ci-cd-passed treats skips as
+  # passing. The full build/scan/publish still runs on the push to main after merge.
   docker-build:
     needs: [deploy-matrix]
     if: >-
@@ -109,11 +109,33 @@ jobs:
       app_slug: ${{ matrix.target.app_name }}
       image_name: ${{ matrix.target.image_name }}
 
-  # Only reached when the gate passes for every app: tag each multi-arch
-  # manifest and attest.
+  # Structure-test gate: runs in parallel with docker-scan against the same
+  # per-arch digests. Same all-or-nothing aggregation as the scan gate: any
+  # app's lint failure fails docker-lint and skips docker-publish for every app.
+  docker-lint:
+    needs: [deploy-matrix, docker-build]
+    if: needs.deploy-matrix.outputs.has_apps == 'true'
+    name: docker-lint (${{ matrix.target.app_name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.deploy-matrix.outputs.apps) }}
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/_docker-lint.yml
+    with:
+      app_slug: ${{ matrix.target.app_name }}
+      image_name: ${{ matrix.target.image_name }}
+
+  # Only reached when BOTH gates (scan + lint) pass for every app: tag each
+  # multi-arch manifest and attest.
   docker-publish:
-    needs: [deploy-matrix, docker-scan]
-    if: needs.deploy-matrix.outputs.has_apps == 'true' && needs.docker-scan.result == 'success'
+    needs: [deploy-matrix, docker-scan, docker-lint]
+    if: >-
+      needs.deploy-matrix.outputs.has_apps == 'true' &&
+      needs.docker-scan.result == 'success' &&
+      needs.docker-lint.result == 'success'
     name: docker-publish (${{ matrix.target.app_name }})
     strategy:
       fail-fast: false
@@ -135,7 +157,15 @@ jobs:
   ci-cd-passed:
     if: always() # Ensures this job ALWAYS runs to report status
     needs:
-      [compute-affected, code-quality, deploy-matrix, docker-build, docker-scan, docker-publish]
+      [
+        compute-affected,
+        code-quality,
+        deploy-matrix,
+        docker-build,
+        docker-scan,
+        docker-lint,
+        docker-publish,
+      ]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

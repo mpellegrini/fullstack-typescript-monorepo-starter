@@ -1,0 +1,56 @@
+# =============================================================================
+# Container Structure Tests
+# https://github.com/GoogleContainerTools/container-structure-test
+#
+# Validates the Docker image meets structural requirements before publishing.
+# This is the repo-wide default used by _docker-lint.yml; it asserts only the
+# invariants every image built by the vite-generic Dockerfile must satisfy.
+# An app needing different assertions provides its own
+# apps/<app>/container-structure-test.yaml, which takes precedence.
+# =============================================================================
+
+schemaVersion: '2.0.0'
+
+# ---------------------------------------------------------------------------
+# Metadata tests — verify image labels and config
+# ---------------------------------------------------------------------------
+metadataTest:
+  #  exposedPorts: ['8080']
+  #  entrypoint: [] # Customize: e.g., ["/app/entrypoint.sh"]
+  workdir: '/app'
+  envVars:
+    - key: 'NODE_ENV'
+      value: 'production'
+
+# ---------------------------------------------------------------------------
+# File existence tests — verify no sensitive files leaked into the image.
+# Layout-agnostic paths only: app build output lives wherever the app's
+# package.json `main`/`files` say, so per-layout paths don't belong here.
+# ---------------------------------------------------------------------------
+fileExistenceTests:
+  - name: 'No .env file leaked into image'
+    path: '/app/.env'
+    shouldExist: false
+
+  - name: 'No .git directory in image'
+    path: '/app/.git'
+    shouldExist: false
+
+# ---------------------------------------------------------------------------
+# Command tests — verify the runtime contract of the vite-generic Dockerfile:
+# CMD ["."] means `node .` must resolve the app's package.json `main` to a
+# file that was actually packed. Testing the invariant instead of a hardcoded
+# entry path keeps this config valid for every app, and executing node also
+# proves the distroless runtime binary works on each architecture.
+# The distroless image has no shell, so commands must be invoked directly.
+# ---------------------------------------------------------------------------
+commandTests:
+  - name: 'package.json main resolves to a packed server entry (node . contract)'
+    command: '/nodejs/bin/node'
+    args:
+      - '-e'
+      - |
+        const p = require('/app/package.json')
+        if (!p.main) throw new Error('package.json must declare main')
+        require('fs').accessSync(require('path').resolve('/app', p.main))
+    exitCode: 0

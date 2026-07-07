@@ -3,7 +3,7 @@
 # =============================================================================
 # When a PR is merged OR closed without merging, delete the images that PR's
 # pipeline published to ECR. The set of image repositories is discovered from
-# the base branch by reading every app's `deploy.json` imageName (the same opt-in
+# the base branch by reading every app's `deploy.json` container.imageName (the same opt-in
 # marker ci-cd uses), so this scales automatically as apps are added. For each
 # repo we delete:
 #   - the mutable pr-<n> tag
@@ -80,11 +80,12 @@ jobs:
           done < <(gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/commits" --jq '.[].sha')
 
           # Discover every deployable app's ECR repo from its deploy.json opt-in
-          # marker — the same `imageName` field _compute-deployable-apps.yml reads
-          # to build the deploy matrix. Scans all apps (not just the PR's affected
-          # set) so any repo this PR may have published to is covered.
+          # marker — the same `container.imageName` field
+          # _compute-deployable-apps.yml reads to build the deploy matrix. Scans
+          # all apps (not just the PR's affected set) so any repo this PR may
+          # have published to is covered.
           mapfile -t repos < <(for cfg in apps/*/deploy.json; do
-            [ -f "$cfg" ] && jq -r '.imageName // empty' "$cfg"
+            [ -f "$cfg" ] && jq -r '.container.imageName // empty' "$cfg"
           done | sort -u)
 
           {

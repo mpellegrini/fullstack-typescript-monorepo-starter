@@ -112,8 +112,8 @@ jobs:
           set -euo pipefail
           cfg="apps/$APP/deploy.json"
           [[ -f "$cfg" ]] || { echo "::error::$cfg not found — does apps/$APP exist and opt in to deployments?"; exit 1; }
-          IMAGE_NAME=$(jq -r '.imageName // empty' "$cfg")
-          [[ -n "$IMAGE_NAME" ]] || { echo "::error::$cfg is missing the required \"imageName\" field"; exit 1; }
+          IMAGE_NAME=$(jq -r '.container.imageName // empty' "$cfg")
+          [[ -n "$IMAGE_NAME" ]] || { echo "::error::$cfg is missing the required \"container.imageName\" field"; exit 1; }
           REPO="$REGISTRY/$IMAGE_NAME"
 
           # Capture inspect separately so a missing tag yields a friendly error

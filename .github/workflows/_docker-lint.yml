@@ -18,15 +18,18 @@
 # (they verify the `node .` runtime contract), so QEMU is registered to let
 # the arm64 image run on this amd64 runner.
 #
-# Smoke test (opt-in): when `apps/<app_slug>/smoke-test.json` exists, the amd64
-# image is booted and must answer HTTP on the configured path — any status
-# counts, since a response at all proves the entrypoint, boot-time config, and
-# listener work. No config file means the step is skipped, not failed. amd64
-# only: booting a full server under QEMU is slow and timing-flaky, and the
-# structure commandTests already prove the arm64 image executes.
-# The config is repo-committed, so its env values must be dummies (an app that
-# validates e.g. a DB connection string at boot gets a syntactically valid
-# placeholder — lazy connection pools mean the server still boots and serves).
+# Smoke test (opt-in): when the app's `deploy.json` has a `smokeTest` section,
+# the amd64 image is booted and must answer HTTP on the configured path — any
+# status counts, since a response at all proves the entrypoint, boot-time
+# config, and listener work. No `smokeTest` section means the step is skipped,
+# not failed. amd64 only: booting a full server under QEMU is slow and
+# timing-flaky, and the structure commandTests already prove the arm64 image
+# executes.
+# The container env comes from the app's `.env.example` (required when the
+# smoke test is enabled). It is repo-committed, so its values must be dummies
+# (an app that validates e.g. a DB connection string at boot gets a
+# syntactically valid placeholder — lazy connection pools mean the server
+# still boots and serves).
 
 name: _docker-lint
 
@@ -174,8 +177,10 @@ jobs:
           container-structure-test test --image "$ARM64_REF" --platform linux/arm64 --config "$STRUCTURE_TEST_CONFIG"
         continue-on-error: true
 
-      # Smoke test is opt-in per app: no smoke-test.json means the step below
-      # is skipped and the gate treats it as passing.
+      # Smoke test is opt-in per app: no `smokeTest` section in deploy.json
+      # means the step below is skipped and the gate treats it as passing.
+      # deploy.json itself is guaranteed present and schema-valid for any app
+      # in the matrix (_compute-deployable-apps.yml validates it).
       - name: Resolve smoke-test config
         id: smoke-config
         env:
@@ -184,19 +189,25 @@ jobs:
           APP_SLUG: ${{ inputs.app_slug }}
         run: |
           set -euo pipefail
-          config="apps/${APP_SLUG}/smoke-test.json"
-          if [[ ! -f "$config" ]]; then
-            echo "::notice::No ${config} — smoke test skipped (opt-in)."
+          cfg="apps/${APP_SLUG}/deploy.json"
+          if ! jq -e '.smokeTest' "$cfg" > /dev/null; then
+            echo "::notice::No smokeTest section in ${cfg} — smoke test skipped (opt-in)."
             echo "enabled=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          # Fail loud on a malformed opt-in rather than silently skipping it.
-          if ! jq -e . "$config" > /dev/null 2>&1; then
-            echo "::error file=${config}::smoke-test.json is not valid JSON."
+          # The smoke container's env comes from the app's committed example
+          # env file, so opting into the smoke test requires shipping one.
+          env_file="apps/${APP_SLUG}/.env.example"
+          if [[ ! -f "$env_file" ]]; then
+            echo "::error file=${cfg}::smokeTest is enabled but ${env_file} is missing — it supplies the smoke container's env."
             exit 1
           fi
+          jq '.smokeTest' "$cfg" > /tmp/smoke-config.json
           echo "enabled=true" >> "$GITHUB_OUTPUT"
-          echo "SMOKE_CONFIG=${config}" >> "$GITHUB_ENV"
+          {
+            echo "SMOKE_CONFIG=/tmp/smoke-config.json"
+            echo "SMOKE_ENV_FILE=${env_file}"
+          } >> "$GITHUB_ENV"
 
       - name: Run smoke test (amd64)
         id: smoke
@@ -206,14 +217,14 @@ jobs:
           container_port="$(jq -r '.containerPort // 3000' "$SMOKE_CONFIG")"
           http_path="$(jq -r '.path // "/"' "$SMOKE_CONFIG")"
           timeout="$(jq -r '.startupTimeoutSeconds // 30' "$SMOKE_CONFIG")"
-          # Env via --env-file, not shell-built --env flags: values never pass
-          # through shell parsing.
-          jq -r '.env // {} | to_entries[] | "\(.key)=\(.value)"' "$SMOKE_CONFIG" > /tmp/smoke.env
 
           trap 'docker rm -f smoke-test >/dev/null 2>&1 || true' EXIT
+          # Env via --env-file from .env.example: values never pass through
+          # shell parsing, but docker reads them literally (no quote
+          # stripping), so the file must hold unquoted KEY=VALUE lines.
           docker run -d --name smoke-test \
             -p "127.0.0.1::${container_port}" \
-            --env-file /tmp/smoke.env \
+            --env-file "$SMOKE_ENV_FILE" \
             "$AMD64_REF"
           # Ephemeral host port — no collisions with anything else on the runner.
           addr="$(docker port smoke-test "${container_port}/tcp" | head -n 1)"
@@ -241,7 +252,7 @@ jobs:
         run: |
           AMD64="${{ steps.cst-amd64.outcome }}"
           ARM64="${{ steps.cst-arm64.outcome }}"
-          SMOKE="${{ steps.smoke.outcome }}" # 'skipped' when the app has no smoke-test.json
+          SMOKE="${{ steps.smoke.outcome }}" # 'skipped' when deploy.json has no smokeTest section
 
           if [[ "$AMD64" == "success" && "$ARM64" == "success" && "$SMOKE" != "failure" ]]; then
             PASSED=true

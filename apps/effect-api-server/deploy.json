@@ -1,17 +1,27 @@
 {
-  "imageName": "monorepo/effect-api-server",
-  "environments": {
-    "staging": {
-      "ecsCluster": "staging-cluster",
-      "ecsService": "effect-api-server-svc",
-      "containerName": "effect-api-server",
-      "taskDefinition": "effect-api-server-task-staging"
-    },
-    "production": {
-      "ecsCluster": "prod-cluster",
-      "ecsService": "effect-api-server-svc",
-      "containerName": "effect-api-server",
-      "taskDefinition": "effect-api-server-task-prod"
+  "$schema": "../../.github/schemas/deploy.schema.json",
+  "container": {
+    "imageName": "monorepo/effect-api-server"
+  },
+  "smokeTest": {
+    "containerPort": 3000,
+    "path": "/",
+    "startupTimeoutSeconds": 30
+  },
+  "deploy": {
+    "environments": {
+      "staging": {
+        "ecsCluster": "staging-cluster",
+        "ecsService": "effect-api-server-svc",
+        "containerName": "effect-api-server",
+        "taskDefinition": "effect-api-server-task-staging"
+      },
+      "production": {
+        "ecsCluster": "prod-cluster",
+        "ecsService": "effect-api-server-svc",
+        "containerName": "effect-api-server",
+        "taskDefinition": "effect-api-server-task-prod"
+      }
     }
   }
 }

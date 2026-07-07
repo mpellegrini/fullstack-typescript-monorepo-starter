@@ -40,12 +40,6 @@ jobs:
       - name: Check out code
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      # The runner image has node but not pnpm; version comes from the repo's
-      # packageManager pin. Full dependency install is not needed — the schema
-      # gate below only uses `pnpm dlx`.
-      - name: Install pnpm package manager
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
-
       # Fail loud on a malformed opt-in rather than silently skipping it. The
       # schema requires container.imageName and rejects unknown keys, so the
       # compute loop below can extract fields without re-validating. Validates
@@ -60,7 +54,7 @@ jobs:
           [ "${#configs[@]}" -gt 0 ] || exit 0
           status=0
           for cfg in "${configs[@]}"; do
-            if ! output="$(pnpm dlx ajv-cli@5.0.0 validate --spec=draft2020 --errors=text \
+            if ! output="$(npx --yes ajv-cli@5.0.0 validate --spec=draft2020 --errors=text \
               -s .github/schemas/deploy.schema.json -d "$cfg" 2>&1)"; then
               echo "::error file=${cfg}::deploy.json failed schema validation."
               echo "$output"

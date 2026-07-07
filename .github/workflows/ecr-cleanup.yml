@@ -83,11 +83,9 @@ jobs:
           # marker — the same `container.imageName` field
           # _compute-deployable-apps.yml reads to build the deploy matrix. Scans
           # all apps (not just the PR's affected set) so any repo this PR may
-          # have published to is covered. The top-level `.imageName` fallback
-          # covers PRs branched before the unified-config refactor (this job
-          # reads the PR's checkout); drop it once those have cycled out.
+          # have published to is covered.
           mapfile -t repos < <(for cfg in apps/*/deploy.json; do
-            [ -f "$cfg" ] && jq -r '.container.imageName // .imageName // empty' "$cfg"
+            [ -f "$cfg" ] && jq -r '.container.imageName // empty' "$cfg"
           done | sort -u)
 
           {

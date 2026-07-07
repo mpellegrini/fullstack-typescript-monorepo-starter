@@ -16,8 +16,8 @@
   "devDependencies": {
     "@commitlint/cli": "21.2.0",
     "@commitlint/config-conventional": "21.2.0",
-    "@effect/language-service": "0.86.2",
-    "@turbo/gen": "2.10.2",
+    "@effect/language-service": "0.86.4",
+    "@turbo/gen": "2.10.3",
     "del-cli": "7.0.0",
     "husky": "9.1.7",
     "lint-staged": "17.0.8",
@@ -26,7 +26,7 @@
     "prettier-plugin-packagejson": "3.0.2",
     "prettier-plugin-svelte": "4.1.1",
     "prettier-plugin-tailwindcss": "0.8.0",
-    "turbo": "2.10.2"
+    "turbo": "2.10.3"
   },
   "packageManager": "pnpm@11.10.0+sha512.0b7f8b98060031904c017e3a41eb187a16d40eeb829b95c4f8cb03681761fc4ab53dd219115b9b447f4dce1a05a214764461e7d3703392a9f32f9511ce8c86c8",
   "engines": {

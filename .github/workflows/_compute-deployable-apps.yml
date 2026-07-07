@@ -18,10 +18,13 @@ on:
 
 jobs:
   # Turn the affected packages into the set of deployable apps to build. An app
-  # opts in by shipping a `deploy.json` in its folder root, which declares its
-  # ECR repository and per-environment ECS targets; apps without it (sandboxes,
-  # libraries, not-yet-containerized servers) are skipped. Emits a JSON matrix
-  # of {app_name, dir, image_name, environments} consumed by the build →
+  # opts in by shipping a `deploy.json` in its folder root — the unified
+  # per-app lifecycle config (see .github/schemas/deploy.schema.json) that
+  # declares its ECR repository (container.imageName), optional smoke test
+  # (smokeTest, consumed by _docker-lint.yml), and per-environment ECS targets
+  # (deploy.environments); apps without it (sandboxes, libraries,
+  # not-yet-containerized servers) are skipped. Emits a JSON matrix of
+  # {app_name, dir, image_name, environments} consumed by the build →
   # scan → publish chain, plus a has_apps flag so the chain skips cleanly when
   # empty.
   deploy-matrix:
@@ -36,6 +39,29 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      # Fail loud on a malformed opt-in rather than silently skipping it. The
+      # schema requires container.imageName and rejects unknown keys, so the
+      # compute loop below can extract fields without re-validating. Validates
+      # every app's deploy.json (not just the affected set) so a broken config
+      # can't hide until its app next changes.
+      - name: Validate deploy.json configs against schema
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          configs=(apps/*/deploy.json)
+          [ "${#configs[@]}" -gt 0 ] || exit 0
+          status=0
+          for cfg in "${configs[@]}"; do
+            if ! output="$(pipx run --spec check-jsonschema==0.37.4 check-jsonschema \
+              --schemafile .github/schemas/deploy.schema.json "$cfg" 2>&1)"; then
+              echo "::error file=${cfg}::deploy.json failed schema validation."
+              echo "$output"
+              status=1
+            fi
+          done
+          exit "$status"
 
       - name: Compute deployable affected apps
         id: compute
@@ -52,19 +78,11 @@ jobs:
             cfg="${path}/deploy.json"
             [ -f "$cfg" ] || continue
 
-            # Fail loud on a malformed opt-in rather than silently skipping it.
-            if ! jq -e . "$cfg" > /dev/null 2>&1; then
-              echo "::error file=${cfg}::deploy.json is not valid JSON."
-              exit 1
-            fi
-            image_name="$(jq -r '.imageName // empty' "$cfg")"
-            if [ -z "$image_name" ]; then
-              echo "::error file=${cfg}::deploy.json is missing required \"imageName\"."
-              exit 1
-            fi
+            # Schema-validated above: container.imageName is present and non-empty.
+            image_name="$(jq -r '.container.imageName' "$cfg")"
 
             app_name="$(basename "$path")"
-            envs="$(jq -c '.environments // {} | keys' "$cfg")"
+            envs="$(jq -c '.deploy.environments // {} | keys' "$cfg")"
             apps="$(jq -c \
               --arg n "$app_name" \
               --arg d "$path" \

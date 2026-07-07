@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/michaelpellegrini/fullstack-typescript-monorepo-starter/.github/schemas/deploy.schema.json",
+  "title": "Per-app CI/CD lifecycle config (apps/<slug>/deploy.json)",
+  "description": "Presence of this file opts an app into the container build → scan → lint → publish → deploy pipeline. The `smokeTest` section additionally opts into the docker-lint HTTP smoke test, whose container env comes from the app's .env.example (required when smokeTest is present).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["container"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "container": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["imageName"],
+      "properties": {
+        "imageName": {
+          "description": "ECR repository name the app's image is published to.",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "smokeTest": {
+      "description": "Opt-in HTTP smoke test run in the docker-lint gate. The container is started with --env-file apps/<slug>/.env.example, which must exist and hold unquoted KEY=VALUE lines.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "containerPort": {
+          "description": "Container port the app listens on. Default 3000.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "path": {
+          "description": "HTTP path polled until any status is returned. Default \"/\".",
+          "type": "string",
+          "pattern": "^/"
+        },
+        "startupTimeoutSeconds": {
+          "description": "Seconds to wait for an HTTP response before failing. Default 30.",
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "deploy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "environments": {
+          "description": "Per-environment ECS/Fargate targets. Only the key names are consumed today; the nested fields are reserved for the future release-deploy wiring.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["ecsCluster", "ecsService", "containerName", "taskDefinition"],
+            "properties": {
+              "ecsCluster": { "type": "string", "minLength": 1 },
+              "ecsService": { "type": "string", "minLength": 1 },
+              "containerName": { "type": "string", "minLength": 1 },
+              "taskDefinition": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -77,6 +77,49 @@ docker build . -t sveltekit-example-app --build-arg="APP_NAME=sveltekit-example-
 docker run --rm --name=sveltekit-example-app -p 8080:3000 sveltekit-example-app
 ```
 
+## Deployable Apps
+
+An app opts into the CI/CD container pipeline (build → scan → lint → publish → deploy) by shipping a
+`deploy.json` in its folder root (e.g. `apps/effect-api-server/deploy.json`). Apps without one
+(sandboxes, libraries, not-yet-containerized servers) are skipped. The file is the single per-app
+lifecycle config, validated in CI against
+[`.github/schemas/deploy.schema.json`](.github/schemas/deploy.schema.json) — point your editor at it
+via the `$schema` field for autocomplete.
+
+```json
+{
+  "$schema": "../../.github/schemas/deploy.schema.json",
+  "container": {
+    "imageName": "monorepo/effect-api-server"
+  },
+  "smokeTest": {
+    "containerPort": 3000,
+    "path": "/",
+    "startupTimeoutSeconds": 30
+  },
+  "deploy": {
+    "environments": {
+      "staging": { "ecsCluster": "…", "ecsService": "…", "containerName": "…", "taskDefinition": "…" }
+    }
+  }
+}
+```
+
+- **`container.imageName`** (required) — the ECR repository the app's image is published to.
+- **`smokeTest`** (optional) — opts into the docker-lint HTTP smoke test: the built amd64 image is
+  booted and must answer HTTP on `path` (default `/`) at `containerPort` (default `3000`) within
+  `startupTimeoutSeconds` (default `30`); any HTTP status counts as booted. The container's env
+  comes from the app's `.env.example` via `docker --env-file`, so opting in **requires** that file,
+  its values must be committed-safe dummies that still let the server boot, and each line must be
+  unquoted `KEY=VALUE` (docker reads values literally). No `smokeTest` section means the test is
+  skipped, not failed.
+- **`deploy.environments`** (optional) — per-environment ECS/Fargate targets. Only the environment
+  names are consumed today (deploy-matrix summary); the nested fields are reserved for the future
+  release-deploy wiring.
+
+Container structure tests are configured separately: `apps/<slug>/container-structure-test.yaml`
+wins if it exists, otherwise the repo-root `container-structure-test.yaml` default applies.
+
 ## Conventional Commits Best Practices
 
 Commit messages must adhere to [Conventional Commits](https://www.conventionalcommits.org/) best practices. The format

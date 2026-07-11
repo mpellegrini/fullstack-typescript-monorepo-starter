@@ -6,7 +6,7 @@
   "smokeTest": {
     "containerPort": 3000,
     "path": "/",
-    "startupTimeoutSeconds": 30
+    "startupTimeoutSeconds": 25
   },
   "deploy": {
     "environments": {

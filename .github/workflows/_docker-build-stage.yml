@@ -65,6 +65,17 @@ jobs:
       id-token: write # assume the AWS role via OIDC
 
     steps:
+      # Egress monitoring (audit): records every outbound destination this
+      # OIDC-credentialed job contacts so a compromised dependency can't
+      # silently exfiltrate the AWS session. Audit changes no behavior; the
+      # harvested endpoint list is the input to a future egress-policy: block.
+      - name: Harden the runner
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+          # No step uses sudo; docker/buildx run via the runner's docker group.
+          disable-sudo: true
+
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:

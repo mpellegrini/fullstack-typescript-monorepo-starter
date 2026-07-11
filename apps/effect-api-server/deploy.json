@@ -1,7 +1,7 @@
 {
   "$schema": "../../.github/schemas/deploy.schema.json",
   "container": {
-    "imageName": "monorepo/effect-api-server1"
+    "imageName": "monorepo/effect-api-server"
   },
   "smokeTest": {
     "containerPort": 3000,

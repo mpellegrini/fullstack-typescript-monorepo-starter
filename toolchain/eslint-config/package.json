@@ -20,13 +20,13 @@
     "eslint-import-resolver-typescript": "4.4.5",
     "eslint-plugin-eslint-comments": "3.2.0",
     "eslint-plugin-import": "2.32.0",
-    "eslint-plugin-perfectionist": "5.9.1",
+    "eslint-plugin-perfectionist": "5.10.0",
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-promise": "7.3.0",
     "eslint-plugin-svelte": "3.20.0",
-    "eslint-plugin-turbo": "2.10.3",
-    "eslint-plugin-unicorn": "70.0.0",
-    "typescript-eslint": "8.62.1"
+    "eslint-plugin-turbo": "2.10.4",
+    "eslint-plugin-unicorn": "71.1.0",
+    "typescript-eslint": "8.63.0"
   },
   "devDependencies": {
     "@eslint/compat": "2.1.0",

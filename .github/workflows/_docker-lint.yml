@@ -66,6 +66,10 @@ jobs:
         uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
         with:
           egress-policy: audit
+          # No step in this job uses sudo (the tool install goes to a
+          # user-writable dir on PATH) and docker runs via the runner's docker
+          # group, so drop sudo entirely to shrink the privilege surface.
+          disable-sudo: true
 
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -154,12 +158,18 @@ jobs:
           CST_SHA256: fa35e89512a8978585f76cf41397956d2e3a30c62c2ad3fb857b1597074d14ca
         run: |
           set -euo pipefail
+          # Install into a user-writable dir on PATH instead of sudo-moving to
+          # /usr/local/bin. $GITHUB_PATH exports it to the later steps that call
+          # the tool by bare name, and avoiding sudo lets harden-runner set
+          # disable-sudo on this job.
+          install_dir="${HOME}/.local/bin"
+          mkdir -p "$install_dir"
           curl -fsSL --retry 3 \
             "https://github.com/GoogleContainerTools/container-structure-test/releases/download/${CST_VERSION}/container-structure-test-linux-amd64" \
-            --output container-structure-test
-          echo "${CST_SHA256}  container-structure-test" | sha256sum --check --quiet
-          chmod +x container-structure-test
-          sudo mv container-structure-test /usr/local/bin/container-structure-test
+            --output "${install_dir}/container-structure-test"
+          echo "${CST_SHA256}  ${install_dir}/container-structure-test" | sha256sum --check --quiet
+          chmod +x "${install_dir}/container-structure-test"
+          echo "$install_dir" >> "$GITHUB_PATH"
 
       # QEMU binfmt handlers let the arm64 leg's commandTests execute the
       # container on this amd64 runner.

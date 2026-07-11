@@ -134,6 +134,9 @@ jobs:
   # count as passing; actual failures and cancellations fail the gate.
   monorepo-health-passed:
     if: always()
+    # ⚠️ KEEP IN SYNC: this needs list IS the merge gate. The verify step below
+    # only fails on jobs listed here, so any NEW health check added above must
+    # also be added here — otherwise its failures silently stop blocking merges.
     needs: [detect-changes, one-version-check, duplicate-dependencies-check, workflow-security]
     runs-on: ubuntu-latest
     timeout-minutes: 5

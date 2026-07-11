@@ -75,6 +75,9 @@ jobs:
           # a commit the image wasn't built from, and re-running the job after
           # main moves would repoint the same sha- tag to different bytes.
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          # This job builds a PR-authored Dockerfile; don't leave the job's
+          # GITHUB_TOKEN in .git/config where a build step could read it.
+          persist-credentials: false
 
       - name: Resolve commit SHA and build date
         id: commit-info

@@ -51,6 +51,9 @@ jobs:
           # `git merge-base --is-ancestor` against the commit currently
           # published as `latest`.
           fetch-depth: 0
+          # Nothing here pushes back to the repo; don't persist the job's
+          # GITHUB_TOKEN in .git/config. Read-only git ops below don't need it.
+          persist-credentials: false
 
       - name: Resolve commit SHA and build date
         id: commit-info

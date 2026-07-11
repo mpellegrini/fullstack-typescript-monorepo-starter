@@ -156,6 +156,9 @@ jobs:
   # never block a merge while genuine failures and cancellations still do.
   ci-cd-passed:
     if: always() # Ensures this job ALWAYS runs to report status
+    # ⚠️ KEEP IN SYNC: this needs list IS the merge gate. The verify step below
+    # only fails on jobs listed here, so any NEW gating job added above must also
+    # be added here — otherwise its failures silently stop blocking merges.
     needs:
       [
         compute-affected,

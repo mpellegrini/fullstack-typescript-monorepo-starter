@@ -15,8 +15,8 @@
   "devDependencies": {
     "@packages/ui-lib-svelte": "workspace:*",
     "@sveltejs/adapter-auto": "7.0.1",
-    "@sveltejs/kit": "2.69.1",
-    "@sveltejs/vite-plugin-svelte": "7.1.2",
+    "@sveltejs/kit": "2.69.2",
+    "@sveltejs/vite-plugin-svelte": "7.2.0",
     "@tailwindcss/vite": "4.3.2",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
@@ -24,7 +24,7 @@
     "@types/ws": "8.18.1",
     "home-assistant-js-websocket": "9.6.0",
     "svelte": "5.56.4",
-    "svelte-check": "4.7.1",
+    "svelte-check": "4.7.2",
     "tailwindcss": "4.3.2",
     "vite": "8.1.3",
     "ws": "8.21.0"

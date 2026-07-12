@@ -5,6 +5,7 @@
   "scripts": {
     "clean": "turbo run clean",
     "codegen": "turbo run codegen",
+    "coverage:report": "node scripts/merge-coverage.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "turbo run lint",
@@ -21,6 +22,7 @@
     "del-cli": "7.0.0",
     "husky": "9.1.7",
     "lint-staged": "17.0.8",
+    "nyc": "18.0.0",
     "one-version": "0.3.1",
     "prettier": "3.9.4",
     "prettier-plugin-packagejson": "3.0.2",

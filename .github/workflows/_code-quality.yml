@@ -63,6 +63,7 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+      pull-requests: write
 
     steps:
       - name: Check out code
@@ -77,6 +78,20 @@ jobs:
         run: |
           rm -rf .turbo/runs
           pnpm exec turbo run test --affected --summarize -- --reporter=default
+
+      - name: Merge coverage reports
+        run: pnpm run coverage:report
+
+      # With --affected, workspaces without coverage output produce no merged report at all
+      # (e.g. docs-only changes), so the publish step is guarded on the summary file existing.
+      - name: Publish coverage report
+        if: ${{ hashFiles('coverage/coverage-summary.json') != '' }}
+        uses: davelosert/vitest-coverage-report-action@3c054a2d2e2ca45446417ad5d6d5eb33092af8f1 # v2.12.1
+        with:
+          json-summary-path: coverage/coverage-summary.json
+          json-final-path: coverage/coverage-final.json
+          vite-config-path: toolchain/vitest-config/index.js
+          comment-on: ${{ github.event_name == 'pull_request' && 'pr' || 'none' }}
 
       - name: Summarize Turbo cache
         if: always()

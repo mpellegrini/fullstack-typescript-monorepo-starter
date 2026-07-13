@@ -1,3 +1,4 @@
+// @ts-check
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -8,9 +9,11 @@ export default defineConfig({
     coverage: {
       enabled: true,
       provider: 'v8',
-      all: true,
-      reportsDirectory: 'coverage',
-      reporter: ['text', 'json', 'html'],
+      include: ['src/**'],
+      reportsDirectory: './coverage',
+      reporter: ['text', 'json', 'json-summary', 'html'],
+      reportOnFailure: true,
+      skipFull: true,
     },
   },
 })

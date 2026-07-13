@@ -517,22 +517,6 @@ importers:
         specifier: workspace:*
         version: link:../../toolchain/vitest-config
 
-  packages/flight-shop:
-    dependencies:
-      effect:
-        specifier: 3.21.4
-        version: 3.21.4
-    devDependencies:
-      '@toolchain/eslint-config':
-        specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
-        specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
-        specifier: workspace:*
-        version: link:../../toolchain/vitest-config
-
   packages/learn-effect-platform:
     dependencies:
       '@aws-sdk/client-dynamodb':

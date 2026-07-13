@@ -4,9 +4,21 @@
   "private": true,
   "license": "UNLICENSED",
   "type": "module",
-  "exports": "./index.js",
+  "exports": {
+    ".": {
+      "types": "./types.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "scripts": {
+    "clean": "del .turbo",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
     "@vitest/coverage-v8": "4.1.10",
     "vitest": "4.1.10"
+  },
+  "devDependencies": {
+    "@toolchain/typescript-config": "workspace:*"
   }
 }

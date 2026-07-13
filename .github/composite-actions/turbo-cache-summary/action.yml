@@ -27,13 +27,12 @@ runs:
             exit 0
           fi
 
+          time_saved=$(jq '[.tasks[].cache.timeSaved // 0] | add // 0' "${f}")
+
           echo ""
-          echo "**${cached}/${attempted} tasks served from cache.**"
-          echo ""
-          echo "| Task | Cache | Source | Time saved |"
-          echo "| --- | --- | --- | --- |"
-          jq -r '
-            .tasks[]
-            | "| \(.taskId) | \(.cache.status) | \(.cache.source // "-") | \(.cache.timeSaved // 0) ms |"
-          ' "${f}"
+          if [[ "${cached}" -eq 0 ]]; then
+            echo "_Cache not used — 0 of ${attempted} tasks were cached._"
+          else
+            echo "**Cache used:** ${cached}/${attempted} tasks served from cache, ~${time_saved} ms saved."
+          fi
         } >> "$GITHUB_STEP_SUMMARY"

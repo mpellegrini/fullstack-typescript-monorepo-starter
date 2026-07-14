@@ -1,0 +1,67 @@
+name: Coverage report
+description: Renders the coverage aggregate to the job summary and upserts a sticky PR comment
+
+inputs:
+  current:
+    description: Path to this run's coverage-aggregate.json
+    required: true
+  baseline:
+    description: Path to the main baseline coverage-aggregate.json (may not exist)
+    required: false
+    default: ''
+  mode:
+    description: '"pr" or "push" — controls the heading and delta wording'
+    required: true
+  pr-number:
+    description: PR number to comment on. Empty disables the sticky comment (e.g. push to main, fork PRs).
+    required: false
+    default: ''
+  repository:
+    description: owner/repo for the GitHub API
+    required: false
+    default: ${{ github.repository }}
+  github-token:
+    description: Token used to upsert the sticky comment
+    required: false
+    default: ${{ github.token }}
+
+runs:
+  using: composite
+  steps:
+    - name: Render coverage report
+      id: render
+      shell: bash
+      env:
+        COVERAGE_CURRENT: ${{ inputs.current }}
+        COVERAGE_BASELINE: ${{ inputs.baseline }}
+        COVERAGE_MODE: ${{ inputs.mode }}
+        COVERAGE_COMMENT_FILE: coverage-comment.md
+      run: node "${{ github.action_path }}/report.mjs"
+
+    - name: Upsert sticky PR comment
+      if: inputs.pr-number != ''
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        REPO: ${{ inputs.repository }}
+        PR: ${{ inputs.pr-number }}
+      run: |
+        set -euo pipefail
+
+        marker='<!-- coverage-report -->'
+        body_file='coverage-comment.md'
+
+        # Find an existing coverage comment by its hidden marker (native
+        # equivalent of marocchino/sticky-pull-request-comment).
+        existing=$(gh api --paginate "repos/${REPO}/issues/${PR}/comments" \
+          --jq ".[] | select(.body | contains(\"${marker}\")) | .id" | head -n1 || true)
+
+        if [[ -n "${existing}" ]]; then
+          gh api --method PATCH "repos/${REPO}/issues/comments/${existing}" \
+            -F body=@"${body_file}" >/dev/null
+          echo "Updated sticky coverage comment ${existing}."
+        else
+          gh api --method POST "repos/${REPO}/issues/${PR}/comments" \
+            -F body=@"${body_file}" >/dev/null
+          echo "Created sticky coverage comment."
+        fi

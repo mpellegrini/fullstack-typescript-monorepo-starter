@@ -57,12 +57,27 @@ jobs:
         if: always()
         uses: ./.github/composite-actions/turbo-cache-summary
 
+  # Runs the suite AND reports whole-monorepo coverage with main-vs-branch trend
+  # comparison in one job — no duplicate test run. Two tiers of steps:
+  #   * The test run is the merge gate: if it fails, the job (and code-quality)
+  #     fails and blocks the merge.
+  #   * Every coverage step is `continue-on-error` + `if: always()`, so it still
+  #     reports on a red run (vitest emits coverage via reportOnFailure) yet a
+  #     reporting hiccup (comment API blip, first-run missing baseline) never
+  #     changes the gate's result.
+  # Drops `--affected`: the aggregate needs every package's coverage, and turbo
+  # restores unchanged packages' ./coverage/** from cache so warm runs stay fast.
+  # Holds pull-requests:write / actions:read for the comment + baseline steps;
+  # on fork PRs GitHub downgrades pull-requests to read, so the comment is
+  # skipped there (guarded below) and the job summary carries the report.
   test:
     name: Unit Test
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     permissions:
       contents: read
+      actions: read
+      pull-requests: write
 
     steps:
       - name: Check out code
@@ -73,11 +88,68 @@ jobs:
       - name: Prepare
         uses: ./.github/composite-actions/prepare
 
-      - name: Run unit tests
+      - name: Run unit tests with coverage
         run: |
           rm -rf .turbo/runs
-          pnpm exec turbo run test --affected --summarize -- --reporter=default
+          pnpm exec turbo run test --summarize -- --reporter=default
 
       - name: Summarize Turbo cache
         if: always()
         uses: ./.github/composite-actions/turbo-cache-summary
+
+      - name: Aggregate coverage
+        id: aggregate
+        if: always()
+        continue-on-error: true
+        uses: ./.github/composite-actions/coverage-aggregate
+
+      - name: Download main coverage baseline
+        id: baseline
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          # Newest coverage-baseline artifact from a prior run represents main's
+          # tip: on a PR it's the comparison target; on a push to main it's the
+          # PREVIOUS push (this run uploads its own only in the final step).
+          artifact_id=$(gh api "repos/${REPO}/actions/artifacts?name=coverage-baseline&per_page=100" \
+            --jq '.artifacts | map(select(.expired == false)) | max_by(.created_at) | .id // empty' || true)
+
+          if [[ -z "${artifact_id}" ]]; then
+            echo "No coverage-baseline artifact found — first run, reporting without a delta."
+            echo "path=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          mkdir -p baseline
+          gh api "repos/${REPO}/actions/artifacts/${artifact_id}/zip" > baseline/baseline.zip
+          unzip -o baseline/baseline.zip -d baseline >/dev/null
+          echo "path=baseline/coverage-aggregate.json" >> "$GITHUB_OUTPUT"
+          echo "Downloaded baseline artifact ${artifact_id}."
+
+      - name: Report coverage
+        if: always()
+        continue-on-error: true
+        uses: ./.github/composite-actions/coverage-report
+        with:
+          current: ${{ steps.aggregate.outputs.summary-path }}
+          baseline: ${{ steps.baseline.outputs.path }}
+          mode: ${{ github.event_name == 'pull_request' && 'pr' || 'push' }}
+          # Sticky comment only on same-repo PRs — fork PRs get a read-only token
+          # (pull-requests: write is refused), so we skip the comment there and
+          # let the job summary carry the report instead.
+          pr-number: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) && github.event.pull_request.number || '' }}
+
+      - name: Publish coverage baseline
+        if: always() && github.event_name == 'push'
+        continue-on-error: true
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: coverage-baseline
+          path: coverage-aggregate.json
+          retention-days: 90
+          if-no-files-found: error

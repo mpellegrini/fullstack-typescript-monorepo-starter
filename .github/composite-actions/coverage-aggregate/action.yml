@@ -1,0 +1,27 @@
+name: Aggregate coverage
+description: Merges every package's Vitest coverage-summary.json into one whole-monorepo total
+
+outputs:
+  lines-pct:
+    description: Aggregate line coverage percentage
+    value: ${{ steps.aggregate.outputs.lines-pct }}
+  statements-pct:
+    description: Aggregate statement coverage percentage
+    value: ${{ steps.aggregate.outputs.statements-pct }}
+  functions-pct:
+    description: Aggregate function coverage percentage
+    value: ${{ steps.aggregate.outputs.functions-pct }}
+  branches-pct:
+    description: Aggregate branch coverage percentage
+    value: ${{ steps.aggregate.outputs.branches-pct }}
+  summary-path:
+    description: Absolute path to the written coverage-aggregate.json
+    value: ${{ steps.aggregate.outputs.summary-path }}
+
+runs:
+  using: composite
+  steps:
+    - name: Aggregate coverage summaries
+      id: aggregate
+      shell: bash
+      run: node "${{ github.action_path }}/aggregate.mjs"

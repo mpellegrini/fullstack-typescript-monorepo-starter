@@ -41,6 +41,11 @@ cdk.context.json
 # Vitest test coverage
 coverage/
 
+# CI coverage aggregation artifacts (see .github/composite-actions/coverage-*)
+coverage-aggregate.json
+coverage-comment.md
+baseline/
+
 # svelte
 build/
 .svelte-kit/

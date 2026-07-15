@@ -1,5 +1,11 @@
 name: Aggregate coverage
-description: Merges every package's Vitest coverage-summary.json into one whole-monorepo total
+description: Composes a whole-monorepo coverage total from this run's coverage plus a carried-forward baseline
+
+inputs:
+  baseline:
+    description: Path to the baseline coverage-aggregate.json to carry forward unaffected packages from (may be empty)
+    required: false
+    default: ''
 
 outputs:
   lines-pct:
@@ -17,11 +23,19 @@ outputs:
   summary-path:
     description: Absolute path to the written coverage-aggregate.json
     value: ${{ steps.aggregate.outputs.summary-path }}
+  fresh-count:
+    description: Number of packages re-tested this run (fresh coverage)
+    value: ${{ steps.aggregate.outputs.fresh-count }}
+  carried-count:
+    description: Number of packages carried forward from the baseline
+    value: ${{ steps.aggregate.outputs.carried-count }}
 
 runs:
   using: composite
   steps:
-    - name: Aggregate coverage summaries
+    - name: Compose coverage summaries
       id: aggregate
       shell: bash
+      env:
+        COVERAGE_BASELINE: ${{ inputs.baseline }}
       run: node "${{ github.action_path }}/aggregate.mjs"

@@ -65,8 +65,12 @@ jobs:
   #     reports on a red run (vitest emits coverage via reportOnFailure) yet a
   #     reporting hiccup (comment API blip, first-run missing baseline) never
   #     changes the gate's result.
-  # Drops `--affected`: the aggregate needs every package's coverage, and turbo
-  # restores unchanged packages' ./coverage/** from cache so warm runs stay fast.
+  # Keeps `turbo --affected` (fast): only changed packages and their dependents
+  # re-run. The whole-repo aggregate is COMPOSED — fresh coverage for affected
+  # packages, carried forward from the main baseline for the rest (correct
+  # because coverage is per-package and --affected covers dependents, so an
+  # unaffected package's coverage is unchanged). A full run happens only to seed
+  # when no baseline artifact exists.
   # Holds pull-requests:write / actions:read for the comment + baseline steps;
   # on fork PRs GitHub downgrades pull-requests to read, so the comment is
   # skipped there (guarded below) and the job summary carries the report.
@@ -88,24 +92,11 @@ jobs:
       - name: Prepare
         uses: ./.github/composite-actions/prepare
 
-      - name: Run unit tests with coverage
-        run: |
-          rm -rf .turbo/runs
-          pnpm exec turbo run test --summarize -- --reporter=default
-
-      - name: Summarize Turbo cache
-        if: always()
-        uses: ./.github/composite-actions/turbo-cache-summary
-
-      - name: Aggregate coverage
-        id: aggregate
-        if: always()
-        continue-on-error: true
-        uses: ./.github/composite-actions/coverage-aggregate
-
+      # Fetch the baseline BEFORE testing so the test step can pick affected vs
+      # full. continue-on-error: a fetch hiccup leaves `present` unset → the
+      # test step falls back to a full (seed) run, which is always correct.
       - name: Download main coverage baseline
         id: baseline
-        if: always()
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
@@ -120,7 +111,8 @@ jobs:
             --jq '.artifacts | map(select(.expired == false)) | max_by(.created_at) | .id // empty' || true)
 
           if [[ -z "${artifact_id}" ]]; then
-            echo "No coverage-baseline artifact found — first run, reporting without a delta."
+            echo "No coverage-baseline artifact found — seeding with a full run."
+            echo "present=false" >> "$GITHUB_OUTPUT"
             echo "path=" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -128,8 +120,34 @@ jobs:
           mkdir -p baseline
           gh api "repos/${REPO}/actions/artifacts/${artifact_id}/zip" > baseline/baseline.zip
           unzip -o baseline/baseline.zip -d baseline >/dev/null
+          echo "present=true" >> "$GITHUB_OUTPUT"
           echo "path=baseline/coverage-aggregate.json" >> "$GITHUB_OUTPUT"
           echo "Downloaded baseline artifact ${artifact_id}."
+
+      - name: Run unit tests with coverage
+        run: |
+          rm -rf .turbo/runs
+          # Baseline present → re-test only affected packages (and their
+          # dependents); coverage for the rest is carried forward from the
+          # baseline. No baseline (first run / expired) → full run to seed a
+          # complete baseline.
+          if [[ "${{ steps.baseline.outputs.present }}" == "true" ]]; then
+            pnpm exec turbo run test --affected --summarize -- --reporter=default
+          else
+            pnpm exec turbo run test --summarize -- --reporter=default
+          fi
+
+      - name: Summarize Turbo cache
+        if: always()
+        uses: ./.github/composite-actions/turbo-cache-summary
+
+      - name: Aggregate coverage
+        id: aggregate
+        if: always()
+        continue-on-error: true
+        uses: ./.github/composite-actions/coverage-aggregate
+        with:
+          baseline: ${{ steps.baseline.outputs.path }}
 
       - name: Report coverage
         if: always()

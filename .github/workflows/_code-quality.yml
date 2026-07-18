@@ -57,9 +57,9 @@ jobs:
           i=0
           for chunk in eslint-sarif-chunk-*; do
             i=$((i + 1))
-            for f in $(cat "$chunk"); do
+            while IFS= read -r f; do
               jq --arg id "eslint-$(dirname "$f")/" '.runs[0].automationDetails = { id: $id }' "$f"
-            done | jq -s '{ "$schema": .[0]["$schema"], "version": .[0].version, "runs": map(.runs[]) }' \
+            done < "$chunk" | jq -s '{ "$schema": .[0]["$schema"], "version": .[0].version, "runs": map(.runs[]) }' \
               > "eslint-sarif-upload/eslint-results-$i.sarif"
           done
           rm eslint-sarif-chunk-*

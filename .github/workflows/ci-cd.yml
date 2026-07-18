@@ -34,6 +34,7 @@ jobs:
   code-quality:
     permissions:
       contents: read
+      security-events: write
     uses: ./.github/workflows/_code-quality.yml
 
   # ─────────────────────────────────────────────

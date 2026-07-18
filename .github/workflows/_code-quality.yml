@@ -10,6 +10,7 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+      security-events: write # Upload ESLint SARIF results to code scanning
 
     steps:
       - name: Check out code
@@ -20,14 +21,66 @@ jobs:
       - name: Prepare
         uses: ./.github/composite-actions/prepare
 
+      # The SARIF formatter flags are passed through turbo to each workspace's
+      # eslint invocation here (not in the lint scripts) so local `pnpm lint`
+      # keeps its human-readable output. Each workspace writes its own
+      # eslint-results.sarif. Cache-hit tasks produce no file and upload
+      # nothing, which is fine: a cache hit means the workspace is unchanged,
+      # so its previously uploaded alert state is still correct — the same
+      # semantics as `--affected` skipping unchanged workspaces.
       - name: Run ESLint check
         run: |
           rm -rf .turbo/runs
-          pnpm exec turbo run lint --affected --summarize
+          pnpm exec turbo run lint --affected --summarize --continue -- \
+            --format @microsoft/eslint-formatter-sarif --output-file eslint-results.sarif
 
       - name: Summarize Turbo cache
         if: always()
         uses: ./.github/composite-actions/turbo-cache-summary
+
+      # Merge the per-workspace SARIF files into multi-run files, chunked to
+      # respect GitHub's 20-runs-per-file upload limit. Each run gets a
+      # per-workspace automationDetails.id (in place of the action's `category`
+      # input, which would stamp every run with the same id and let each run
+      # supersede the previous one): code scanning keys analyze by
+      # (ref, tool, category), so per-workspace categories also keep
+      # `--affected` runs from clobbering unaffected workspaces' results, and
+      # make the chunk boundaries irrelevant to how alerts are keyed.
+      - name: Merge ESLint SARIF reports
+        if: always()
+        run: |
+          # Search the whole repo so reports from any workspace root are found.
+          files=$(find . -name eslint-results.sarif -not -path '*/node_modules/*' | sed 's|^\./||' | sort)
+          [ -z "$files" ] && exit 0
+          mkdir -p eslint-sarif-upload
+          echo "$files" | split -l 20 - eslint-sarif-chunk-
+          i=0
+          for chunk in eslint-sarif-chunk-*; do
+            i=$((i + 1))
+            while IFS= read -r f; do
+              jq --arg id "eslint-$(dirname "$f")/" '.runs[0].automationDetails = { id: $id }' "$f"
+            done < "$chunk" | jq -s '{ "$schema": .[0]["$schema"], "version": .[0].version, "runs": map(.runs[]) }' \
+              > "eslint-sarif-upload/eslint-results-$i.sarif"
+          done
+          rm eslint-sarif-chunk-*
+
+      # The SARIF formatter occupies eslint's single --format slot, so lint
+      # failures print nothing readable to the job log. Recover that here by
+      # pretty-printing the findings from the merged SARIF reports on failure.
+      - name: Print ESLint findings
+        if: failure() && hashFiles('eslint-sarif-upload/*.sarif') != ''
+        run: |
+          jq -r --arg root "file://$PWD/" '
+            .runs[] | .results[]?
+            | .locations[0].physicalLocation as $loc
+            | "\($loc.artifactLocation.uri | ltrimstr($root)):\($loc.region.startLine // 0):\($loc.region.startColumn // 0)  \(.level // "warning")  \(.ruleId)  \(.message.text)"
+          ' eslint-sarif-upload/*.sarif
+
+      - name: Upload ESLint results to GitHub Security
+        uses: github/codeql-action/upload-sarif@7188fc363630916deb702c7fdcf4e481b751f97a # v4.37.1
+        if: always() && hashFiles('eslint-sarif-upload/*.sarif') != '' # Upload results even if lint fails
+        with:
+          sarif_file: 'eslint-sarif-upload'
 
       - name: Run Prettier check
         run: pnpm run format:check

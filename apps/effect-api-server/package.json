@@ -10,7 +10,7 @@
     "build"
   ],
   "scripts": {
-    "clean": "del .turbo coverage",
+    "clean": "del .turbo coverage *.sarif",
     "dev": "tsx --env-file=.env --watch src/index.ts",
     "lint": "eslint ",
     "test": "vitest run",

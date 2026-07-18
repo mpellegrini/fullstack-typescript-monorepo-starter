@@ -9,7 +9,7 @@
     "build"
   ],
   "scripts": {
-    "clean": "del .turbo coverage",
+    "clean": "del .turbo coverage *.sarif",
     "dev": "tsx watch src/index.ts",
     "lint": "eslint ",
     "test": "vitest run",

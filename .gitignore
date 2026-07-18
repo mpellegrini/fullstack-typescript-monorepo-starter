@@ -38,6 +38,10 @@ cdk.context.json
 # turborepo logs and certain task outputs
 .turbo/
 
+# sarif reports (generated in ci)
+*.sarif
+eslint-sarif-chunk-*
+
 # Vitest test coverage
 coverage/
 

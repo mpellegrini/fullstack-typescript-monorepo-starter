@@ -9,7 +9,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "clean": "del .turbo coverage",
+    "clean": "del .turbo coverage *.sarif",
     "lint": "eslint .",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

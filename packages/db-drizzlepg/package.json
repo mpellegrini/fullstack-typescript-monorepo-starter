@@ -11,7 +11,7 @@
     "./helpers": "./src/helpers/index.ts"
   },
   "scripts": {
-    "clean": "del .turbo coverage",
+    "clean": "del .turbo coverage *.sarif",
     "db:generate": "node --import=tsx ./node_modules/drizzle-kit/bin.cjs generate",
     "db:migrate": "node --import=tsx --env-file=.env src/migrate.ts",
     "db:push": "node --import=tsx ./node_modules/drizzle-kit/bin.cjs push",

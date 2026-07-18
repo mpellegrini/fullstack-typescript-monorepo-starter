@@ -9,11 +9,12 @@
     "./profile/svelte": "./profile/svelte-profile.js"
   },
   "scripts": {
-    "clean": "del .turbo",
+    "clean": "del .turbo *.sarif",
     "lint": "eslint ."
   },
   "dependencies": {
     "@eslint/js": "10.0.1",
+    "@microsoft/eslint-formatter-sarif": "3.1.0",
     "@vitest/eslint-plugin": "1.6.23",
     "eslint": "10.7.0",
     "eslint-config-prettier": "10.1.8",

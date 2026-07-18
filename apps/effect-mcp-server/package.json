@@ -9,7 +9,7 @@
     "build"
   ],
   "scripts": {
-    "clean": "del .turbo coverage build",
+    "clean": "del .turbo coverage build *.sarif",
     "dev": "node --watch src/index.ts",
     "lint": "eslint ",
     "mcp-inspector": "mcp-inspector node src/main.ts",

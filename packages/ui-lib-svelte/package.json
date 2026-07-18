@@ -13,7 +13,7 @@
     "./styles/*": "./src/styles/*"
   },
   "scripts": {
-    "clean": "del .turbo coverage .svelte-kit",
+    "clean": "del .turbo coverage .svelte-kit *.sarif",
     "codegen": "svelte-kit sync",
     "dev": "vite dev",
     "lint": "eslint .",

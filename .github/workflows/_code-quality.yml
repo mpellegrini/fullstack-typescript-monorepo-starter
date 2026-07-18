@@ -46,6 +46,11 @@ jobs:
       # (ref, tool, category), so per-workspace categories also keep
       # `--affected` runs from clobbering unaffected workspaces' results, and
       # make the chunk boundaries irrelevant to how alerts are keyed.
+      #
+      # The SARIF formatter emits eslint's suppressedMessages as results carrying
+      # a `suppressions` array, and code scanning ingests those as open alerts,
+      # so drop them here to keep the uploaded results matching what eslint
+      # reports.
       - name: Merge ESLint SARIF reports
         if: always()
         run: |
@@ -58,7 +63,10 @@ jobs:
           for chunk in eslint-sarif-chunk-*; do
             i=$((i + 1))
             while IFS= read -r f; do
-              jq --arg id "eslint-$(dirname "$f")/" '.runs[0].automationDetails = { id: $id }' "$f"
+              jq --arg id "eslint-$(dirname "$f")/" '
+                .runs[0].automationDetails = { id: $id }
+                | .runs[0].results = [.runs[0].results[]? | select(has("suppressions") | not)]
+              ' "$f"
             done < "$chunk" | jq -s '{ "$schema": .[0]["$schema"], "version": .[0].version, "runs": map(.runs[]) }' \
               > "eslint-sarif-upload/eslint-results-$i.sarif"
           done

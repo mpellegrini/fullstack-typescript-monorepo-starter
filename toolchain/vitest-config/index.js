@@ -9,9 +9,9 @@ export default defineConfig({
     coverage: {
       enabled: true,
       provider: 'v8',
-      include: ['src/**'],
+      include: ['src/**/*.{ts,svelte}'],
       reportsDirectory: './coverage',
-      reporter: ['text', 'json', 'json-summary', 'html'],
+      reporter: ['json', 'json-summary'],
       reportOnFailure: true,
       skipFull: true,
     },

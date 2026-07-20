@@ -14,9 +14,11 @@ permissions:
 
 jobs:
   # Detect which monorepo-global file groups changed so the health checks below
-  # can be skipped on runs that don't touch them. Reuses TURBO_SCM_BASE and
-  # TURBO_SCM_HEAD set by 'prepare', so the diff range is consistent with what
-  # turbo --affected uses in the main 'ci-cd' workflow.
+  # can be skipped on runs that don't touch them. Resolves the diff range with
+  # the same action 'prepare' uses, so the range is consistent with what
+  # turbo --affected uses in the main 'ci-cd' workflow. This job only greps a
+  # file list, so it skips 'prepare' entirely — no install is needed, and this
+  # job gates the three checks below.
   detect-changes:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -32,14 +34,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Prepare
-        uses: ./.github/composite-actions/prepare
+      - name: Resolve SCM range
+        id: scm
+        uses: ./.github/composite-actions/resolve-scm-range
 
       - name: Detect changed file groups
         id: filter
+        env:
+          BASE: ${{ steps.scm.outputs.base }}
+          HEAD: ${{ steps.scm.outputs.head }}
         run: |
           set -euo pipefail
-          changed_files=$(git diff --name-only "$TURBO_SCM_BASE" "$TURBO_SCM_HEAD")
+          changed_files=$(git diff --name-only "$BASE" "$HEAD")
           if grep -qE '(^|/)package\.json$|^pnpm-lock\.yaml$' <<< "$changed_files"; then
             echo "deps=true" >> "$GITHUB_OUTPUT"
           else

@@ -1,0 +1,63 @@
+name: Resolve SCM range
+description: >-
+  Resolves the base/head commit range for change detection, handling the
+  push/pull_request difference and the cases where no usable base exists.
+
+# Consume the range via the `base` / `head` outputs — any change detection can
+# use them (a git diff, a turbo query, anything that needs a commit range).
+#
+# Requires a checkout with fetch-depth: 0 so the base commit is resolvable.
+
+outputs:
+  base:
+    description: Resolved base commit (the git empty-tree hash when there is no usable base).
+    value: ${{ steps.resolve.outputs.base }}
+  head:
+    description: Resolved head commit.
+    value: ${{ steps.resolve.outputs.head }}
+
+runs:
+  using: composite
+  steps:
+    # On a pull_request, github.sha is a temporary merge commit, so diff the PR
+    # base against the PR head. On push, diff against the previous commit.
+    - name: Resolve SCM range
+      id: resolve
+      shell: bash
+      env:
+        RESOLVED_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        RESOLVED_HEAD: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+      run: |
+        set -euo pipefail
+
+        # The first push to a branch reports an all-zero "before" SHA, and
+        # triggers without a push payload (schedule/dispatch-style events)
+        # have no "before" at all (empty): in both cases there is no prior
+        # commit to diff against. Fall back to the git empty-tree hash, which
+        # diffs every file as added — callers then treat everything as changed.
+        # Computed rather than hardcoded: the empty-tree hash differs between
+        # sha1 and sha256 repositories, and git derives it for whichever this is.
+        EMPTY_TREE="$(git hash-object -t tree /dev/null)"
+        if [[ -z "${RESOLVED_BASE}" || "${RESOLVED_BASE}" == "0000000000000000000000000000000000000000" ]]; then
+          RESOLVED_BASE="$EMPTY_TREE"
+        # A force-push can leave "before" pointing at a commit that no longer
+        # exists in history (checkout is fetch-depth 0, so anything reachable
+        # IS here). Same fallback: diff against the empty tree.
+        elif ! git cat-file -e "${RESOLVED_BASE}^{commit}" 2>/dev/null; then
+          echo "::warning::Base ${RESOLVED_BASE} not found in history (force push?) — treating everything as changed."
+          RESOLVED_BASE="$EMPTY_TREE"
+        fi
+
+        # TURBO_SCM_BASE / TURBO_SCM_HEAD are turbo's own env var names: turbo
+        # reads them directly to pick its diff range, so they are spelled this
+        # way by its contract, not because this action is turbo-specific.
+        # Exported here so a `turbo --affected` anywhere in the job just works.
+        {
+          echo "TURBO_SCM_BASE=${RESOLVED_BASE}"
+          echo "TURBO_SCM_HEAD=${RESOLVED_HEAD}"
+        } >> "$GITHUB_ENV"
+        {
+          echo "base=${RESOLVED_BASE}"
+          echo "head=${RESOLVED_HEAD}"
+        } >> "$GITHUB_OUTPUT"
+        echo "SCM range: ${RESOLVED_BASE} -> ${RESOLVED_HEAD:-HEAD}"

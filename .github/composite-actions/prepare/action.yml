@@ -38,37 +38,7 @@ runs:
       shell: bash
       run: find apps -name ".env.example" -execdir cp {} .env \;
 
-    # Export TURBO_SCM_BASE / TURBO_SCM_HEAD, so any subsequent
+    # Exports TURBO_SCM_BASE / TURBO_SCM_HEAD, so any subsequent
     # `turbo --affected` invocation diffs against the right range.
-    # On a pull_request, github.sha is a temporary merge commit, so diff the PR
-    # base against the PR head. On push, diff against the previous commit.
-    - name: Resolve Turbo SCM range
-      shell: bash
-      env:
-        RESOLVED_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
-        RESOLVED_HEAD: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-      run: |
-        set -euo pipefail
-
-        # The first push to a branch reports an all-zero "before" SHA, and
-        # triggers without a push payload (schedule/dispatch-style events)
-        # have no "before" at all (empty): in both cases there is no prior
-        # commit to diff against. Fall back to the git empty-tree hash, which
-        # diffs every file as added and forces Turbo to treat all packages as
-        # affected (i.e. run everything).
-        EMPTY_TREE="4b825dc642cb6eb9a060e54bf8d69288fbee4904"
-        if [[ -z "${RESOLVED_BASE}" || "${RESOLVED_BASE}" == "0000000000000000000000000000000000000000" ]]; then
-          RESOLVED_BASE="$EMPTY_TREE"
-        # A force-push can leave "before" pointing at a commit that no longer
-        # exists in history (checkout is fetch-depth 0, so anything reachable
-        # IS here). Same fallback: diff against the empty tree and run everything.
-        elif ! git cat-file -e "${RESOLVED_BASE}^{commit}" 2>/dev/null; then
-          echo "::warning::Base ${RESOLVED_BASE} not found in history (force push?) — treating all packages as affected."
-          RESOLVED_BASE="$EMPTY_TREE"
-        fi
-
-        {
-          echo "TURBO_SCM_BASE=${RESOLVED_BASE}"
-          echo "TURBO_SCM_HEAD=${RESOLVED_HEAD}"
-        } >> "$GITHUB_ENV"
-        echo "Turbo affected range: ${RESOLVED_BASE:-<none>} -> ${RESOLVED_HEAD:-HEAD}"
+    - name: Resolve SCM range
+      uses: ./.github/composite-actions/resolve-scm-range

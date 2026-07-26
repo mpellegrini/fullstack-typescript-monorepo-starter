@@ -21,7 +21,7 @@
     "effect": "catalog:effect4"
   },
   "devDependencies": {
-    "@modelcontextprotocol/inspector": "0.22.0",
+    "@modelcontextprotocol/inspector": "1.0.0",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",

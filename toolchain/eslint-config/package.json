@@ -24,10 +24,10 @@
     "eslint-plugin-perfectionist": "5.10.0",
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-promise": "7.3.0",
-    "eslint-plugin-svelte": "3.20.0",
-    "eslint-plugin-turbo": "2.10.5",
+    "eslint-plugin-svelte": "3.22.0",
+    "eslint-plugin-turbo": "2.10.6",
     "eslint-plugin-unicorn": "72.0.0",
-    "typescript-eslint": "8.64.0"
+    "typescript-eslint": "8.65.0"
   },
   "devDependencies": {
     "@eslint/compat": "2.1.0",

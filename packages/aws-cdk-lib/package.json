@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "aws-cdk-lib": "2.262.0",
+    "aws-cdk-lib": "2.262.1",
     "change-case": "5.4.4",
     "constructs": "10.7.1"
   },
@@ -23,6 +23,6 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/node": "26.1.1"
+    "@types/node": "26.1.2"
   }
 }

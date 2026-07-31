@@ -21,11 +21,11 @@
     "effect": "catalog:effect4"
   },
   "devDependencies": {
-    "@modelcontextprotocol/inspector": "1.0.0",
+    "@modelcontextprotocol/inspector": "1.0.1",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/node": "26.1.1",
+    "@types/node": "26.1.2",
     "vite": "8.1.5"
   }
 }

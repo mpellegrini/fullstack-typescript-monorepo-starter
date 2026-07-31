@@ -1,4 +1,4 @@
-import * as HttpApi from '@effect/platform/HttpApi'
+import * as HttpApi from 'effect/unstable/httpapi/HttpApi'
 
 import { greetingsApi } from './greetings/api-definition.js'
 

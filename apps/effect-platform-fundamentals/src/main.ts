@@ -1,12 +1,18 @@
-import { HttpApiEndpoint, HttpServer, HttpServerResponse } from '@effect/platform'
 import * as NodeHttpServer from '@effect/platform-node/NodeHttpServer'
 import * as NodeRuntime from '@effect/platform-node/NodeRuntime'
-import * as HttpApi from '@effect/platform/HttpApi'
-import * as HttpApiBuilder from '@effect/platform/HttpApiBuilder'
-import * as HttpApiGroup from '@effect/platform/HttpApiGroup'
-import * as HttpLayerRouter from '@effect/platform/HttpLayerRouter'
-import { Rpc, RpcGroup, RpcSerialization, RpcServer } from '@effect/rpc'
-import { Effect, Layer, Schema } from 'effect'
+import * as Effect from 'effect/Effect'
+import * as Layer from 'effect/Layer'
+import * as Schema from 'effect/Schema'
+import * as HttpRouter from 'effect/unstable/http/HttpRouter'
+import * as HttpServerResponse from 'effect/unstable/http/HttpServerResponse'
+import * as HttpApi from 'effect/unstable/httpapi/HttpApi'
+import * as HttpApiBuilder from 'effect/unstable/httpapi/HttpApiBuilder'
+import * as HttpApiEndpoint from 'effect/unstable/httpapi/HttpApiEndpoint'
+import * as HttpApiGroup from 'effect/unstable/httpapi/HttpApiGroup'
+import * as Rpc from 'effect/unstable/rpc/Rpc'
+import * as RpcGroup from 'effect/unstable/rpc/RpcGroup'
+import * as RpcSerialization from 'effect/unstable/rpc/RpcSerialization'
+import * as RpcServer from 'effect/unstable/rpc/RpcServer'
 import { createServer } from 'node:http'
 
 class User extends Schema.Class<User>('User')({
@@ -15,7 +21,7 @@ class User extends Schema.Class<User>('User')({
 }) {}
 
 class UsersApi extends HttpApiGroup.make('users')
-  .add(HttpApiEndpoint.get('me', '/me').addSuccess(User))
+  .add(HttpApiEndpoint.get('me', '/me', { success: User }))
   .prefix('/users') {}
 
 class MyApi extends HttpApi.make('api').add(UsersApi) {}
@@ -39,28 +45,24 @@ export const UsersRpcHandlers = UserRpcContract.toLayer(
   }),
 )
 
+// v4 has a single HttpRouter service, so the protocol layer no longer takes a routerTag.
 const RpcRoutes = RpcServer.layer(UserRpcContract).pipe(
   Layer.provide(
     RpcServer.layerProtocolWebsocket({
       path: '/rpc',
-      routerTag: HttpApiBuilder.Router,
     }),
   ),
   Layer.provide(UsersRpcHandlers),
   Layer.provide(RpcSerialization.layerJson),
 )
 
-const HttpApiRoutes = HttpLayerRouter.addHttpApi(MyApi, {
+const HttpApiRoutes = HttpApiBuilder.layer(MyApi, {
   openapiPath: '/openapi.json',
-}).pipe(Layer.provide(UsersLive), Layer.provide(HttpServer.layerContext))
+}).pipe(Layer.provide(UsersLive))
 
-const SimpleRoute = HttpLayerRouter.add(
-  'GET',
-  '/health',
-  HttpServerResponse.text('Simply fantastic!'),
-)
+const SimpleRoute = HttpRouter.add('GET', '/health', HttpServerResponse.text('Simply fantastic!'))
 
-const GoodbyeRoute = HttpLayerRouter.use(
+const GoodbyeRoute = HttpRouter.use(
   Effect.fnUntraced(function* (router) {
     // The `router` parameter is the `HttpRouter` service
     yield* router.add('GET', '/goodbye', HttpServerResponse.text('Goodbye, World!'))
@@ -68,9 +70,9 @@ const GoodbyeRoute = HttpLayerRouter.use(
   }),
 )
 
-const HttpLayerRoutes = Layer.mergeAll(RpcRoutes, HttpApiRoutes, SimpleRoute, GoodbyeRoute)
+const HttpRoutes = Layer.mergeAll(RpcRoutes, HttpApiRoutes, SimpleRoute, GoodbyeRoute)
 
-export const HttpLayer = HttpLayerRouter.serve(HttpLayerRoutes).pipe(
+export const HttpLayer = HttpRouter.serve(HttpRoutes).pipe(
   Layer.provide(NodeHttpServer.layer(createServer, { port: 3000 })),
 )
 

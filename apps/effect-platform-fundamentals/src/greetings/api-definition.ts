@@ -1,6 +1,6 @@
-import * as HttpApiEndpoint from '@effect/platform/HttpApiEndpoint'
-import * as HttpApiGroup from '@effect/platform/HttpApiGroup'
 import * as Schema from 'effect/Schema'
+import * as HttpApiEndpoint from 'effect/unstable/httpapi/HttpApiEndpoint'
+import * as HttpApiGroup from 'effect/unstable/httpapi/HttpApiGroup'
 
 /**
  * An HttpApiEndpoint represents a single endpoint in your API.
@@ -10,7 +10,7 @@ import * as Schema from 'effect/Schema'
  *  - HTTP method
  *  - optional schemas for requests and responses
  */
-const helloWorldEndpoint = HttpApiEndpoint.get('hello-world')`/`.addSuccess(Schema.String)
+const helloWorldEndpoint = HttpApiEndpoint.get('hello-world', '/', { success: Schema.String })
 
 /**
  * You can group related endpoints under a single entity by using HttpApiGroup.make().

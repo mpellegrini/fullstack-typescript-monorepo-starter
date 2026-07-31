@@ -1,16 +1,15 @@
 import * as NodeHttpServer from '@effect/platform-node/NodeHttpServer'
 import * as NodeRuntime from '@effect/platform-node/NodeRuntime'
-import * as HttpApiScalar from '@effect/platform/HttpApiScalar'
-import * as HttpLayerRouter from '@effect/platform/HttpLayerRouter'
 import * as Effect from 'effect/Effect'
 import * as Layer from 'effect/Layer'
+import * as HttpRouter from 'effect/unstable/http/HttpRouter'
+import * as HttpApiScalar from 'effect/unstable/httpapi/HttpApiScalar'
 import { createServer } from 'node:http'
 
 import { httpApiRoutesLive } from './api-live.js'
 import { api } from './api.js'
 
-const docsRouteLive = HttpApiScalar.layerHttpLayerRouter({
-  api: api,
+const docsRouteLive = HttpApiScalar.layerCdn(api, {
   path: '/docs',
 })
 
@@ -18,22 +17,26 @@ const allRoutes = Layer.mergeAll(httpApiRoutesLive, docsRouteLive)
 
 /**
  * Serves the provided application layer as an HTTP server.
+ *
+ * NodeHttpServer.layer() supplies the HttpServer along with the platform services
+ * (NodeServices, HttpPlatform and Etag.Generator) that HttpApiBuilder.layer requires,
+ * so no additional services layer needs to be provided here.
  */
-export const httpLayer = HttpLayerRouter.serve(allRoutes).pipe(
+export const httpLayer = HttpRouter.serve(allRoutes).pipe(
   Layer.provide(NodeHttpServer.layer(createServer, { port: 3000 })),
 )
 
 // eslint-disable-next-line unicorn/no-top-level-side-effects -- demo purposes only
 Layer.launch(httpLayer).pipe(
   //
-  Effect.tapErrorCause(Effect.logFatal),
+  Effect.tapCause(Effect.logFatal),
   NodeRuntime.runMain,
 )
 
 /**
- *  This utility builds an HttpApp from an HttpApi instance and uses an
- *  HttpServer to handle requests. Middleware can be added to customize or
- *  enhance the server's behavior.
+ * Note: v4 has a single way to serve an HttpApi. The v3 HttpApiBuilder.serve() helper
+ *       (and the HttpApiBuilder vs HttpLayerRouter split it belonged to) was removed:
+ *       build the routes with HttpApiBuilder.layer() and serve them with HttpRouter.serve().
  */
 // export const serverLive = HttpApiBuilder.serve().pipe(
 //   Layer.provide(HttpApiScalar.layer()),

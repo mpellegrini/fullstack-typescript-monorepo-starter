@@ -1,5 +1,5 @@
-import * as HttpApiBuilder from '@effect/platform/HttpApiBuilder'
 import * as Effect from 'effect/Effect'
+import * as HttpApiBuilder from 'effect/unstable/httpapi/HttpApiBuilder'
 
 import { api } from '../api.js'
 

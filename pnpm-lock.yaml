@@ -187,18 +187,12 @@ importers:
 
   apps/effect-platform-fundamentals:
     dependencies:
-      '@effect/platform':
-        specifier: 0.97.0
-        version: 0.97.0(effect@3.22.0)
       '@effect/platform-node':
-        specifier: 0.108.0
-        version: 0.108.0(@effect/cluster@0.60.0(@effect/platform@0.97.0(effect@3.22.0))(@effect/rpc@0.76.0(@effect/platform@0.97.0(effect@3.22.0))(effect@3.22.0))(@effect/sql@0.52.0(@effect/experimental@0.61.0(@effect/platform@0.97.0(effect@3.22.0))(effect@3.22.0)(ioredis@5.10.1(supports-color@8.1.1)))(@effect/platform@0.97.0(effect@3.22.0))(effect@3.22.0))(@effect/workflow@0.19.0(@effect/experimental@0.61.0(@effect/platform@0.97.0(effect@3.22.0))(effect@3.22.0)(ioredis@5.10.1(supports-color@8.1.1)))(@effect/platform@0.97.0(effect@3.22.0))(@effect/rpc@0.76.0(@effect/platform@0.97.0(effect@3.22.0))(effect@3.22.0))(effect@3.22.0))(effect@3.22.0))(@effect/platform@0.97.0(effect@3.22.0))(@effect/rpc@0.76.0(@effect/platform@0.97.0(effect@3.22.0))(effect@3.22.0))(@effect/sql@0.52.0(@effect/experimental@0.61.0(@effect/platform@0.97.0(effect@3.22.0))(effect@3.22.0)(ioredis@5.10.1(supports-color@8.1.1)))(@effect/platform@0.97.0(effect@3.22.0))(effect@3.22.0))(effect@3.22.0)
-      '@effect/rpc':
-        specifier: 0.76.0
-        version: 0.76.0(@effect/platform@0.97.0(effect@3.22.0))(effect@3.22.0)
+        specifier: catalog:effect4
+        version: 4.0.0-beta.102(effect@4.0.0-beta.102)(ioredis@5.10.1(supports-color@8.1.1))
       effect:
-        specifier: 3.22.0
-        version: 3.22.0
+        specifier: catalog:effect4
+        version: 4.0.0-beta.102
     devDependencies:
       '@toolchain/eslint-config':
         specifier: workspace:*

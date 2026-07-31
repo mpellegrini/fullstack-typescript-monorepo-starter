@@ -3,10 +3,10 @@
   "versionStrategy": "pin",
   "overrides": {
     "@effect/platform-node": {
-      "catalog:effect4": ["@apps/effect-mcp-server"]
+      "catalog:effect4": ["@apps/effect-mcp-server", "@apps/effect-platform-fundamentals"]
     },
     "effect": {
-      "catalog:effect4": ["@apps/effect-mcp-server"]
+      "catalog:effect4": ["@apps/effect-mcp-server", "@apps/effect-platform-fundamentals"]
     }
   }
 }

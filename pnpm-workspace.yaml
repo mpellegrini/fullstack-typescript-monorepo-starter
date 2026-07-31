@@ -4,6 +4,8 @@ allowBuilds:
   esbuild: true
   '@modelcontextprotocol/inspector': false
   '@parcel/watcher': false
+  msgpackr-extract: false
+  unrs-resolver: false
 
 #  Blocks packages with non-standard dependency specifiers
 #  (e.g., git://, file:, http:// deps in transitive dependencies). This is one of the most

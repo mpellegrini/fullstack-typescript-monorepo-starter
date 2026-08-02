@@ -1,7 +1,8 @@
-# Builds a single app (APP_NAME) from the monorepo. Works for any workspace whose
-# production bundle is produced by `vite build`. The runtime runs `node .`, so the
-# app's package.json must declare both:
-#   "main": pointing at its built server entry (e.g. "build/index.js")
+# Builds a single app (APP_NAME) from the monorepo. Works for any workspace that
+# produces its production bundle from a "build" script, whatever bundler that script
+# uses. The runtime runs `node .`, so the app's package.json must declare:
+#   "build": the script that emits the production bundle
+#   "main":  pointing at its built server entry (e.g. "build/index.js")
 #   "files": including the build output directory (e.g. "files": ["build"]),
 #            otherwise `pnpm deploy` won't copy the bundle into the runtime image
 FROM node:24.18.0-trixie-slim AS base
@@ -27,7 +28,11 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 # Now the actual source
 COPY --link --from=pruner /repo/out/full/ .
 RUN pnpm exec turbo run codegen --filter=@apps/$APP_NAME^...
-RUN pnpm --filter=@apps/${APP_NAME} exec vite build
+# `pnpm run` exits 0 when the script is absent, so assert the app declares `build`
+# up front rather than letting a missing bundle surface as a cryptic later failure
+RUN pnpm --filter=@apps/${APP_NAME} exec node -e "const p = require('./package.json'); \
+    if (!p.scripts || !p.scripts.build) throw new Error(p.name + ' needs a \"build\" script that emits its production bundle')"
+RUN pnpm --filter=@apps/${APP_NAME} run build
 RUN pnpm --filter=@apps/${APP_NAME} deploy --legacy --prod out
 # Fail the build if the deployed package can't be started with `node .` in the runtime
 # stage: `main` must be declared and the file it points at must have been packed

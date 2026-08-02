@@ -9,6 +9,7 @@
     "build"
   ],
   "scripts": {
+    "build": "vite build",
     "clean": "del .turbo coverage *.sarif",
     "dev": "tsx watch src/index.ts",
     "lint": "eslint ",

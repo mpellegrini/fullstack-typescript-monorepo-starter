@@ -5,6 +5,7 @@
   "description": "SvelteKit Agentic AI Example App",
   "type": "module",
   "scripts": {
+    "build": "vite build",
     "clean": "del .turbo coverage .svelte-kit build *.sarif",
     "codegen": "svelte-kit sync",
     "dev": "vite dev",

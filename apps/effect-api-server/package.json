@@ -10,6 +10,7 @@
     "build"
   ],
   "scripts": {
+    "build": "vite build",
     "clean": "del .turbo coverage *.sarif",
     "dev": "tsx --env-file=.env --watch src/index.ts",
     "lint": "eslint ",

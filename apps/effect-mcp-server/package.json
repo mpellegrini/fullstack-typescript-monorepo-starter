@@ -9,6 +9,7 @@
     "build"
   ],
   "scripts": {
+    "build": "vite build",
     "clean": "del .turbo coverage build *.sarif",
     "dev": "node --watch src/index.ts",
     "lint": "eslint ",

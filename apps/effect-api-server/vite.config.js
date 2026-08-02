@@ -1,11 +1,11 @@
 import { defineConfig, mergeConfig } from 'vite'
 
-import vitestSharedConfig from '@toolchain/vitest-config'
+import { defineTestConfig } from '@toolchain/vitest-config'
 
 import packageJson from './package.json' with { type: 'json' }
 
 export default mergeConfig(
-  vitestSharedConfig,
+  defineTestConfig(packageJson),
   defineConfig({
     base: '/',
     build: {
@@ -32,9 +32,6 @@ export default mergeConfig(
       // Build target for the SSR server
       // Node.js built-ins will also be externalized by default
       target: 'node',
-    },
-    test: {
-      name: packageJson.name,
     },
   }),
 )

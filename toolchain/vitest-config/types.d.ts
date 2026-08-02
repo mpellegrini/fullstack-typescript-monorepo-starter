@@ -1,5 +1,8 @@
-import type { UserConfig } from 'vitest/config'
+import type { ViteUserConfig } from 'vitest/config'
 
-declare const config: UserConfig
-export default config
+export declare const defineTestConfig: (
+  packageJson: { name: string },
+  overrides?: ViteUserConfig,
+) => ViteUserConfig
+
 export { defineConfig, mergeConfig } from 'vitest/config'

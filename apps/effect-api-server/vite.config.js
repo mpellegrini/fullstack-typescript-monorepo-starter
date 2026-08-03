@@ -7,12 +7,12 @@ import packageJson from './package.json' with { type: 'json' }
 export default mergeConfig(
   defineTestConfig(packageJson),
   defineConfig({
-    base: '/',
     build: {
       emptyOutDir: true,
-      minify: true,
+      minify: false,
       outDir: 'build',
-      rollupOptions: {
+      reportCompressedSize: false,
+      rolldownOptions: {
         input: './src/index.ts',
         output: {
           entryFileNames: 'index.js',
@@ -29,9 +29,6 @@ export default mergeConfig(
       // No dependencies are externalized. However, dependencies explicitly listed in
       // ssr.external can take priority and still be externalized.
       noExternal: true,
-      // Build target for the SSR server
-      // Node.js built-ins will also be externalized by default
-      target: 'node',
     },
   }),
 )

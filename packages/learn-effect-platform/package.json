@@ -16,15 +16,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.1096.0",
+    "@aws-sdk/client-dynamodb": "3.1099.0",
     "@effect-aws/client-dynamodb": "1.11.0",
     "@effect/opentelemetry": "0.64.0",
-    "@effect/platform": "0.97.0",
+    "@effect/platform": "0.97.1",
     "@effect/platform-node": "0.108.0",
     "@opentelemetry/sdk-trace-base": "2.10.0",
     "@opentelemetry/sdk-trace-node": "2.10.0",
     "@opentelemetry/sdk-trace-web": "2.10.0",
-    "effect": "3.22.0"
+    "effect": "3.22.1"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

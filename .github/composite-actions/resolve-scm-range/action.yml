@@ -2,6 +2,8 @@ name: Resolve SCM range
 description: >-
   Resolves the base/head commit range for change detection, handling the
   push/pull_request difference and the cases where no usable base exists.
+  Requires a prior checkout with fetch-depth 0; fails if the base commit is
+  missing because the clone is shallow.
 
 # Consume the range via the `base` / `head` outputs — any change detection can
 # use them (a git diff, a turbo query, anything that needs a commit range).
@@ -42,8 +44,15 @@ runs:
           RESOLVED_BASE="$EMPTY_TREE"
         # A force-push can leave "before" pointing at a commit that no longer
         # exists in history (checkout is fetch-depth 0, so anything reachable
-        # IS here). Same fallback: diff against the empty tree.
+        # IS here). Same fallback: diff against the empty tree. A shallow
+        # clone produces the same unresolvable-base symptom but is a caller
+        # misconfiguration (missing fetch-depth: 0): fail loudly rather than
+        # silently treating every run as everything-changed.
         elif ! git cat-file -e "${RESOLVED_BASE}^{commit}" 2>/dev/null; then
+          if [[ "$(git rev-parse --is-shallow-repository)" == "true" ]]; then
+            echo "::error::Base ${RESOLVED_BASE} not found and the clone is shallow — check out with fetch-depth: 0."
+            exit 1
+          fi
           echo "::warning::Base ${RESOLVED_BASE} not found in history (force push?) — treating everything as changed."
           RESOLVED_BASE="$EMPTY_TREE"
         fi

@@ -5,6 +5,7 @@
   "description": "Effect MCP Server Example App",
   "license": "UNLICENSED",
   "type": "module",
+  "main": "build/index.js",
   "files": [
     "build"
   ],
@@ -25,8 +26,8 @@
     "@modelcontextprotocol/inspector": "2.0.0",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
+    "@toolchain/vite-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/node": "26.1.2",
-    "vite": "8.2.0"
+    "@types/node": "26.1.2"
   }
 }

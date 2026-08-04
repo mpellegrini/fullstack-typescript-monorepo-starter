@@ -5,12 +5,13 @@
   "description": "Effect platform fundamentals",
   "license": "UNLICENSED",
   "type": "module",
+  "main": "build/index.js",
   "files": [
     "build"
   ],
   "scripts": {
     "build": "vite build",
-    "clean": "del .turbo coverage *.sarif",
+    "clean": "del .turbo coverage build *.sarif",
     "dev": "tsx --watch src/index.ts",
     "lint": "eslint ",
     "test": "vitest run",
@@ -23,6 +24,7 @@
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
+    "@toolchain/vite-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "@types/node": "26.1.2",
     "tsx": "4.23.1"

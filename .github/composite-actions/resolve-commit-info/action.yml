@@ -2,6 +2,9 @@ name: Resolve Commit Info
 description: >
   Resolves the true commit SHA (using PR head on pull_request events) and
   derives BUILD_DATE from the commit's committer date for deterministic OCI labels.
+  The resolved SHA must be present in the local clone: check out that exact ref,
+  or use fetch-depth 0. Note that a default depth-1 checkout on pull_request
+  events only contains the merge commit, not the PR head.
 
 outputs:
   full_sha:
@@ -26,6 +29,13 @@ runs:
         SHA: ${{ github.event.pull_request.head.sha || github.sha }}
       run: |
         set -euo pipefail
+
+        # git show below needs the commit object locally; give a clear error
+        # instead of an opaque git failure when the checkout doesn't have it.
+        if ! git cat-file -e "${SHA}^{commit}" 2>/dev/null; then
+          echo "::error::Commit ${SHA} is not present in the local clone — check out that ref or use fetch-depth: 0."
+          exit 1
+        fi
 
         # Derive BUILD_DATE from the commit's committer date so the label is
         # deterministic for a given code state. Avoids pull_request.updated_at,

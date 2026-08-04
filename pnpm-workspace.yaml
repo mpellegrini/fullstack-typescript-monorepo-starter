@@ -38,6 +38,7 @@ publicHoistPattern:
   - 'typescript' # @toolchain/typescript-config
   - '@typescript/native' # @toolchain/typescript-config
   - 'eslint' # @toolchain/eslint-config
+  - 'vite' # @toolchain/vite-config
   - 'vitest' # @toolchain/vitest-config
   - '@vitest/coverage-v8' # @toolchain/vitest-config
 

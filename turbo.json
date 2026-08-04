@@ -4,6 +4,7 @@
     "Dockerfile",
     "toolchain/typescript-config/**",
     "toolchain/eslint-config/**",
+    "toolchain/vite-config/**",
     "toolchain/vitest-config/**"
   ],
   "tasks": {

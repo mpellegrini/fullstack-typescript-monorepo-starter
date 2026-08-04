@@ -1,0 +1,23 @@
+{
+  "name": "@toolchain/vite-config",
+  "version": "0.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./types.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "scripts": {
+    "clean": "del .turbo",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "vite": "8.2.0"
+  },
+  "devDependencies": {
+    "@toolchain/typescript-config": "workspace:*"
+  }
+}

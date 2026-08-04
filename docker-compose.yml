@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:17.5-alpine
+    image: postgres:18.4-alpine
     restart: unless-stopped
     environment:
       - POSTGRES_USER=postgres
@@ -22,7 +22,7 @@ services:
       - ./.docker/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   dynamodb-local:
-    image: 'amazon/dynamodb-local:latest'
+    image: 'amazon/dynamodb-local:3.3.1'
     restart: unless-stopped
     command: '-jar DynamoDBLocal.jar -sharedDb -dbPath ./data'
     container_name: dynamodb-local
@@ -33,7 +33,7 @@ services:
       - ./.docker/data/dynamodb:/home/dynamodblocal/data
 
   mailpit:
-    image: axllent/mailpit:v1.27
+    image: axllent/mailpit:v1.30
     restart: unless-stopped
     environment:
       MP_MAX_MESSAGES: 5000
@@ -47,7 +47,7 @@ services:
       - ./.docker/data/mailpit-data:/data
 
   otel-lgtm:
-    image: grafana/otel-lgtm:0.11.5
+    image: grafana/otel-lgtm:0.30.0
     restart: unless-stopped
     profiles:
       - otel-lgtm
@@ -62,7 +62,7 @@ services:
       - ./.docker/data/grafana-data:/data
 
   otel-jaeger:
-    image: jaegertracing/jaeger:2.8.0
+    image: jaegertracing/jaeger:2.20.0
     restart: unless-stopped
     profiles:
       - otel-jaeger

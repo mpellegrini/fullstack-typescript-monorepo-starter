@@ -8,6 +8,10 @@
     "toolchain/vitest-config/**"
   ],
   "tasks": {
+    "build": {
+      "dependsOn": ["^codegen", "codegen"],
+      "outputs": ["build/**", ".svelte-kit/output/**"]
+    },
     "codegen": {
       "dependsOn": ["^codegen"],
       "outputs": [".svelte-kit/**"]

@@ -6,6 +6,8 @@ runs:
   steps:
     - name: Write Turbo cache summary
       shell: bash
+      env:
+        JOB: ${{ github.job }}
       run: |
         set -euo pipefail
 
@@ -13,26 +15,19 @@ runs:
         # clears .turbo/runs before running, so at most one file exists here.
         f=$(ls -t .turbo/runs/*.json 2>/dev/null | head -n1 || true)
 
-        {
-          echo "### Turbo cache — ${{ github.job }}"
-          if [[ -z "${f}" ]]; then
-            echo "_No Turbo run summary found._"
-            exit 0
-          fi
-
+        if [[ -z "${f}" ]]; then
+          body="_No Turbo run summary found._"
+        else
           attempted=$(jq '.execution.attempted' "${f}")
           cached=$(jq '.execution.cached' "${f}")
           if [[ "${attempted}" -eq 0 ]]; then
-            echo "_No affected tasks — nothing to run._"
-            exit 0
-          fi
-
-          time_saved=$(jq '[.tasks[].cache.timeSaved // 0] | add // 0' "${f}")
-
-          echo ""
-          if [[ "${cached}" -eq 0 ]]; then
-            echo "_Cache not used — 0 of ${attempted} tasks were cached._"
+            body="_No affected tasks — nothing to run._"
+          elif [[ "${cached}" -eq 0 ]]; then
+            body="_Cache not used — 0 of ${attempted} tasks were cached._"
           else
-            echo "**Cache used:** ${cached}/${attempted} tasks served from cache, ~${time_saved} ms saved."
+            saved_s=$(jq '([.tasks[].cache.timeSaved // 0] | add // 0) / 1000 | round' "${f}")
+            body="**Cache used:** ${cached}/${attempted} tasks served from cache, ~${saved_s}s saved."
           fi
-        } >> "$GITHUB_STEP_SUMMARY"
+        fi
+
+        printf '### Turbo cache — %s\n\n%s\n' "${JOB}" "${body}" >> "$GITHUB_STEP_SUMMARY"

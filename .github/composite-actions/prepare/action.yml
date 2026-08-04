@@ -16,9 +16,11 @@ runs:
         cache: pnpm
         cache-dependency-path: pnpm-lock.yaml
 
+    # pnpm 10 blocks install scripts by default; only the allowBuilds
+    # allowlist in pnpm-workspace.yaml runs, matching the Dockerfile.
     - name: Install dependencies
       shell: bash
-      run: pnpm install --ignore-scripts --frozen-lockfile
+      run: pnpm install --frozen-lockfile
 
     # Persist Turbo's local cache across runs so unchanged tasks replay
     # instead of re-executing. Scoped per job (github.job) so the parallel
@@ -34,9 +36,13 @@ runs:
         restore-keys: |
           turbo-${{ runner.os }}-${{ github.job }}-
 
+    # Apps read their env at build/test time via Vite; the example values
+    # are enough for CI. Fails loudly if a cp fails.
     - name: Copy env files
       shell: bash
-      run: find apps -name ".env.example" -execdir cp {} .env \;
+      run: |
+        shopt -s nullglob
+        for f in apps/*/.env.example; do cp "$f" "${f%.env.example}.env"; done
 
     # Exports TURBO_SCM_BASE / TURBO_SCM_HEAD, so any subsequent
     # `turbo --affected` invocation diffs against the right range.

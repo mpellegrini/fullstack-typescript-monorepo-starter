@@ -27,11 +27,11 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile
 # Now the actual source
 COPY --link --from=pruner /repo/out/full/ .
-RUN pnpm exec turbo run codegen --filter=@apps/$APP_NAME^...
 # `pnpm run` exits 0 when the script is absent, so assert the app declares `build`
 # up front rather than letting a missing bundle surface as a cryptic later failure
 RUN pnpm --filter=@apps/${APP_NAME} exec node -e "const p = require('./package.json'); \
     if (!p.scripts || !p.scripts.build) throw new Error(p.name + ' needs a \"build\" script that emits its production bundle')"
+RUN pnpm exec turbo run codegen --filter=@apps/$APP_NAME^...
 RUN pnpm --filter=@apps/${APP_NAME} run build
 RUN pnpm --filter=@apps/${APP_NAME} deploy --legacy --prod out
 # Fail the build if the deployed package can't be started with `node .` in the runtime

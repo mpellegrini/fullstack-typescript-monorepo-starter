@@ -28,6 +28,6 @@
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vite-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "tsx": "4.23.1"
+    "tsx": "4.23.4"
   }
 }

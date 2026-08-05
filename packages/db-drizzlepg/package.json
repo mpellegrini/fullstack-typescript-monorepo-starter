@@ -37,9 +37,9 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/pg": "8.20.0",
+    "@types/pg": "8.20.3",
     "drizzle-dbml-generator": "0.10.0",
     "drizzle-kit": "0.31.10",
-    "tsx": "4.23.1"
+    "tsx": "4.23.4"
   }
 }

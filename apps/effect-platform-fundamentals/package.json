@@ -27,6 +27,6 @@
     "@toolchain/vite-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "@types/node": "26.1.2",
-    "tsx": "4.23.4"
+    "tsx": "4.23.7"
   }
 }

@@ -153,9 +153,6 @@ importers:
       '@toolchain/vitest-config':
         specifier: workspace:*
         version: link:../../toolchain/vitest-config
-      tsx:
-        specifier: 4.23.7
-        version: 4.23.7
 
   apps/effect-mcp-server:
     dependencies:
@@ -209,9 +206,6 @@ importers:
       '@types/node':
         specifier: 26.1.2
         version: 26.1.2
-      tsx:
-        specifier: 4.23.7
-        version: 4.23.7
 
   apps/ha-dashboard:
     devDependencies:
@@ -288,9 +282,6 @@ importers:
       '@toolchain/vitest-config':
         specifier: workspace:*
         version: link:../../toolchain/vitest-config
-      tsx:
-        specifier: 4.23.7
-        version: 4.23.7
 
   apps/sveltekit-example-app:
     dependencies:
@@ -371,9 +362,6 @@ importers:
       '@toolchain/vitest-config':
         specifier: workspace:*
         version: link:../../toolchain/vitest-config
-      tsx:
-        specifier: 4.23.7
-        version: 4.23.7
 
   packages/api-hono:
     dependencies:
@@ -501,9 +489,6 @@ importers:
       drizzle-kit:
         specifier: 0.31.10
         version: 0.31.10
-      tsx:
-        specifier: 4.23.7
-        version: 4.23.7
 
   packages/example-pkg:
     devDependencies:
@@ -556,9 +541,6 @@ importers:
       '@toolchain/vitest-config':
         specifier: workspace:*
         version: link:../../toolchain/vitest-config
-      tsx:
-        specifier: 4.23.7
-        version: 4.23.7
 
   packages/ui-lib-svelte:
     dependencies:

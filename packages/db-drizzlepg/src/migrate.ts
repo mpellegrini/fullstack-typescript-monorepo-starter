@@ -2,7 +2,7 @@ import { NodeRuntime } from '@effect/platform-node'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import { Effect } from 'effect'
 
-import { DrizzleNodePgClient } from './client/index.js'
+import { DrizzleNodePgClient } from './client/index.ts'
 
 const program = Effect.gen(function* () {
   const { db } = yield* DrizzleNodePgClient

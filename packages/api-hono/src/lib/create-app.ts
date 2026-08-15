@@ -1,8 +1,8 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 
-import type { AppOpenApi, CustomEnv } from './types.js'
+import type { AppOpenApi, CustomEnv } from './types.ts'
 
-import { defaultHook, notFound, onError } from '../middlewares/index.js'
+import { defaultHook, notFound, onError } from '../middlewares/index.ts'
 
 export const createRouter = (basePath = '/'): AppOpenApi =>
   new OpenAPIHono<CustomEnv>({

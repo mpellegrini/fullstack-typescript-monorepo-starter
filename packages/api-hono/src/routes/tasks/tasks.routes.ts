@@ -1,10 +1,10 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-import type { RouteResponse } from '../../lib/types.js'
+import type { RouteResponse } from '../../lib/types.ts'
 
-import { singleItemResponseWrapperSchema } from '../../lib/response-helpers.js'
+import { singleItemResponseWrapperSchema } from '../../lib/response-helpers.ts'
 
-import { taskSelectSchema, UuidParamsSchema } from './tasks.schema.js'
+import { taskSelectSchema, UuidParamsSchema } from './tasks.schema.ts'
 
 const tags = ['Tasks']
 

@@ -5,7 +5,7 @@
  */
 import { pgGenerate } from 'drizzle-dbml-generator'
 
-import * as schema from './schema/index.js'
+import * as schema from './schema/index.ts'
 
 pgGenerate({
   out: './schema.dbml',

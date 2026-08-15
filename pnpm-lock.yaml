@@ -153,9 +153,6 @@ importers:
       '@toolchain/vitest-config':
         specifier: workspace:*
         version: link:../../toolchain/vitest-config
-      tsx:
-        specifier: 4.23.4
-        version: 4.23.4
 
   apps/effect-mcp-server:
     dependencies:
@@ -209,9 +206,6 @@ importers:
       '@types/node':
         specifier: 26.1.2
         version: 26.1.2
-      tsx:
-        specifier: 4.23.4
-        version: 4.23.4
 
   apps/ha-dashboard:
     devDependencies:
@@ -288,9 +282,6 @@ importers:
       '@toolchain/vitest-config':
         specifier: workspace:*
         version: link:../../toolchain/vitest-config
-      tsx:
-        specifier: 4.23.4
-        version: 4.23.4
 
   apps/sveltekit-example-app:
     dependencies:
@@ -371,9 +362,6 @@ importers:
       '@toolchain/vitest-config':
         specifier: workspace:*
         version: link:../../toolchain/vitest-config
-      tsx:
-        specifier: 4.23.4
-        version: 4.23.4
 
   packages/api-hono:
     dependencies:
@@ -501,9 +489,6 @@ importers:
       drizzle-kit:
         specifier: 0.31.10
         version: 0.31.10
-      tsx:
-        specifier: 4.23.4
-        version: 4.23.4
 
   packages/example-pkg:
     devDependencies:
@@ -556,9 +541,6 @@ importers:
       '@toolchain/vitest-config':
         specifier: workspace:*
         version: link:../../toolchain/vitest-config
-      tsx:
-        specifier: 4.23.4
-        version: 4.23.4
 
   packages/ui-lib-svelte:
     dependencies:
@@ -782,6 +764,9 @@ packages:
   '@aws-sdk/core@3.977.4':
     resolution: {integrity: sha512-CEkcQlMOQJCvul60U7wdAOACjtdgFWDsfJI+6wUOGdhGNV2lGbuJpi/R50QLpFG3Tp+sQxa/RmzC3X7KHbhuTA==}
     engines: {node: '>=20.0.0'}
+    deprecated: |-
+      Deprecated due to Document number parsing bug in JSON, see
+        https://github.com/aws/aws-sdk-js-v3/issues/8246. Newer version available.
 
   '@aws-sdk/credential-provider-env@3.972.65':
     resolution: {integrity: sha512-lJT2aRw9wCV8jPHyFJjdZLD4HTydL6/22AnCSOB8e/LqOc55nEJGLHkJQeSxhn8QiqyjFwPKQFtMw0ovjRUY/g==}
@@ -3636,6 +3621,7 @@ packages:
 
   constructs@10.8.0:
     resolution: {integrity: sha512-pJHp2CxvTG0ttp52rZvQfkbspPLZzttWPooIRLBwlZK8rV7ZhkjIkyZWJhIfBDC4YdcwIDmXyUFr1ieJaqjBbg==}
+    deprecated: This version has a bug that breaks downstream jsii consumers
 
   content-disposition@1.1.0:
     resolution: {integrity: sha512-5jRCH9Z/+DRP7rkvY83B+yGIGX96OYdJmzngqnw2SBSxqCFPd0w2km3s5iawpGX8krnwSGmF0FW5Nhr0Hfai3g==}

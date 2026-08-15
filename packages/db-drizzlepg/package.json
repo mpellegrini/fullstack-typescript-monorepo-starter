@@ -12,13 +12,12 @@
   },
   "scripts": {
     "clean": "del .turbo coverage *.sarif",
-    "db:generate": "node --import=tsx ./node_modules/drizzle-kit/bin.cjs generate",
-    "db:migrate": "node --import=tsx --env-file=.env src/migrate.ts",
-    "db:push": "node --import=tsx ./node_modules/drizzle-kit/bin.cjs push",
-    "db:studio": "node --import=tsx ./node_modules/drizzle-kit/bin.cjs studio",
-    "dbml:generate": "node --import=tsx  ./src/generate-dbml.ts",
+    "db:generate": "node ./node_modules/drizzle-kit/bin.cjs generate",
+    "db:migrate": "node --env-file=.env src/migrate.ts",
+    "db:push": "node ./node_modules/drizzle-kit/bin.cjs push",
+    "db:studio": "node ./node_modules/drizzle-kit/bin.cjs studio",
+    "dbml:generate": "node ./src/generate-dbml.ts",
     "dbml:render": "dbml-renderer -i schema.dbml -o schema.svg",
-    "dbpush": "node --import=tsx ./node_modules/drizzle-kit/bin.cjs push",
     "lint": "eslint .",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
@@ -39,7 +38,6 @@
     "@toolchain/vitest-config": "workspace:*",
     "@types/pg": "8.20.3",
     "drizzle-dbml-generator": "0.10.0",
-    "drizzle-kit": "0.31.10",
-    "tsx": "4.23.4"
+    "drizzle-kit": "0.31.10"
   }
 }

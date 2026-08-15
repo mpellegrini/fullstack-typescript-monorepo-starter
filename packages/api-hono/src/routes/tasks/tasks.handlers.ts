@@ -1,12 +1,12 @@
 import { StatusCodes } from 'http-status-codes'
 
-import type { AppRouteHandler } from '../../lib/types.js'
+import type { AppRouteHandler } from '../../lib/types.ts'
 
-import type { FindOneRoute } from './tasks.routes.js'
+import type { FindOneRoute } from './tasks.routes.ts'
 
-import { wrapSingleItemResponse } from '../../lib/response-helpers.js'
+import { wrapSingleItemResponse } from '../../lib/response-helpers.ts'
 
-import { taskSelectSchema } from './tasks.schema.js'
+import { taskSelectSchema } from './tasks.schema.ts'
 
 export const findOne: AppRouteHandler<FindOneRoute> = (ctx) => {
   const { id } = ctx.req.valid('param')

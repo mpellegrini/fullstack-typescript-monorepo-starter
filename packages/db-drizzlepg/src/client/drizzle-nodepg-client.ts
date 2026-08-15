@@ -3,8 +3,8 @@ import type pg from 'pg'
 import { type NodePgDatabase, drizzle } from 'drizzle-orm/node-postgres'
 import { Config, Effect } from 'effect'
 
-import { toTaggedErrorOrThrow } from './database-errors.js'
-import { createNodePgPool } from './nodepg-pool.js'
+import { toTaggedErrorOrThrow } from './database-errors.ts'
+import { createNodePgPool } from './nodepg-pool.ts'
 
 type DrizzleClient = NodePgDatabase & {
   $client: pg.Pool

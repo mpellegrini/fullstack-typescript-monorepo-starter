@@ -1,6 +1,6 @@
 import { type ClientRequestOptions, hc } from 'hono/client'
 
-import type app from '../index.js'
+import type app from '../index.ts'
 
 type AppType = typeof app
 

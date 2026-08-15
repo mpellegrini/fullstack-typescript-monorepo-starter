@@ -1,3 +1,3 @@
-export { Api } from './api.js'
-export * from './domain.js'
-export * from './response-helpers.js'
+export { Api } from './api.ts'
+export * from './domain.ts'
+export * from './response-helpers.ts'

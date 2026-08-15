@@ -1,6 +1,6 @@
 import * as HttpApi from 'effect/unstable/httpapi/HttpApi'
 
-import { greetingsApi } from './greetings/api-definition.js'
+import { greetingsApi } from './greetings/api-definition.ts'
 
 /**
  * After defining your groups, you can combine them into one HttpApi representing

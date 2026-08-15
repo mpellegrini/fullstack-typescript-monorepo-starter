@@ -1,8 +1,8 @@
 import { pgTable, timestamp, uuid } from 'drizzle-orm/pg-core'
 
-import { namedForeignKey, withSurrogateId } from '../helpers.js'
+import { namedForeignKey, withSurrogateId } from '../helpers.ts'
 
-import { userAccountsTable } from './accounts.js'
+import { userAccountsTable } from './accounts.ts'
 
 export const userSessionsTable = pgTable(
   'user_sessions',

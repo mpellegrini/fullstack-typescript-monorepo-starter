@@ -1,7 +1,7 @@
 import * as Effect from 'effect/Effect'
 import * as HttpApiBuilder from 'effect/unstable/httpapi/HttpApiBuilder'
 
-import { api } from '../api.js'
+import { api } from '../api.ts'
 
 /**
  * The HttpApiBuilder.group() API is used to implement a specific group of

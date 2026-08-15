@@ -1,2 +1,2 @@
-export * as BuildInfoContract from './build-info-contract.js'
-export * as TasksContract from './tasks-contract.js'
+export * as BuildInfoContract from './build-info-contract.ts'
+export * as TasksContract from './tasks-contract.ts'

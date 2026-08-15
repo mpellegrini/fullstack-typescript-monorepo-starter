@@ -1,8 +1,8 @@
 import { HttpApiEndpoint, HttpApiGroup, OpenApi } from '@effect/platform'
 import status from 'http-status'
 
-import { BuildInfo } from '../domain.js'
-import { singleItemResponseWrapperSchema } from '../response-helpers.js'
+import { BuildInfo } from '../domain.ts'
+import { singleItemResponseWrapperSchema } from '../response-helpers.ts'
 
 export class ApiGroup extends HttpApiGroup.make('info') //
   .add(

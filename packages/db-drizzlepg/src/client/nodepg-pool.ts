@@ -1,7 +1,7 @@
 import { Effect, Redacted, Runtime } from 'effect'
 import pg from 'pg'
 
-import { DatabaseConnectionError } from './database-errors.js'
+import { DatabaseConnectionError } from './database-errors.ts'
 
 export interface PgClientConfig {
   connectionString: Redacted.Redacted<string>

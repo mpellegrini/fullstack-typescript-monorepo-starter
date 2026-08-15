@@ -2,7 +2,7 @@ import { serve } from '@hono/node-server'
 
 import app from '@packages/api-hono'
 
-import env from './env.js'
+import env from './env.ts'
 
 serve(
   {

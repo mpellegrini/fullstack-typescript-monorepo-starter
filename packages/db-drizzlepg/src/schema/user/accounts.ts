@@ -2,8 +2,8 @@ import { sql } from 'drizzle-orm'
 import { check, pgTable, text } from 'drizzle-orm/pg-core'
 import { Schema } from 'effect'
 
-import { citext } from '../custom-types.js'
-import { namedUnique, withSurrogateId } from '../helpers.js'
+import { citext } from '../custom-types.ts'
+import { namedUnique, withSurrogateId } from '../helpers.ts'
 
 const AccountStatus = Schema.Literal('active', 'inactive', 'dormant', 'closed', 'suspended')
 type AccountStatus = typeof AccountStatus.Type

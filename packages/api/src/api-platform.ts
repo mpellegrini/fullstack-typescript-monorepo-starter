@@ -1,7 +1,7 @@
 import { HttpApi } from '@effect/platform'
 
-import { BuildInfoContract, TasksContract } from './contracts/index.js'
-import * as CustomHttpApiError from './custom-httpapi-error.js'
+import { BuildInfoContract, TasksContract } from './contracts/index.ts'
+import * as CustomHttpApiError from './custom-httpapi-error.ts'
 
 export class PlatformApi extends HttpApi.make('api-platform') //
   .addError(CustomHttpApiError.InternalServerError)

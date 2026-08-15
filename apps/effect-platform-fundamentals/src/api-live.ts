@@ -1,8 +1,8 @@
 import * as Layer from 'effect/Layer'
 import * as HttpApiBuilder from 'effect/unstable/httpapi/HttpApiBuilder'
 
-import { api } from './api.js'
-import { greetingsApiLive } from './greetings/api-implementation.js'
+import { api } from './api.ts'
+import { greetingsApiLive } from './greetings/api-implementation.ts'
 
 /**
  * Represents the live HTTP API routes for the application.

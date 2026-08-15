@@ -1,6 +1,6 @@
 import { HttpApi, OpenApi } from '@effect/platform'
 
-import { PlatformApi } from './api-platform.js'
+import { PlatformApi } from './api-platform.ts'
 
 export class Api extends HttpApi.make('api') //
   .addHttpApi(PlatformApi)

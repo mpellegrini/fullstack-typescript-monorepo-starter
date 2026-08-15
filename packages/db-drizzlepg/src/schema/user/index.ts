@@ -1,2 +1,2 @@
-export * from './accounts.js'
-export * from './sessions.js'
+export * from './accounts.ts'
+export * from './sessions.ts'

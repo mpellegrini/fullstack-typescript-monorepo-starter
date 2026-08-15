@@ -15,6 +15,11 @@
     /* Modules */
     "module": "NodeNext",                             /* Specify what module code is generated. */
     "moduleResolution": "NodeNext",                   /* Specify how TypeScript looks up a file from a given module specifier. */
+
+    /* Native Run & Compile Rules */
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
+
     "plugins": [
       {
         "name": "@effect/language-service"

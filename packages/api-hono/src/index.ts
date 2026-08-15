@@ -1,9 +1,9 @@
 import { showRoutes } from 'hono/dev'
 import { logger } from 'hono/logger'
 
-import { configureOpenAPI } from './lib/configure-openapi.js'
-import { createApp } from './lib/create-app.js'
-import taskRoutes from './routes/tasks/tasks.index.js'
+import { configureOpenAPI } from './lib/configure-openapi.ts'
+import { createApp } from './lib/create-app.ts'
+import taskRoutes from './routes/tasks/tasks.index.ts'
 
 const app = createApp('/api')
 

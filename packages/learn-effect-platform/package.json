@@ -10,7 +10,7 @@
   },
   "scripts": {
     "clean": "del .turbo coverage *.sarif",
-    "dev": "tsx --watch src/index.ts",
+    "dev": "node --watch src/index.ts",
     "lint": "eslint .",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
@@ -29,7 +29,6 @@
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
-    "@toolchain/vitest-config": "workspace:*",
-    "tsx": "4.23.7"
+    "@toolchain/vitest-config": "workspace:*"
   }
 }

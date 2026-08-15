@@ -3,7 +3,7 @@ import type { Hook } from '@hono/zod-openapi'
 import { HTTPException } from 'hono/http-exception'
 import { StatusCodes } from 'http-status-codes'
 
-import type { CustomEnv } from '../lib/types.js'
+import type { CustomEnv } from '../lib/types.ts'
 
 export const defaultHook: Hook<unknown, CustomEnv, never, unknown> = (result, _ctx) => {
   if (result.success) {

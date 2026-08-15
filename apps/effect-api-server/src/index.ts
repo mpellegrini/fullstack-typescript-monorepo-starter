@@ -1,8 +1,8 @@
 import { NodeRuntime } from '@effect/platform-node'
 import { Layer } from 'effect'
 
-import { HttpLive } from './http.js'
-import { TracingLive } from './tracing-live.js'
+import { HttpLive } from './http.ts'
+import { TracingLive } from './tracing-live.ts'
 
 HttpLive.pipe(
   //

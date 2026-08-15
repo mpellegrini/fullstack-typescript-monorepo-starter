@@ -6,8 +6,8 @@ import * as HttpRouter from 'effect/unstable/http/HttpRouter'
 import * as HttpApiScalar from 'effect/unstable/httpapi/HttpApiScalar'
 import { createServer } from 'node:http'
 
-import { httpApiRoutesLive } from './api-live.js'
-import { api } from './api.js'
+import { httpApiRoutesLive } from './api-live.ts'
+import { api } from './api.ts'
 
 const docsRouteLive = HttpApiScalar.layerCdn(api, {
   path: '/docs',

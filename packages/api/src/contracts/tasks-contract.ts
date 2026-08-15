@@ -8,9 +8,9 @@ import {
 import { Schema } from 'effect'
 import status from 'http-status'
 
-import * as CustomHttpApiError from '../custom-httpapi-error.js'
-import { Task } from '../domain.js'
-import { singleItemResponseWrapperSchema } from '../response-helpers.js'
+import * as CustomHttpApiError from '../custom-httpapi-error.ts'
+import { Task } from '../domain.ts'
+import { singleItemResponseWrapperSchema } from '../response-helpers.ts'
 
 export const UuidParamSchema = HttpApiSchema.param(
   'id',

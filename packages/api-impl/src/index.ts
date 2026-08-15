@@ -3,8 +3,8 @@ import { Layer } from 'effect'
 
 import { Api } from '@packages/api'
 
-import { buildInfoGroupLive } from './build-info-live.js'
-import { taskGroupLive } from './tasks-live.js'
+import { buildInfoGroupLive } from './build-info-live.ts'
+import { taskGroupLive } from './tasks-live.ts'
 
 export const ApiLive = HttpApiBuilder
   //

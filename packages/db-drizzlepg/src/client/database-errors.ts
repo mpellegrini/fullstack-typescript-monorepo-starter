@@ -1,5 +1,6 @@
 import { DrizzleQueryError } from 'drizzle-orm/errors'
-import { Data, Match } from 'effect'
+import * as Data from 'effect/Data'
+import * as Match from 'effect/Match'
 import pg from 'pg'
 import { PostgresError } from 'pg-error-enum'
 

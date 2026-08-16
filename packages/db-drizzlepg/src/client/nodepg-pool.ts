@@ -1,4 +1,5 @@
-import { Effect, Redacted, Runtime } from 'effect'
+import * as Effect from 'effect/Effect'
+import * as Redacted from 'effect/Redacted'
 import pg from 'pg'
 
 import { DatabaseConnectionError } from './database-errors.ts'
@@ -8,7 +9,7 @@ export interface PgClientConfig {
 }
 
 export const createNodePgPool = Effect.fn(function* (options: PgClientConfig) {
-  const runSync = Runtime.runSync(yield* Effect.runtime<never>())
+  const runSync = Effect.runSyncWith(yield* Effect.context<never>())
 
   const pgPool = yield* Effect.acquireRelease(
     // acquire
@@ -53,13 +54,15 @@ export const createNodePgPool = Effect.fn(function* (options: PgClientConfig) {
       new DatabaseConnectionError({ cause, message: 'Failed to connect to database' }),
     try: () => pgPool.query('select 1'),
   }).pipe(
-    Effect.timeoutFail({
+    Effect.timeoutOrElse({
       duration: '5 seconds',
-      onTimeout: () =>
-        new DatabaseConnectionError({
-          cause: new Error('Database connection timed out'),
-          message: 'Database connection timed out',
-        }),
+      orElse: () =>
+        Effect.fail(
+          new DatabaseConnectionError({
+            cause: new Error('Database connection timed out'),
+            message: 'Database connection timed out',
+          }),
+        ),
     }),
   )
 

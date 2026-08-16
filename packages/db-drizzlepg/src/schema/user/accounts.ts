@@ -1,11 +1,11 @@
 import { sql } from 'drizzle-orm'
 import * as pg from 'drizzle-orm/pg-core'
-import { Schema } from 'effect'
+import * as Schema from 'effect/Schema'
 
 import { citext } from '../custom-types.ts'
 import { namedUnique, withSurrogateId } from '../helpers.ts'
 
-const AccountStatus = Schema.Literal('active', 'inactive', 'dormant', 'closed', 'suspended')
+const AccountStatus = Schema.Literals(['active', 'inactive', 'dormant', 'closed', 'suspended'])
 type AccountStatus = typeof AccountStatus.Type
 
 export const userAccountsTable = pg.snakeCase.table(

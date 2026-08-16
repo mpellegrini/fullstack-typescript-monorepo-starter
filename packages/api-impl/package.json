@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@effect/platform": "0.97.1",
-    "@packages/db-drizzlepg": "workspace:*",
     "effect": "3.22.1"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm'
-import { check, pgTable, text } from 'drizzle-orm/pg-core'
+import * as pg from 'drizzle-orm/pg-core'
 import { Schema } from 'effect'
 
 import { citext } from '../custom-types.ts'
@@ -8,19 +8,19 @@ import { namedUnique, withSurrogateId } from '../helpers.ts'
 const AccountStatus = Schema.Literal('active', 'inactive', 'dormant', 'closed', 'suspended')
 type AccountStatus = typeof AccountStatus.Type
 
-export const userAccountsTable = pgTable(
+export const userAccountsTable = pg.snakeCase.table(
   'user_accounts',
   {
     ...withSurrogateId,
-    givenName: text(),
-    hashedPassword: text().notNull(),
-    status: text().$type<AccountStatus>().notNull().default('inactive'),
-    surname: text(),
+    givenName: pg.text(),
+    hashedPassword: pg.text().notNull(),
+    status: pg.text().$type<AccountStatus>().notNull().default('inactive'),
+    surname: pg.text(),
     username: citext().notNull(),
   },
   (t) => [
     namedUnique(t.username),
-    check(
+    pg.check(
       'user_accounts_chk_status',
       sql`${t.status} in ${sql.raw(`('${AccountStatus.literals.join("','")}')`)}`,
     ),

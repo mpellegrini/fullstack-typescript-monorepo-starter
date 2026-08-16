@@ -1,15 +1,15 @@
-import { pgTable, timestamp, uuid } from 'drizzle-orm/pg-core'
+import * as pg from 'drizzle-orm/pg-core'
 
 import { namedForeignKey, withSurrogateId } from '../helpers.ts'
 
 import { userAccountsTable } from './accounts.ts'
 
-export const userSessionsTable = pgTable(
+export const userSessionsTable = pg.snakeCase.table(
   'user_sessions',
   {
     ...withSurrogateId,
-    expiresAt: timestamp({ mode: 'date', withTimezone: true }).notNull(),
-    userId: uuid().notNull(),
+    expiresAt: pg.timestamp({ mode: 'date', withTimezone: true }).notNull(),
+    userId: pg.uuid().notNull(),
   },
   (t) => [namedForeignKey(t.userId, userAccountsTable.id).onDelete('cascade')],
 )

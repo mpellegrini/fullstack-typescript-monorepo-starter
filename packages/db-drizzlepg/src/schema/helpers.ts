@@ -1,45 +1,41 @@
-import { getTableName } from 'drizzle-orm'
-import {
-  type ForeignKeyBuilder,
-  type IndexBuilder,
-  type PgColumn,
-  type UniqueConstraintBuilder,
-  foreignKey,
-  index,
-  integer,
-  text,
-  timestamp,
-  unique,
-  uuid,
-} from 'drizzle-orm/pg-core'
+import { type Table, getColumnTable, getTableName, sql } from 'drizzle-orm'
+import * as pg from 'drizzle-orm/pg-core'
 
-export const namedForeignKey = (column: PgColumn, foreignColumn: PgColumn): ForeignKeyBuilder =>
-  foreignKey({
+export const namedForeignKey = (
+  column: pg.PgColumn,
+  foreignColumn: pg.PgColumn,
+): pg.ForeignKeyBuilder =>
+  pg.foreignKey({
     columns: [column],
     foreignColumns: [foreignColumn],
-    name: `${getTableName(column.table)}_fk_${column.name}_${getTableName(foreignColumn.table)}`,
+    name: `${getTableName(getColumnTable<Table>(column))}_fk_${column.name}_${getTableName(getColumnTable<Table>(foreignColumn))}`,
   })
 
-export const namedUnique = (...columns: [PgColumn, ...PgColumn[]]): UniqueConstraintBuilder => {
-  const tableName = getTableName(columns[0].table)
+export const namedUnique = (
+  ...columns: [pg.PgColumn, ...pg.PgColumn[]]
+): pg.UniqueConstraintBuilder => {
+  const tableName = getTableName(getColumnTable<Table>(columns[0]))
   const name = `${tableName}_uk_${columns.map((col) => col.name).join('_')}`
-  return unique(name).on(...columns)
+  return pg.unique(name).on(...columns)
 }
 
-export const namedIndex = (...columns: [PgColumn, ...PgColumn[]]): IndexBuilder => {
-  const tableName = getTableName(columns[0].table)
+export const namedIndex = (...columns: [pg.PgColumn, ...pg.PgColumn[]]): pg.IndexBuilder => {
+  const tableName = getTableName(getColumnTable<Table>(columns[0]))
   const name = `${tableName}_idx_${columns.map((col) => col.name).join('_')}`
-  return index(name).on(...columns)
+  return pg.index(name).on(...columns)
 }
 
 export const withSurrogateId = {
-  id: uuid().primaryKey().defaultRandom(),
+  id: pg
+    .uuid()
+    .primaryKey()
+    .default(sql`uuidv7()`),
 }
 
 export const withAuditMetadata = {
-  createdAt: timestamp({ mode: 'string', withTimezone: true }).notNull().defaultNow(),
-  createdBy: text().notNull(),
-  updatedAt: timestamp({ mode: 'string', withTimezone: true }).notNull().defaultNow(),
-  updatedBy: text().notNull(),
-  version: integer().notNull().default(0),
+  createdAt: pg.timestamp({ mode: 'string', withTimezone: true }).notNull().defaultNow(),
+  createdBy: pg.text().notNull(),
+  updatedAt: pg.timestamp({ mode: 'string', withTimezone: true }).notNull().defaultNow(),
+  updatedBy: pg.text().notNull(),
+  version: pg.integer().notNull().default(0),
 }

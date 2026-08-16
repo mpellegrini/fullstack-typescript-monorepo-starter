@@ -22,11 +22,6 @@ export default defineConfig({
   verbose: true,
 
   /**
-   * https://orm.drizzle.team/kit-docs/config-reference#strict
-   */
-  strict: true,
-
-  /**
    * https://orm.drizzle.team/kit-docs/config-reference#schemafilter
    */
   schemaFilter: ['public', 'user'],
@@ -37,14 +32,9 @@ export default defineConfig({
   dialect: 'postgresql',
 
   /**
-   * https://orm.drizzle.team/kit-docs/config-reference#driver
+   * https://orm.drizzle.team/docs/drizzle-config-file#dbcredentials
    */
   dbCredentials: {
     url: process.env.DB_CONNECTION_STRING,
   },
-
-  /**
-   * https://orm.drizzle.team/kit-docs/config-reference#casing
-   */
-  casing: 'snake_case',
 })

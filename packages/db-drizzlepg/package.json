@@ -12,10 +12,10 @@
   },
   "scripts": {
     "clean": "del .turbo coverage *.sarif",
-    "db:generate": "node ./node_modules/drizzle-kit/bin.cjs generate",
+    "db:generate": "drizzle-kit generate",
     "db:migrate": "node --env-file=.env src/migrate.ts",
-    "db:push": "node ./node_modules/drizzle-kit/bin.cjs push",
-    "db:studio": "node ./node_modules/drizzle-kit/bin.cjs studio",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
     "dbml:generate": "node ./src/generate-dbml.ts",
     "dbml:render": "dbml-renderer -i schema.dbml -o schema.svg",
     "lint": "eslint .",
@@ -23,9 +23,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.97.1",
-    "@effect/platform-node": "0.108.1",
-    "drizzle-orm": "0.45.2",
+    "drizzle-orm": "1.0.0-rc.4",
     "effect": "3.22.1",
     "pg": "8.23.0",
     "pg-error-enum": "2.0.1",
@@ -38,6 +36,6 @@
     "@toolchain/vitest-config": "workspace:*",
     "@types/pg": "8.21.0",
     "drizzle-dbml-generator": "0.10.0",
-    "drizzle-kit": "0.31.10"
+    "drizzle-kit": "1.0.0-rc.4"
   }
 }

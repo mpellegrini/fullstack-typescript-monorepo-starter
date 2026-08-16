@@ -17,17 +17,17 @@
     "@packages/ui-lib-svelte": "workspace:*",
     "@sveltejs/adapter-auto": "7.0.1",
     "@sveltejs/kit": "2.70.2",
-    "@sveltejs/vite-plugin-svelte": "7.2.0",
+    "@sveltejs/vite-plugin-svelte": "7.3.0",
     "@tailwindcss/vite": "4.3.3",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
     "@types/ws": "8.18.1",
     "home-assistant-js-websocket": "9.6.0",
-    "svelte": "5.56.8",
-    "svelte-check": "4.7.4",
+    "svelte": "5.56.9",
+    "svelte-check": "4.7.6",
     "tailwindcss": "4.3.3",
-    "vite": "8.2.0",
-    "ws": "8.21.2"
+    "vite": "8.2.1",
+    "ws": "8.21.3"
   }
 }

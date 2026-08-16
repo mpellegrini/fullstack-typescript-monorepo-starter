@@ -27,7 +27,7 @@
     "@effect/platform-node": "0.108.1",
     "drizzle-orm": "0.45.2",
     "effect": "3.22.1",
-    "pg": "8.22.0",
+    "pg": "8.23.0",
     "pg-error-enum": "2.0.1",
     "sql-formatter": "15.8.2"
   },
@@ -36,7 +36,7 @@
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/pg": "8.20.4",
+    "@types/pg": "8.21.0",
     "drizzle-dbml-generator": "0.10.0",
     "drizzle-kit": "0.31.10"
   }

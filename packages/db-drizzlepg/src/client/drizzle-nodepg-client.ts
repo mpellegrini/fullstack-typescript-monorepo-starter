@@ -1,7 +1,10 @@
 import type pg from 'pg'
 
 import { type NodePgDatabase, drizzle } from 'drizzle-orm/node-postgres'
-import { Config, Effect } from 'effect'
+import * as Config from 'effect/Config'
+import * as Context from 'effect/Context'
+import * as Effect from 'effect/Effect'
+import * as Layer from 'effect/Layer'
 
 import { toTaggedErrorOrThrow } from './database-errors.ts'
 import { createNodePgPool } from './nodepg-pool.ts'
@@ -15,28 +18,30 @@ interface DrizzleNodePgClientImpl {
   readonly use: <T>(fn: (client: DrizzleClient) => Promise<T>) => Effect.Effect<T, Error>
 }
 
-export class DrizzleNodePgClient extends Effect.Service<DrizzleNodePgClient>()(
-  'DrizzleNodePgClient',
-  {
-    scoped: Effect.gen(function* () {
-      const { pool } = yield* createNodePgPool({
-        connectionString: yield* Config.redacted('DB_CONNECTION_STRING'),
-        // TODO: need to add additional connection config
-      })
+export class DrizzleNodePgClient extends Context.Service<
+  DrizzleNodePgClient,
+  DrizzleNodePgClientImpl
+>()('packages/db-drizzlepg/DrizzleNodePgClient', {
+  make: Effect.gen(function* () {
+    const { pool } = yield* createNodePgPool({
+      connectionString: yield* Config.redacted('DB_CONNECTION_STRING'),
+      // TODO: need to add additional connection config
+    })
 
-      const db = drizzle({
-        client: pool,
-        logger: false,
-      })
+    const db = drizzle({
+      client: pool,
+      logger: false,
+    })
 
-      const use = Effect.fn(<T>(fn: (client: DrizzleClient) => Promise<T>) =>
-        Effect.tryPromise({
-          catch: (cause) => toTaggedErrorOrThrow(cause),
-          try: () => fn(db),
-        }),
-      )
+    const use = Effect.fn(<T>(fn: (client: DrizzleClient) => Promise<T>) =>
+      Effect.tryPromise({
+        catch: (cause) => toTaggedErrorOrThrow(cause),
+        try: () => fn(db),
+      }),
+    )
 
-      return { db, use } satisfies DrizzleNodePgClientImpl
-    }),
-  },
-) {}
+    return { db, use } satisfies DrizzleNodePgClientImpl
+  }),
+}) {
+  static readonly layer = Layer.effect(this)(this.make)
+}

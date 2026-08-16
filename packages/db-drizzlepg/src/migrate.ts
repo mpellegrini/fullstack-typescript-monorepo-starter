@@ -1,4 +1,3 @@
-import { NodeRuntime } from '@effect/platform-node'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import { Effect } from 'effect'
 
@@ -13,4 +12,4 @@ const program = Effect.gen(function* () {
 
 const main = program.pipe(Effect.provide(DrizzleNodePgClient.Default))
 
-NodeRuntime.runMain(main)
+await Effect.runPromise(main)

@@ -1,16 +1,16 @@
 import type { SelectResultFields } from 'drizzle-orm/query-builders/select.types'
 
 import { type SQL, type SQLChunk, and, is, sql } from 'drizzle-orm'
-import { type SelectedFields, PgTimestamp, PgTimestampString } from 'drizzle-orm/pg-core'
+import * as pg from 'drizzle-orm/pg-core'
 
-const buildSqlChunksFrom = <T extends SelectedFields>(selectedFields: T): SQLChunk[] => {
+const buildSqlChunksFrom = <T extends pg.SelectedFields>(selectedFields: T): SQLChunk[] => {
   const chunks: SQLChunk[] = []
   for (const [key, value] of Object.entries(selectedFields)) {
     if (chunks.length > 0) {
       chunks.push(sql.raw(`, `))
     }
     chunks.push(sql.raw(`'${key}',`))
-    if (is(value, PgTimestampString) || is(value, PgTimestamp)) {
+    if (is(value, pg.PgTimestampString) || is(value, pg.PgTimestamp)) {
       // TODO: Verify correct timezone representation
       chunks.push(sql`to_char
         (${value}, 'YYYY-MM-DD"T"HH24:MI:SS.MSZ')`)
@@ -21,7 +21,7 @@ const buildSqlChunksFrom = <T extends SelectedFields>(selectedFields: T): SQLChu
   return chunks
 }
 
-export const jsonBuildObject = <T extends SelectedFields>(
+export const jsonBuildObject = <T extends pg.SelectedFields>(
   selectedFields: T,
 ): SQL<SelectResultFields<T>> => {
   const chunks: SQLChunk[] = buildSqlChunksFrom(selectedFields)
@@ -29,7 +29,7 @@ export const jsonBuildObject = <T extends SelectedFields>(
     (${sql.join(chunks)})`
 }
 
-export const jsonbBuildObject = <T extends SelectedFields>(
+export const jsonbBuildObject = <T extends pg.SelectedFields>(
   selectedFields: T,
 ): SQL<SelectResultFields<T>> => {
   const chunks: SQLChunk[] = buildSqlChunksFrom(selectedFields)
@@ -37,7 +37,7 @@ export const jsonbBuildObject = <T extends SelectedFields>(
     (${sql.join(chunks)})`
 }
 
-export const jsonAggBuildObject = <T extends SelectedFields>(
+export const jsonAggBuildObject = <T extends pg.SelectedFields>(
   shape: T,
   options?: { orderBy?: { column: T[keyof T]; direction: 'asc' | 'desc' }[] },
 ): SQL<SelectResultFields<T>[]> => {

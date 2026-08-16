@@ -18,7 +18,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./.docker/data/pg-data:/var/lib/postgresql/data
+      - ./.docker/data/pg-data:/var/lib/postgresql/18/docker
       - ./.docker/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   dynamodb-local:

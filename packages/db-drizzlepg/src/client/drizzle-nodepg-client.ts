@@ -25,7 +25,6 @@ export class DrizzleNodePgClient extends Effect.Service<DrizzleNodePgClient>()(
       })
 
       const db = drizzle({
-        casing: 'snake_case',
         client: pool,
         logger: false,
       })

@@ -26,8 +26,8 @@ minimumReleaseAge: 4320 # 72 hours
 # `catalog:effect4` string) stay untouched.
 catalogs:
   effect4:
-    '@effect/platform-node': 4.0.0-beta.103
-    effect: 4.0.0-beta.103
+    effect: 4.0.0-rc.108
+    '@effect/platform-node': 4.0.0-rc.108
 
 packages:
   - 'apps/*'

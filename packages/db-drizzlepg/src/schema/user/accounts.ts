@@ -1,9 +1,8 @@
-import { sql } from 'drizzle-orm'
 import * as pg from 'drizzle-orm/pg-core'
 import * as Schema from 'effect/Schema'
 
 import { citext } from '../custom-types.ts'
-import { namedUnique, withSurrogateId } from '../helpers.ts'
+import { namedEnumCheck, namedUnique, withSurrogateId } from '../helpers.ts'
 
 const AccountStatus = Schema.Literals(['active', 'inactive', 'dormant', 'closed', 'suspended'])
 type AccountStatus = typeof AccountStatus.Type
@@ -18,13 +17,7 @@ export const userAccountsTable = pg.snakeCase.table(
     surname: pg.text(),
     username: citext().notNull(),
   },
-  (t) => [
-    namedUnique(t.username),
-    pg.check(
-      'user_accounts_chk_status',
-      sql`${t.status} in ${sql.raw(`('${AccountStatus.literals.join("','")}')`)}`,
-    ),
-  ],
+  (t) => [namedUnique(t.username), namedEnumCheck(t.status, AccountStatus.literals)],
 )
 
 export type UserAccountEntity = Omit<typeof userAccountsTable.$inferSelect, 'hashedPassword'>

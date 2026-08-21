@@ -1,7 +1,8 @@
-import { DrizzleQueryError } from 'drizzle-orm/errors'
+import { EffectDrizzleQueryError } from 'drizzle-orm/effect-core/errors'
+import * as Cause from 'effect/Cause'
 import * as Data from 'effect/Data'
 import * as Match from 'effect/Match'
-import pg from 'pg'
+import * as SqlError from 'effect/unstable/sql/SqlError'
 import { PostgresError } from 'pg-error-enum'
 
 export class DatabaseConnectionError extends Data.TaggedError('DatabaseConnectionError')<{
@@ -27,35 +28,65 @@ export class DatabaseError extends Data.TaggedError('DatabaseError')<{
   }
 }
 
-const matchPgError = (pgDatabaseError: pg.DatabaseError): DatabaseErrorType =>
-  Match.value(pgDatabaseError.code).pipe(
+/**
+ * `@effect/sql-pg` already classifies PostgreSQL error codes into a
+ * `SqlErrorReason`, so only the cases it does not distinguish (foreign key vs.
+ * other integrity violations) need the raw `pg` error code.
+ */
+const pgCodeOf = (cause: unknown): string | undefined => {
+  if (typeof cause !== 'object' || cause === null || !('code' in cause)) {
+    return undefined
+  }
+  const { code } = cause
+  return typeof code === 'string' ? code : undefined
+}
+
+const matchSqlErrorReason = (reason: SqlError.SqlErrorReason): DatabaseErrorType =>
+  Match.value(reason).pipe(
     Match.withReturnType<DatabaseErrorType>(),
-    Match.when(PostgresError.UNIQUE_VIOLATION, () => 'unique_violation'),
-    Match.when(PostgresError.FOREIGN_KEY_VIOLATION, () => 'foreign_key_violation'),
-    Match.when(PostgresError.CONNECTION_EXCEPTION, () => 'connection_error'),
+    Match.tag('UniqueViolation', () => 'unique_violation'),
+    Match.tag('ConstraintError', ({ cause }) =>
+      pgCodeOf(cause) === PostgresError.FOREIGN_KEY_VIOLATION ? 'foreign_key_violation' : 'unknown',
+    ),
+    Match.tag('ConnectionError', () => 'connection_error'),
     Match.orElse(() => 'unknown'),
   )
 
-export const toTaggedErrorOrThrow = (cause: unknown): DatabaseConnectionError | DatabaseError => {
-  if (cause instanceof DrizzleQueryError) {
-    const rootCause = cause.cause
+/**
+ * Drizzle's Effect session wraps the underlying failure in a `Cause` before
+ * attaching it to `EffectDrizzleQueryError.cause`, so it has to be squashed
+ * back out to reach the `SqlError`.
+ */
+const sqlErrorOf = (cause: unknown): SqlError.SqlError | undefined => {
+  const squashed = Cause.isCause(cause) ? Cause.squash(cause) : cause
+  return SqlError.isSqlError(squashed) ? squashed : undefined
+}
 
-    if (rootCause instanceof pg.DatabaseError) {
-      const type = matchPgError(rootCause)
-      return new DatabaseError({ cause: rootCause, params: cause.params, query: cause.query, type })
-    }
+/**
+ * Maps the errors surfaced by the Effect Drizzle driver onto this package's
+ * tagged errors. Query errors arrive as `EffectDrizzleQueryError` (carrying the
+ * SQL and params); connection and client-level failures arrive as `SqlError`.
+ */
+export const toDatabaseError = (
+  error: EffectDrizzleQueryError | SqlError.SqlError,
+): DatabaseConnectionError | DatabaseError => {
+  const isQueryError = error instanceof EffectDrizzleQueryError
+  const params = isQueryError ? error.params : []
+  const query = isQueryError ? error.query : ''
+  const sqlError = isQueryError ? sqlErrorOf(error.cause) : error
 
-    if (
-      rootCause instanceof AggregateError &&
-      rootCause.errors.some(
-        (err) => err instanceof Error && 'code' in err && err.code === 'ECONNREFUSED',
-      )
-    ) {
-      return new DatabaseConnectionError({
-        cause: rootCause,
-        message: 'Failed to connect to database',
-      })
-    }
+  if (sqlError === undefined) {
+    return new DatabaseError({ cause: error, params, query, type: 'unknown' })
   }
-  throw cause
+
+  const type = matchSqlErrorReason(sqlError.cause)
+
+  if (type === 'connection_error') {
+    return new DatabaseConnectionError({
+      cause: sqlError.cause.cause,
+      message: 'Failed to connect to database',
+    })
+  }
+
+  return new DatabaseError({ cause: sqlError.cause, params, query, type })
 }

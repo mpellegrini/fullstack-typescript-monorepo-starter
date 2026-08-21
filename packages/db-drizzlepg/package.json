@@ -13,7 +13,7 @@
   "scripts": {
     "clean": "del .turbo coverage *.sarif",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "node --env-file=.env src/migrate.ts",
+    "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "dbml:generate": "node ./src/generate-dbml.ts",

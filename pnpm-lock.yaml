@@ -4,6 +4,15 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  effect4:
+    '@effect/platform-node':
+      specifier: 4.0.0-rc.110
+      version: 4.0.0-rc.110
+    effect:
+      specifier: 4.0.0-rc.110
+      version: 4.0.0-rc.110
+
 importers:
 
   .:

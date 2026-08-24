@@ -1,20 +1,26 @@
+import { Schema } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { fail, message, superValidate } from 'sveltekit-superforms'
-import { effect } from 'sveltekit-superforms/adapters'
+import { standard } from 'sveltekit-superforms/adapters'
 
 import { SignUpFormSchema } from '$lib/schemas'
 
 import type { Actions, PageServerLoad } from './$types.js'
 
+const signUpFormAdapter = standard(Schema.toStandardSchemaV1(SignUpFormSchema), {
+  defaults: { confirmPassword: '', password: '', username: '' },
+  jsonSchema: Schema.toJsonSchemaDocument(SignUpFormSchema).schema,
+})
+
 export const load = (async () => {
-  const form = await superValidate(effect(SignUpFormSchema))
+  const form = await superValidate(signUpFormAdapter)
   return { form }
 }) satisfies PageServerLoad
 
 export const actions = {
   //   default: async ({ cookies, locals: { api }, request }) => {
   default: async ({ request }) => {
-    const form = await superValidate(request, effect(SignUpFormSchema))
+    const form = await superValidate(request, signUpFormAdapter)
     if (!form.valid) return fail(StatusCodes.BAD_REQUEST, { form })
 
     /*

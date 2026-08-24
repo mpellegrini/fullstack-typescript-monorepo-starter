@@ -1,6 +1,7 @@
 <script lang="ts">
+  import * as Schema from 'effect/Schema'
   import SuperDebug, { superForm } from 'sveltekit-superforms'
-  import { effectClient } from 'sveltekit-superforms/adapters'
+  import { standardClient } from 'sveltekit-superforms/adapters'
 
   import { SignUpFormSchema } from '$lib/schemas/index.js'
 
@@ -10,7 +11,7 @@
 
   const form = superForm(data.form, {
     validationMethod: 'auto',
-    validators: effectClient(SignUpFormSchema),
+    validators: standardClient(Schema.toStandardSchemaV1(SignUpFormSchema)),
   })
   const { allErrors, constraints, enhance, errors, form: formData, message } = form
 </script>

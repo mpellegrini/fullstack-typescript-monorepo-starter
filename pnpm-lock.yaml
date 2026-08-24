@@ -317,8 +317,8 @@ importers:
         specifier: workspace:*
         version: link:../../toolchain/vitest-config
       effect:
-        specifier: 3.22.1
-        version: 3.22.1
+        specifier: catalog:effect4
+        version: 4.0.0-rc.110
       http-status-codes:
         specifier: 2.3.0
         version: 2.3.0

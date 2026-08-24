@@ -9,6 +9,7 @@
       "catalog:effect4": [
         "@apps/effect-mcp-server",
         "@apps/effect-platform-fundamentals",
+        "@apps/sveltekit-example-app",
         "@packages/db-drizzlepg"
       ]
     }

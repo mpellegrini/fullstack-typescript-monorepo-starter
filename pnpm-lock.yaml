@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   effect4:
+    '@effect/opentelemetry':
+      specifier: 4.0.0-rc.110
+      version: 4.0.0-rc.110
     '@effect/platform-node':
       specifier: 4.0.0-rc.110
       version: 4.0.0-rc.110
@@ -524,17 +527,14 @@ importers:
         specifier: 3.1113.0
         version: 3.1113.0
       '@effect-aws/client-dynamodb':
-        specifier: 1.11.0
-        version: 1.11.0(effect@3.22.1)
+        specifier: 2.0.0-beta.4
+        version: 2.0.0-beta.4(effect@4.0.0-rc.110)
       '@effect/opentelemetry':
-        specifier: 0.64.0
-        version: 0.64.0(@effect/platform@0.97.1(effect@3.22.1))(@opentelemetry/api@1.9.1)(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-web@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/semantic-conventions@1.41.1)(effect@3.22.1)
-      '@effect/platform':
-        specifier: 0.97.1
-        version: 0.97.1(effect@3.22.1)
+        specifier: catalog:effect4
+        version: 4.0.0-rc.110(@opentelemetry/api-logs@0.221.0)(@opentelemetry/api@1.9.1)(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-web@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/semantic-conventions@1.41.1)(effect@4.0.0-rc.110)
       '@effect/platform-node':
-        specifier: 0.108.1
-        version: 0.108.1(@effect/cluster@0.60.2(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1)(ioredis@5.10.1(supports-color@8.1.1)))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/workflow@0.19.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1)(ioredis@5.10.1(supports-color@8.1.1)))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1)(ioredis@5.10.1(supports-color@8.1.1)))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1)
+        specifier: catalog:effect4
+        version: 4.0.0-rc.110(effect@4.0.0-rc.110)(redis@6.2.1(@opentelemetry/api@1.9.1))
       '@opentelemetry/sdk-trace-base':
         specifier: 2.10.0
         version: 2.10.0(@opentelemetry/api@1.9.1)
@@ -545,8 +545,8 @@ importers:
         specifier: 2.10.0
         version: 2.10.0(@opentelemetry/api@1.9.1)
       effect:
-        specifier: 3.22.1
-        version: 3.22.1
+        specifier: catalog:effect4
+        version: 4.0.0-rc.110
     devDependencies:
       '@toolchain/eslint-config':
         specifier: workspace:*
@@ -970,15 +970,15 @@ packages:
   '@drizzle-team/brocli@0.12.0':
     resolution: {integrity: sha512-mlUE+rZ8CatQekLhnaiN91Iemdd+e2gFKooGlnRB3oPTL3VghLfX24dx7HrzMNeC1JrIB/0kpsfyty3f5HNfxQ==}
 
-  '@effect-aws/client-dynamodb@1.11.0':
-    resolution: {integrity: sha512-HhBxAeuB+GTwIaOHvtPERRi8MbjO6ZiQ2DmNnrzeNWT7bDjijJoZC0EVGP1P9Ycl9TaFJvmbLOSEC3m+B69dMw==}
+  '@effect-aws/client-dynamodb@2.0.0-beta.4':
+    resolution: {integrity: sha512-2hfDC0K0RPvHGd4xUIbbPwhPSiqfPz4/jTQ2BRWodndd9PejysmZ9AiDXf+jJXgfVqYsziaT3DKTxgAukYFsIA==}
     peerDependencies:
-      effect: '>=3.0.4 <4.0.0'
+      effect: '>=4.0.0 <5.0.0'
 
-  '@effect-aws/commons@0.4.0':
-    resolution: {integrity: sha512-/PP+HkNBdsZxZZt2h+AUly2XaTnZxhCFhVoleCtDQxpfQrMPuX36nSjSlHMZhmI5AavdSSv73/fe/TJEQ2Ewtg==}
+  '@effect-aws/commons@1.0.0-beta.4':
+    resolution: {integrity: sha512-u2HU2HbAbzgQaMlsFjc40Kmdb6juNWFNjOhNO2zPpaHjjtMizsRGBqABL+Su3sMlDXw+PTjNXRHJSRB5aNdgIQ==}
     peerDependencies:
-      effect: '>=3.0.4 <4.0.0'
+      effect: '>=4.0.0 <5.0.0'
 
   '@effect/cluster@0.60.2':
     resolution: {integrity: sha512-GEODN5kvFJ0L0XSkANcS8s6lfhjrrA8x/ezYUV/lXerqCHf5xo3ZTPUanGMHu5Byvikng0mZDcyNvke2sGjfSQ==}
@@ -1019,6 +1019,38 @@ packages:
       '@opentelemetry/sdk-trace-web': ^2.0.0
       '@opentelemetry/semantic-conventions': ^1.33.0
       effect: ^3.22.0
+
+  '@effect/opentelemetry@4.0.0-rc.110':
+    resolution: {integrity: sha512-8Uum1ikIAK2DjATeLseS71HZKVI/dduFYypvMhiO68RTli1xq9yaoTI1Y0IThPn2sI0i86ZdpFaKQx1hdw2tWw==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      '@opentelemetry/api': '>=1.9.0 <2.0.0'
+      '@opentelemetry/api-logs': '>=0.203.0 <0.300.0'
+      '@opentelemetry/resources': '>=2.0.0 <3.0.0'
+      '@opentelemetry/sdk-logs': '>=0.203.0 <0.300.0'
+      '@opentelemetry/sdk-metrics': '>=2.0.0 <3.0.0'
+      '@opentelemetry/sdk-trace-base': '>=2.0.0 <3.0.0'
+      '@opentelemetry/sdk-trace-node': '>=2.0.0 <3.0.0'
+      '@opentelemetry/sdk-trace-web': '>=2.0.0 <3.0.0'
+      '@opentelemetry/semantic-conventions': '>=1.33.0 <2.0.0'
+      effect: ^4.0.0-rc.110
+    peerDependenciesMeta:
+      '@opentelemetry/api':
+        optional: true
+      '@opentelemetry/api-logs':
+        optional: true
+      '@opentelemetry/resources':
+        optional: true
+      '@opentelemetry/sdk-logs':
+        optional: true
+      '@opentelemetry/sdk-metrics':
+        optional: true
+      '@opentelemetry/sdk-trace-base':
+        optional: true
+      '@opentelemetry/sdk-trace-node':
+        optional: true
+      '@opentelemetry/sdk-trace-web':
+        optional: true
 
   '@effect/platform-node-shared@0.61.1':
     resolution: {integrity: sha512-MJAJ1Nc43pYJb5ulFtdNID8klNyRLcbQ0zZ7XYRcBAlT/DrCyN4yAD89AzosmUyfOU+LMHdc8LTMt4rKNEMFaA==}
@@ -6782,18 +6814,18 @@ snapshots:
 
   '@drizzle-team/brocli@0.12.0': {}
 
-  '@effect-aws/client-dynamodb@1.11.0(effect@3.22.1)':
+  '@effect-aws/client-dynamodb@2.0.0-beta.4(effect@4.0.0-rc.110)':
     dependencies:
       '@aws-sdk/client-dynamodb': 3.1113.0
-      '@effect-aws/commons': 0.4.0(effect@3.22.1)
-      effect: 3.22.1
+      '@effect-aws/commons': 1.0.0-beta.4(effect@4.0.0-rc.110)
+      effect: 4.0.0-rc.110
 
-  '@effect-aws/commons@0.4.0(effect@3.22.1)':
+  '@effect-aws/commons@1.0.0-beta.4(effect@4.0.0-rc.110)':
     dependencies:
       '@smithy/protocol-http': 5.4.1
       '@smithy/smithy-client': 4.13.1
       '@smithy/types': 4.17.2
-      effect: 3.22.1
+      effect: 4.0.0-rc.110
 
   '@effect/cluster@0.60.2(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1)(ioredis@5.10.1(supports-color@8.1.1)))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/workflow@0.19.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1)(ioredis@5.10.1(supports-color@8.1.1)))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(effect@3.22.1)':
     dependencies:
@@ -6826,6 +6858,20 @@ snapshots:
       '@opentelemetry/sdk-trace-web': 2.10.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/semantic-conventions': 1.41.1
       effect: 3.22.1
+
+  '@effect/opentelemetry@4.0.0-rc.110(@opentelemetry/api-logs@0.221.0)(@opentelemetry/api@1.9.1)(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-web@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/semantic-conventions@1.41.1)(effect@4.0.0-rc.110)':
+    dependencies:
+      '@opentelemetry/semantic-conventions': 1.41.1
+      effect: 4.0.0-rc.110
+    optionalDependencies:
+      '@opentelemetry/api': 1.9.1
+      '@opentelemetry/api-logs': 0.221.0
+      '@opentelemetry/resources': 2.10.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/sdk-logs': 0.221.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/sdk-metrics': 2.10.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/sdk-trace-base': 2.10.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/sdk-trace-node': 2.10.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/sdk-trace-web': 2.10.0(@opentelemetry/api@1.9.1)
 
   '@effect/platform-node-shared@0.61.1(@effect/cluster@0.60.2(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1)(ioredis@5.10.1(supports-color@8.1.1)))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/workflow@0.19.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1)(ioredis@5.10.1(supports-color@8.1.1)))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1)(ioredis@5.10.1(supports-color@8.1.1)))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1)':
     dependencies:

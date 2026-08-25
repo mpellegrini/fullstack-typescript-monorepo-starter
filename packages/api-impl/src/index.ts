@@ -1,5 +1,5 @@
-import { HttpApiBuilder } from '@effect/platform'
 import { Layer } from 'effect'
+import { HttpApiBuilder } from 'effect/unstable/httpapi'
 
 import { Api } from '@packages/api'
 
@@ -8,5 +8,5 @@ import { taskGroupLive } from './tasks-live.ts'
 
 export const ApiLive = HttpApiBuilder
   //
-  .api(Api)
+  .layer(Api, { openapiPath: '/openapi.json' })
   .pipe(Layer.provide(taskGroupLive), Layer.provide(buildInfoGroupLive))

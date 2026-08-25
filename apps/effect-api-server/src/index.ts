@@ -8,5 +8,5 @@ HttpLive.pipe(
   //
   Layer.provide(TracingLive),
   Layer.launch,
-  NodeRuntime.runMain({}),
+  NodeRuntime.runMain(),
 )

@@ -6,26 +6,27 @@
 import type { PutItemCommandInput } from '@aws-sdk/client-dynamodb'
 
 import { DynamoDB } from '@effect-aws/client-dynamodb'
-import { NodeSdk } from '@effect/opentelemetry'
-import {
-  HttpApi,
-  HttpApiBuilder,
-  HttpApiEndpoint,
-  HttpApiGroup,
-  HttpApiMiddleware,
-  HttpApiScalar,
-  HttpApiSchema,
-  HttpApiSecurity,
-  HttpApp,
-  HttpMiddleware,
-  HttpServer,
-  HttpServerResponse,
-  OpenApi,
-} from '@effect/platform'
-import { NodeHttpServer, NodeRuntime } from '@effect/platform-node'
-import { Unauthorized } from '@effect/platform/HttpApiError'
+import * as NodeSdk from '@effect/opentelemetry/NodeSdk'
+import * as NodeHttpServer from '@effect/platform-node/NodeHttpServer'
+import * as NodeRuntime from '@effect/platform-node/NodeRuntime'
 import { BatchSpanProcessor, ConsoleSpanExporter } from '@opentelemetry/sdk-trace-base'
-import { Context, Effect, Layer, Redacted, Schema } from 'effect'
+import * as Context from 'effect/Context'
+import * as Effect from 'effect/Effect'
+import * as Layer from 'effect/Layer'
+import * as Redacted from 'effect/Redacted'
+import * as Schema from 'effect/Schema'
+import * as HttpEffect from 'effect/unstable/http/HttpEffect'
+import * as HttpRouter from 'effect/unstable/http/HttpRouter'
+import * as HttpServerResponse from 'effect/unstable/http/HttpServerResponse'
+import * as HttpApi from 'effect/unstable/httpapi/HttpApi'
+import * as HttpApiBuilder from 'effect/unstable/httpapi/HttpApiBuilder'
+import * as HttpApiEndpoint from 'effect/unstable/httpapi/HttpApiEndpoint'
+import * as HttpApiError from 'effect/unstable/httpapi/HttpApiError'
+import * as HttpApiGroup from 'effect/unstable/httpapi/HttpApiGroup'
+import * as HttpApiMiddleware from 'effect/unstable/httpapi/HttpApiMiddleware'
+import * as HttpApiScalar from 'effect/unstable/httpapi/HttpApiScalar'
+import * as HttpApiSecurity from 'effect/unstable/httpapi/HttpApiSecurity'
+import * as OpenApi from 'effect/unstable/httpapi/OpenApi'
 import { createServer } from 'node:http'
 
 class Caller extends Schema.Class<Caller>('Caller')({
@@ -33,37 +34,43 @@ class Caller extends Schema.Class<Caller>('Caller')({
   name: Schema.String,
 }) {}
 
-class CallerContext extends Context.Tag('CurrentUser')<CallerContext, Caller>() {}
+class CallerContext extends Context.Service<CallerContext, Caller>()('CurrentUser') {}
 
-class Authorization extends HttpApiMiddleware.Tag<Authorization>()('Authorization', {
-  failure: Unauthorized,
-  provides: CallerContext,
+class Authorization extends HttpApiMiddleware.Service<
+  Authorization,
+  {
+    provides: CallerContext
+  }
+>()('Authorization', {
+  error: HttpApiError.Unauthorized,
   security: {
     apiKey: HttpApiSecurity.apiKey({ in: 'header', key: 'X-API-Key' }),
   },
 }) {}
 
-class PoweredByMiddleware extends HttpApiMiddleware.Tag<PoweredByMiddleware>()(
+class PoweredByMiddleware extends HttpApiMiddleware.Service<PoweredByMiddleware>()(
   'PoweredByMiddleware',
-  {},
 ) {}
 
 class Task extends Schema.Class<Task>('Task')({
   id: Schema.Number,
   done: Schema.Boolean,
-  name: Schema.NonEmptyTrimmedString,
+  name: Schema.String.check(Schema.isNonEmpty(), Schema.isTrimmed()),
 }) {}
 
 class TasksApi extends HttpApiGroup.make('tasks')
   .add(
-    HttpApiEndpoint.get(
-      'findById',
-    )`/${HttpApiSchema.param('id', Schema.NumberFromString)}`.addSuccess(Task),
+    // Path parameters are coerced from their string form, so `Schema.Number`
+    // decodes here without a dedicated `NumberFromString` schema.
+    HttpApiEndpoint.get('findById', '/:id', {
+      params: { id: Schema.Number },
+      success: Task,
+    }),
   )
   .middleware(Authorization)
   .middleware(PoweredByMiddleware)
   .prefix('/tasks')
-  .annotateContext(
+  .annotateMerge(
     OpenApi.annotations({
       description: 'API for managing tasks',
       title: 'Tasks',
@@ -76,87 +83,116 @@ class MyApi extends HttpApi.make('api').add(TasksApi) {}
 // implementation
 // ------------------------------------------------
 
-class TasksRepository extends Effect.Service<TasksRepository>()('TasksRepository', {
-  effect: Effect.gen(function* () {
-    yield* Effect.logInfo('Constructed Tasks Repository')
-    const db = yield* DynamoDB
-    const findById = //
-      Effect.fn('TasksRepository.findById')(function* (id: number) {
-        const args: PutItemCommandInput = {
-          Item: { testAttr: { S: 'test' } },
-          TableName: 'session_store',
-        }
-        const ddbResult = yield* db.putItem(args).pipe(
-          Effect.tapError((error) => Effect.logError(error.message)),
-          Effect.catchAll((_) => Effect.succeed({})),
-        )
+interface TasksRepositoryImpl {
+  readonly findById: (id: number) => Effect.Effect<Task, never, CallerContext>
+}
 
-        yield* Effect.logInfo(ddbResult)
+class TasksRepository extends Context.Service<TasksRepository, TasksRepositoryImpl>()(
+  'TasksRepository',
+  {
+    make: Effect.gen(function* () {
+      yield* Effect.logInfo('Constructed Tasks Repository')
+      const db = yield* DynamoDB
+      const findById = //
+        Effect.fn('TasksRepository.findById')(function* (id: number) {
+          const args: PutItemCommandInput = {
+            Item: { testAttr: { S: 'test' } },
+            TableName: 'session_store',
+          }
+          const ddbResult = yield* db.putItem(args).pipe(
+            Effect.tapError((error) => Effect.logError(error.message)),
+            Effect.catch((_) => Effect.succeed({})),
+          )
 
-        const callerContext = yield* CallerContext
-        yield* Effect.logInfo('TasksRepository.findById', callerContext)
-        return Task.make({ id, done: false, name: 'Learn Effect' })
-      })
-    return {
-      findById,
-    }
-  }),
-}) {}
+          yield* Effect.logInfo(ddbResult)
 
-class TasksService extends Effect.Service<TasksService>()('TasksService', {
-  effect: Effect.gen(function* () {
+          const callerContext = yield* CallerContext
+          yield* Effect.logInfo('TasksRepository.findById', callerContext)
+          return Task.make({ id, done: false, name: 'Learn Effect' })
+        })
+      return {
+        findById,
+      } satisfies TasksRepositoryImpl
+    }),
+  },
+) {
+  static readonly layer = Layer.effect(this)(this.make)
+}
+
+interface TasksServiceImpl {
+  readonly findById: (id: number) => Effect.Effect<Task, never, CallerContext>
+}
+
+class TasksService extends Context.Service<TasksService, TasksServiceImpl>()('TasksService', {
+  make: Effect.gen(function* () {
     yield* Effect.logInfo('Constructed Tasks Service')
+    const repository = yield* TasksRepository
     const findById = //
       Effect.fn('TasksService.findById')(function* (id: number) {
         const callerContext = yield* CallerContext
-        const repository = yield* TasksRepository
         yield* Effect.logInfo('TasksService.findById', callerContext)
         return yield* repository.findById(id)
       })
 
     return {
       findById,
-    } as const
+    } satisfies TasksServiceImpl
   }),
-}) {}
+}) {
+  static readonly layer = Layer.effect(this)(this.make)
+}
 
-const AuthorizationLive = Layer.effect(
-  Authorization,
-  // eslint-disable-next-line require-yield -- todo
-  Effect.gen(function* () {
-    return Authorization.of({
-      apiKey: Effect.fn(function* (apiKey) {
-        yield* Effect.logInfo('Authentication Middleware - checking api key')
+/**
+ * Middleware wraps the endpoint's response effect: the security handler receives
+ * the decoded credential and provides `CallerContext` to everything downstream.
+ */
+const AuthorizationLive = Layer.succeed(Authorization)(
+  Authorization.of({
+    apiKey: Effect.fn(function* (httpEffect, { credential }) {
+      yield* Effect.logInfo('Authentication Middleware - checking api key')
 
-        return Redacted.value(apiKey) === 'sk_opensaysme'
-          ? Caller.make({ id: 1000, name: `Authenticated with ${Redacted.value(apiKey)}` })
-          : yield* new Unauthorized()
-      }),
-    })
+      if (Redacted.value(credential) !== 'sk_opensaysme') {
+        return yield* new HttpApiError.Unauthorized()
+      }
+
+      return yield* Effect.provideService(
+        httpEffect,
+        CallerContext,
+        Caller.make({ id: 1000, name: `Authenticated with ${Redacted.value(credential)}` }),
+      )
+    }),
   }),
 )
 
-const PoweredByMiddlewareLive = Layer.succeed(
-  PoweredByMiddleware,
-  HttpApp.appendPreResponseHandler((_req, res) =>
-    HttpServerResponse.setHeader(res, 'X-Powered-By', '@effect/platform'),
+/**
+ * A pre-response handler runs once the response is ready, so the header is set on
+ * every response the endpoint produces, including the ones raised by other middleware.
+ */
+const PoweredByMiddlewareLive = Layer.succeed(PoweredByMiddleware)((httpEffect) =>
+  Effect.andThen(
+    HttpEffect.appendPreResponseHandler((_req, res) =>
+      Effect.succeed(HttpServerResponse.setHeader(res, 'X-Powered-By', 'effect')),
+    ),
+    httpEffect,
   ),
 )
 
-const TasksLive = HttpApiBuilder.group(MyApi, 'tasks', (handlers) =>
-  handlers //
-    .handle('findById', ({ path }) =>
-      //
-      Effect.gen(function* () {
-        const service = yield* TasksService
-        return yield* service.findById(path.id)
-      }),
-    ),
+const TasksLive = HttpApiBuilder.group(
+  MyApi,
+  'tasks',
+  Effect.fn(function* (handlers) {
+    // Construction-time dependencies are resolved here, leaving `CallerContext`
+    // as the only requirement the handlers carry into each request.
+    const service = yield* TasksService
+
+    return handlers //
+      .handle('findById', ({ params }) => service.findById(params.id))
+  }),
 ).pipe(
   Layer.provide(AuthorizationLive),
   Layer.provide(PoweredByMiddlewareLive),
-  Layer.provide(TasksService.Default),
-  Layer.provide(TasksRepository.Default),
+  Layer.provide(TasksService.layer),
+  Layer.provide(TasksRepository.layer),
   Layer.provide(
     DynamoDB.layer({
       credentials: {
@@ -169,10 +205,6 @@ const TasksLive = HttpApiBuilder.group(MyApi, 'tasks', (handlers) =>
   ),
 )
 
-const ApiLive = HttpApiBuilder.api(MyApi)
-  //
-  .pipe(Layer.provide(TasksLive))
-
 // ------------------------------------------------
 // server
 // ------------------------------------------------
@@ -184,14 +216,21 @@ const NodeSdkLive = NodeSdk.layer(() => ({
   spanProcessor: new BatchSpanProcessor(new ConsoleSpanExporter()),
 }))
 
-HttpApiBuilder.serve(HttpMiddleware.logger).pipe(
-  Layer.provide(HttpApiScalar.layer()),
-  Layer.provide(HttpApiBuilder.middlewareOpenApi()),
-  Layer.provide(ApiLive),
-  Layer.provide(HttpApiBuilder.middlewareCors()),
-  HttpServer.withLogAddress,
+const ApiRoutes = HttpApiBuilder.layer(MyApi, {
+  openapiPath: '/openapi.json',
+}).pipe(Layer.provide(TasksLive))
+
+const DocsRoute = HttpApiScalar.layer(MyApi, { path: '/docs' })
+
+const AllRoutes = Layer.mergeAll(ApiRoutes, DocsRoute, HttpRouter.cors())
+
+/**
+ * `HttpRouter.serve` installs the request logger and logs the listen address,
+ * so `HttpMiddleware.logger` and `HttpServer.withLogAddress` are not wired in here.
+ */
+HttpRouter.serve(AllRoutes).pipe(
   Layer.provide(NodeHttpServer.layer(createServer, { port: 3000 })),
   Layer.provide(NodeSdkLive),
   Layer.launch,
-  NodeRuntime.runMain(),
+  NodeRuntime.runMain,
 )

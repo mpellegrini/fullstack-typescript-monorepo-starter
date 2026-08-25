@@ -2,15 +2,23 @@
   "packageManager": "pnpm",
   "versionStrategy": "pin",
   "overrides": {
+    "@effect/opentelemetry": {
+      "catalog:effect4": ["@packages/learn-effect-platform"]
+    },
     "@effect/platform-node": {
-      "catalog:effect4": ["@apps/effect-mcp-server", "@apps/effect-platform-fundamentals"]
+      "catalog:effect4": [
+        "@apps/effect-mcp-server",
+        "@apps/effect-platform-fundamentals",
+        "@packages/learn-effect-platform"
+      ]
     },
     "effect": {
       "catalog:effect4": [
         "@apps/effect-mcp-server",
         "@apps/effect-platform-fundamentals",
         "@apps/sveltekit-example-app",
-        "@packages/db-drizzlepg"
+        "@packages/db-drizzlepg",
+        "@packages/learn-effect-platform"
       ]
     }
   }

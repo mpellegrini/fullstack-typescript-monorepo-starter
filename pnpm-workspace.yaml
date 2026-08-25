@@ -27,6 +27,7 @@ minimumReleaseAge: 4320 # 72 hours
 catalogs:
   effect4:
     effect: 4.0.0-rc.110
+    '@effect/opentelemetry': 4.0.0-rc.110
     '@effect/platform-node': 4.0.0-rc.110
 
 packages:
@@ -58,7 +59,8 @@ trustPolicyExclude:
   # Bare names (no version) exclude every version: pnpm only accepts exact
   # versions here (no ranges), so this is the only way to track the Effect 4.0
   # betas without editing this list on each release. Rollback protection is off
-  # for these three packages only — re-pin to exact versions once 4.0.0 stable lands.
+  # for these four packages only — re-pin to exact versions once 4.0.0 stable lands.
   - 'effect'
+  - '@effect/opentelemetry'
   - '@effect/platform-node'
   - '@effect/platform-node-shared'

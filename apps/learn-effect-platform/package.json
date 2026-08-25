@@ -30,6 +30,7 @@
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
+    "@toolchain/vite-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*"
   }
 }

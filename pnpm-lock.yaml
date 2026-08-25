@@ -319,6 +319,9 @@ importers:
       '@toolchain/typescript-config':
         specifier: workspace:*
         version: link:../../toolchain/typescript-config
+      '@toolchain/vite-config':
+        specifier: workspace:*
+        version: link:../../toolchain/vite-config
       '@toolchain/vitest-config':
         specifier: workspace:*
         version: link:../../toolchain/vitest-config

@@ -1,21 +1,20 @@
-import { HttpApiBuilder, HttpApiScalar, HttpMiddleware, HttpServer } from '@effect/platform'
 import { NodeHttpServer } from '@effect/platform-node'
 import { Config, Layer } from 'effect'
+import { HttpRouter } from 'effect/unstable/http'
+import { HttpApiScalar } from 'effect/unstable/httpapi'
 import { createServer } from 'node:http'
 
+import { Api } from '@packages/api'
 import { ApiLive } from '@packages/api-impl'
 
-const ServerLive = Layer.unwrapEffect(
-  Config.integer('PORT')
+const ServerLive = Layer.unwrap(
+  Config.int('PORT')
     .pipe(Config.withDefault(3000))
     .pipe(Config.map((port) => NodeHttpServer.layer(createServer, { port }))),
 )
 
-export const HttpLive = HttpApiBuilder.serve(HttpMiddleware.logger).pipe(
-  Layer.provide(HttpApiScalar.layer({ scalar: { layout: 'modern', theme: 'kepler' } })),
-  Layer.provide(HttpApiBuilder.middlewareOpenApi()),
-  Layer.provide(HttpApiBuilder.middlewareCors()),
-  Layer.provide(ApiLive),
-  HttpServer.withLogAddress,
+const DocsLive = HttpApiScalar.layer(Api, { scalar: { layout: 'modern', theme: 'kepler' } })
+
+export const HttpLive = HttpRouter.serve(Layer.mergeAll(ApiLive, DocsLive, HttpRouter.cors())).pipe(
   Layer.provide(ServerLive),
 )

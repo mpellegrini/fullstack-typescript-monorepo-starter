@@ -18,14 +18,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/opentelemetry": "0.64.0",
-    "@effect/platform": "0.97.1",
-    "@effect/platform-node": "0.108.1",
+    "@effect/opentelemetry": "catalog:effect4",
+    "@effect/platform-node": "catalog:effect4",
     "@opentelemetry/exporter-trace-otlp-http": "0.221.0",
     "@opentelemetry/sdk-trace-base": "2.10.0",
     "@opentelemetry/sdk-trace-node": "2.10.0",
+    "@packages/api": "workspace:*",
     "@packages/api-impl": "workspace:*",
-    "effect": "3.22.1"
+    "effect": "catalog:effect4"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

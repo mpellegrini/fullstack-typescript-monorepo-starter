@@ -16,8 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.97.1",
-    "effect": "3.22.1"
+    "effect": "catalog:effect4"
   },
   "devDependencies": {
     "@packages/api": "workspace:*",

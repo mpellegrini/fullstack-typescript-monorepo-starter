@@ -1,5 +1,5 @@
-import { HttpApiBuilder } from '@effect/platform'
 import { Config, Effect } from 'effect'
+import { HttpApiBuilder } from 'effect/unstable/httpapi'
 
 import { Api, BuildInfo, wrapSingleItemResponse } from '@packages/api'
 

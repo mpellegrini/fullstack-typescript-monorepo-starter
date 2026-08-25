@@ -286,6 +286,43 @@ importers:
         specifier: workspace:*
         version: link:../../toolchain/vitest-config
 
+  apps/learn-effect-platform:
+    dependencies:
+      '@aws-sdk/client-dynamodb':
+        specifier: 3.1113.0
+        version: 3.1113.0
+      '@effect-aws/client-dynamodb':
+        specifier: 2.0.0-beta.4
+        version: 2.0.0-beta.4(effect@4.0.0-rc.110)
+      '@effect/opentelemetry':
+        specifier: catalog:effect4
+        version: 4.0.0-rc.110(@opentelemetry/api-logs@0.221.0)(@opentelemetry/api@1.9.1)(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-web@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/semantic-conventions@1.41.1)(effect@4.0.0-rc.110)
+      '@effect/platform-node':
+        specifier: catalog:effect4
+        version: 4.0.0-rc.110(effect@4.0.0-rc.110)(redis@6.2.1(@opentelemetry/api@1.9.1))
+      '@opentelemetry/sdk-trace-base':
+        specifier: 2.10.0
+        version: 2.10.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/sdk-trace-node':
+        specifier: 2.10.0
+        version: 2.10.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/sdk-trace-web':
+        specifier: 2.10.0
+        version: 2.10.0(@opentelemetry/api@1.9.1)
+      effect:
+        specifier: catalog:effect4
+        version: 4.0.0-rc.110
+    devDependencies:
+      '@toolchain/eslint-config':
+        specifier: workspace:*
+        version: link:../../toolchain/eslint-config
+      '@toolchain/typescript-config':
+        specifier: workspace:*
+        version: link:../../toolchain/typescript-config
+      '@toolchain/vitest-config':
+        specifier: workspace:*
+        version: link:../../toolchain/vitest-config
+
   apps/sveltekit-example-app:
     dependencies:
       '@node-rs/argon2':
@@ -510,43 +547,6 @@ importers:
         version: 1.0.0-rc.4
 
   packages/example-pkg:
-    devDependencies:
-      '@toolchain/eslint-config':
-        specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
-        specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
-        specifier: workspace:*
-        version: link:../../toolchain/vitest-config
-
-  packages/learn-effect-platform:
-    dependencies:
-      '@aws-sdk/client-dynamodb':
-        specifier: 3.1113.0
-        version: 3.1113.0
-      '@effect-aws/client-dynamodb':
-        specifier: 2.0.0-beta.4
-        version: 2.0.0-beta.4(effect@4.0.0-rc.110)
-      '@effect/opentelemetry':
-        specifier: catalog:effect4
-        version: 4.0.0-rc.110(@opentelemetry/api-logs@0.221.0)(@opentelemetry/api@1.9.1)(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-web@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/semantic-conventions@1.41.1)(effect@4.0.0-rc.110)
-      '@effect/platform-node':
-        specifier: catalog:effect4
-        version: 4.0.0-rc.110(effect@4.0.0-rc.110)(redis@6.2.1(@opentelemetry/api@1.9.1))
-      '@opentelemetry/sdk-trace-base':
-        specifier: 2.10.0
-        version: 2.10.0(@opentelemetry/api@1.9.1)
-      '@opentelemetry/sdk-trace-node':
-        specifier: 2.10.0
-        version: 2.10.0(@opentelemetry/api@1.9.1)
-      '@opentelemetry/sdk-trace-web':
-        specifier: 2.10.0
-        version: 2.10.0(@opentelemetry/api@1.9.1)
-      effect:
-        specifier: catalog:effect4
-        version: 4.0.0-rc.110
     devDependencies:
       '@toolchain/eslint-config':
         specifier: workspace:*

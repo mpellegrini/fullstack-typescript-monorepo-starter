@@ -1,17 +1,19 @@
 {
-  "name": "@packages/learn-effect-platform",
+  "name": "@apps/learn-effect-platform",
   "version": "0.0.0",
   "private": true,
   "description": "Learn effect platform",
   "license": "UNLICENSED",
   "type": "module",
-  "exports": {
-    ".": "./src/index.ts"
-  },
+  "main": "build/index.js",
+  "files": [
+    "build"
+  ],
   "scripts": {
-    "clean": "del .turbo coverage *.sarif",
+    "build": "vite build",
+    "clean": "del .turbo coverage build *.sarif",
     "dev": "node --watch src/index.ts",
-    "lint": "eslint .",
+    "lint": "eslint ",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "vite": "8.2.1"
+    "vite": "8.2.2"
   },
   "devDependencies": {
     "@toolchain/typescript-config": "workspace:*"

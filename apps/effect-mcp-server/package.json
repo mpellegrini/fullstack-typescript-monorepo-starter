@@ -23,11 +23,11 @@
     "effect": "4.0.0-rc.111"
   },
   "devDependencies": {
-    "@modelcontextprotocol/inspector": "2.2.0",
+    "@modelcontextprotocol/inspector": "2.3.0",
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vite-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "@types/node": "26.2.0"
+    "@types/node": "26.3.0"
   }
 }

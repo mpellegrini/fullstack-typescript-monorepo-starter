@@ -71,6 +71,16 @@ jobs:
           # No step uses sudo; Trivy runs via docker on the runner's docker group.
           disable-sudo: true
 
+      # Needed so Trivy can read the repo's root .trivyignore (this job never
+      # otherwise checks out source — it only scans images already pushed by
+      # digest).
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: .trivyignore
+          sparse-checkout-cone-mode: false
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
         with:
@@ -136,6 +146,7 @@ jobs:
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH,MEDIUM'
           exit-code: '0'
+          trivyignores: '.trivyignore'
 
       - name: Upload Trivy scan results to GitHub Security
         uses: github/codeql-action/upload-sarif@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd # v4.37.7
@@ -162,6 +173,7 @@ jobs:
           severity: ${{ inputs.severity_threshold }}
           exit-code: '1'
           ignore-unfixed: ${{ inputs.ignore_unfixed }}
+          trivyignores: '.trivyignore'
         continue-on-error: true
 
       # -------------------------------------------------------------------
@@ -179,6 +191,7 @@ jobs:
           severity: ${{ inputs.severity_threshold }}
           exit-code: '1'
           ignore-unfixed: ${{ inputs.ignore_unfixed }}
+          trivyignores: '.trivyignore'
         continue-on-error: true
 
       - name: Trivy misconfiguration and secret scan

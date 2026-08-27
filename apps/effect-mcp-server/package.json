@@ -19,8 +19,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform-node": "catalog:effect4",
-    "effect": "catalog:effect4"
+    "@effect/platform-node": "4.0.0-rc.111",
+    "effect": "4.0.0-rc.111"
   },
   "devDependencies": {
     "@modelcontextprotocol/inspector": "2.2.0",

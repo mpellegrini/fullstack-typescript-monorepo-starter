@@ -20,16 +20,6 @@ engineStrict: true
 #  immediately pulled in before the community detects it.
 minimumReleaseAge: 4320 # 72 hours
 
-# Single source of truth for the Effect 4.0 beta line: workspaces declare
-# `catalog:effect4`, so bumping a beta is a one-line edit here — package.json
-# and one-version.config.json (which keys its override on the literal
-# `catalog:effect4` string) stay untouched.
-catalogs:
-  effect4:
-    effect: 4.0.0-rc.110
-    '@effect/opentelemetry': 4.0.0-rc.110
-    '@effect/platform-node': 4.0.0-rc.110
-
 packages:
   - 'apps/*'
   - 'infra/*'

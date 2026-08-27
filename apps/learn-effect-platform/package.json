@@ -20,12 +20,12 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "3.1113.0",
     "@effect-aws/client-dynamodb": "2.0.0-beta.4",
-    "@effect/opentelemetry": "catalog:effect4",
-    "@effect/platform-node": "catalog:effect4",
+    "@effect/opentelemetry": "4.0.0-rc.111",
+    "@effect/platform-node": "4.0.0-rc.111",
     "@opentelemetry/sdk-trace-base": "2.10.0",
     "@opentelemetry/sdk-trace-node": "2.10.0",
     "@opentelemetry/sdk-trace-web": "2.10.0",
-    "effect": "catalog:effect4"
+    "effect": "4.0.0-rc.111"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",

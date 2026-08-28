@@ -1,3 +1,0 @@
-# Exclude OpenSSL QUIC server DoS flaw for Distroless Node.js base
-# Rationale: Node.js does not expose or initialize raw OpenSSL QUIC listener servers.
-CVE-2026-14456

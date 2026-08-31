@@ -7,10 +7,10 @@ import { createServer } from 'node:http'
 import { Api } from '@packages/api'
 import { ApiLive } from '@packages/api-impl'
 
-const ServerLive = Layer.unwrap(
-  Config.int('PORT')
-    .pipe(Config.withDefault(3000))
-    .pipe(Config.map((port) => NodeHttpServer.layer(createServer, { port }))),
+const ServerLive = Config.int('PORT').pipe(
+  Config.withDefault(3000),
+  Config.map((port) => NodeHttpServer.layer(createServer, { port })),
+  Layer.unwrap,
 )
 
 const DocsLive = HttpApiScalar.layer(Api, { scalar: { layout: 'modern', theme: 'kepler' } })

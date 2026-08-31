@@ -14,13 +14,13 @@
   },
   "dependencies": {
     "@packages/aws-cdk-lib": "workspace:*",
-    "aws-cdk-lib": "2.266.0",
+    "aws-cdk-lib": "2.267.0",
     "constructs": "10.8.1"
   },
   "devDependencies": {
     "@toolchain/eslint-config": "workspace:*",
     "@toolchain/typescript-config": "workspace:*",
     "@toolchain/vitest-config": "workspace:*",
-    "aws-cdk": "2.1138.0"
+    "aws-cdk": "2.1139.0"
   }
 }

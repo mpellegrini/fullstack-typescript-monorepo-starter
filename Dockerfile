@@ -5,7 +5,7 @@
 #   "main":  pointing at its built server entry (e.g. "build/index.js")
 #   "files": including the build output directory (e.g. "files": ["build"]),
 #            otherwise `pnpm deploy` won't copy the bundle into the runtime image
-FROM node:24.19.0-trixie-slim AS base
+FROM node:24.20.0-trixie-slim AS base
 RUN corepack enable pnpm
 WORKDIR /repo
 

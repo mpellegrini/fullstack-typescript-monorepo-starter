@@ -20,9 +20,9 @@
   "dependencies": {
     "@effect/opentelemetry": "4.0.0-rc.112",
     "@effect/platform-node": "4.0.0-rc.112",
-    "@opentelemetry/exporter-trace-otlp-http": "0.221.0",
-    "@opentelemetry/sdk-trace-base": "2.10.0",
-    "@opentelemetry/sdk-trace-node": "2.10.0",
+    "@opentelemetry/exporter-trace-otlp-http": "0.222.0",
+    "@opentelemetry/sdk-trace-base": "2.11.0",
+    "@opentelemetry/sdk-trace-node": "2.11.0",
     "@packages/api": "workspace:*",
     "@packages/api-impl": "workspace:*",
     "effect": "4.0.0-rc.112"

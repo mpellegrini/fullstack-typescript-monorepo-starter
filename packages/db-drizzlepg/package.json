@@ -31,9 +31,9 @@
   },
   "devDependencies": {
     "@softwaretechnik/dbml-renderer": "1.0.31",
-    "@toolchain/eslint-config": "workspace:*",
-    "@toolchain/typescript-config": "workspace:*",
-    "@toolchain/vitest-config": "workspace:*",
+    "@toolchain/eslint": "workspace:*",
+    "@toolchain/typescript": "workspace:*",
+    "@toolchain/vitest": "workspace:*",
     "@types/pg": "8.23.1",
     "drizzle-dbml-generator": "0.10.0",
     "drizzle-kit": "1.0.0-rc.4"

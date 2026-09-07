@@ -1,14 +1,16 @@
-import { HttpApiBuilder } from '@effect/platform'
 import { Effect } from 'effect'
+import { HttpApiBuilder } from 'effect/unstable/httpapi'
 
-import { Api, TaskId, wrapSingleItemResponse } from '@packages/api'
+import { Api, Task, TaskId, wrapSingleItemResponse } from '@packages/api'
 
 export const taskGroupLive = HttpApiBuilder.group(Api, 'tasks', (handlers) =>
-  handlers.handle('getTaskById', ({ path }) =>
-    Effect.succeed({
-      id: TaskId.make(path.id),
-      done: false,
-      name: 'My Found Task',
-    }).pipe(Effect.map(wrapSingleItemResponse)),
+  handlers.handle('getTaskById', ({ params }) =>
+    Effect.succeed(
+      new Task({
+        id: TaskId.make(params.id),
+        done: false,
+        name: 'My Found Task',
+      }),
+    ).pipe(Effect.map(wrapSingleItemResponse)),
   ),
 )

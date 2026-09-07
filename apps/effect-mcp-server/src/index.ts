@@ -1,5 +1,6 @@
 import * as NodeHttpServer from '@effect/platform-node/NodeHttpServer'
 import * as NodeRuntime from '@effect/platform-node/NodeRuntime'
+import * as Config from 'effect/Config'
 import * as Effect from 'effect/Effect'
 import * as Layer from 'effect/Layer'
 import * as HttpRouter from 'effect/unstable/http/HttpRouter'
@@ -14,9 +15,15 @@ const HelloRouter = HttpRouter.add('GET', '/hello', (_request) =>
 
 const AllRouters = Layer.mergeAll(ApiRouter, ApiScalarRouter, ApiSwaggerRouter, HelloRouter)
 
-// Set up the server using NodeHttpServer on port 3000
-const ServerLive = HttpRouter.serve(AllRouters).pipe(
-  Layer.provide(NodeHttpServer.layer(createServer, { port: 3000 })),
+const ServerLive = Layer.unwrap(
+  Config.int('PORT').pipe(
+    Config.withDefault(3000),
+    Config.map((port) =>
+      HttpRouter.serve(AllRouters).pipe(
+        Layer.provide(NodeHttpServer.layer(createServer, { port })),
+      ),
+    ),
+  ),
 )
 
 // Launch the server

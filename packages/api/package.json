@@ -15,13 +15,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform": "0.97.1",
-    "effect": "3.22.1",
+    "effect": "4.0.0-rc.112",
     "http-status": "2.1.0"
   },
   "devDependencies": {
-    "@toolchain/eslint-config": "workspace:*",
-    "@toolchain/typescript-config": "workspace:*",
-    "@toolchain/vitest-config": "workspace:*"
+    "@toolchain/eslint": "workspace:*",
+    "@toolchain/typescript": "workspace:*",
+    "@toolchain/vitest": "workspace:*"
   }
 }

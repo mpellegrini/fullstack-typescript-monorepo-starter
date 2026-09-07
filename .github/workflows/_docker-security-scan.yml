@@ -65,21 +65,31 @@ jobs:
       # silently exfiltrate the AWS session. Audit changes no behavior; the
       # harvested endpoint list is the input to a future egress-policy: block.
       - name: Harden the runner
-        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
           egress-policy: audit
           # No step uses sudo; Trivy runs via docker on the runner's docker group.
           disable-sudo: true
 
+      # Needed so Trivy can read the repo's root .trivyignore (this job never
+      # otherwise checks out source — it only scans images already pushed by
+      # digest).
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: .trivyignore
+          sparse-checkout-cone-mode: false
+
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6.2.4
         with:
           role-to-assume: ${{ vars.AWS_GHA_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Log in to Amazon ECR
         id: ecr-login
-        uses: aws-actions/amazon-ecr-login@d539f0932e70871a027e9d5a9d8fc38589180a64 # v2.1.6
+        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # v2.1.7
 
       # Resolve this app's per-arch image refs from its digest artifacts. Each
       # artifact holds a single empty file named after the digest hex (no
@@ -136,9 +146,10 @@ jobs:
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH,MEDIUM'
           exit-code: '0'
+          trivyignores: '.trivyignore'
 
       - name: Upload Trivy scan results to GitHub Security
-        uses: github/codeql-action/upload-sarif@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd # v4.37.7
+        uses: github/codeql-action/upload-sarif@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v4.37.9
         if: always() && hashFiles('trivy-results.sarif') != '' # Upload results even if the scan fails
         with:
           sarif_file: 'trivy-results.sarif'
@@ -162,6 +173,7 @@ jobs:
           severity: ${{ inputs.severity_threshold }}
           exit-code: '1'
           ignore-unfixed: ${{ inputs.ignore_unfixed }}
+          trivyignores: '.trivyignore'
         continue-on-error: true
 
       # -------------------------------------------------------------------
@@ -179,6 +191,7 @@ jobs:
           severity: ${{ inputs.severity_threshold }}
           exit-code: '1'
           ignore-unfixed: ${{ inputs.ignore_unfixed }}
+          trivyignores: '.trivyignore'
         continue-on-error: true
 
       - name: Trivy misconfiguration and secret scan

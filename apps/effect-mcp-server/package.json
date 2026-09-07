@@ -12,22 +12,22 @@
   "scripts": {
     "build": "vite build",
     "clean": "del .turbo coverage build *.sarif",
-    "dev": "node --watch src/index.ts",
+    "dev": "node --watch --env-file=.env src/index.ts",
     "lint": "eslint ",
     "mcp-inspector": "mcp-inspector node src/main.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform-node": "catalog:effect4",
-    "effect": "catalog:effect4"
+    "@effect/platform-node": "4.0.0-rc.112",
+    "effect": "4.0.0-rc.112"
   },
   "devDependencies": {
-    "@modelcontextprotocol/inspector": "2.2.0",
-    "@toolchain/eslint-config": "workspace:*",
-    "@toolchain/typescript-config": "workspace:*",
-    "@toolchain/vite-config": "workspace:*",
-    "@toolchain/vitest-config": "workspace:*",
-    "@types/node": "26.2.0"
+    "@modelcontextprotocol/inspector": "2.4.0",
+    "@toolchain/eslint": "workspace:*",
+    "@toolchain/typescript": "workspace:*",
+    "@toolchain/vite": "workspace:*",
+    "@toolchain/vitest": "workspace:*",
+    "@types/node": "26.4.0"
   }
 }

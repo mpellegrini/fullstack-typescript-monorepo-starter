@@ -1,0 +1,36 @@
+{
+  "name": "@apps/learn-effect-platform",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Learn effect platform",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "build/index.js",
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "clean": "del .turbo coverage build *.sarif",
+    "dev": "node --watch src/index.ts",
+    "lint": "eslint ",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "3.1123.0",
+    "@effect-aws/client-dynamodb": "2.0.0-beta.4",
+    "@effect/opentelemetry": "4.0.0-rc.112",
+    "@effect/platform-node": "4.0.0-rc.112",
+    "@opentelemetry/sdk-trace-base": "2.11.0",
+    "@opentelemetry/sdk-trace-node": "2.11.0",
+    "@opentelemetry/sdk-trace-web": "2.11.0",
+    "effect": "4.0.0-rc.112"
+  },
+  "devDependencies": {
+    "@toolchain/eslint": "workspace:*",
+    "@toolchain/typescript": "workspace:*",
+    "@toolchain/vite": "workspace:*",
+    "@toolchain/vitest": "workspace:*"
+  }
+}

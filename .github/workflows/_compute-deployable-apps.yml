@@ -40,6 +40,16 @@ jobs:
       - name: Check out code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # This job runs npx directly rather than going through the prepare
+      # composite action, so it needs the Node.js runtime from
+      # devEngines.runtime on PATH; npm fails with EBADDEVENGINES otherwise.
+      # install: false skips the dependency install, which this job does not
+      # need — ajv-cli is fetched by npx.
+      - name: Set up Node.js
+        uses: pnpm/setup@703c52620218391530e48b9e8870d5c0082e1b9b # v2.1.0
+        with:
+          install: false
+
       # Fail loud on a malformed opt-in rather than silently skipping it. The
       # schema requires container.imageName and rejects unknown keys, so the
       # compute loop below can extract fields without re-validating. Validates

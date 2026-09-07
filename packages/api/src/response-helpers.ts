@@ -6,13 +6,13 @@ export interface SingleItemResponseWrapper<T> {
   readonly timestamp: string
 }
 
-export const singleItemResponseWrapperSchema = <A, I, R>(
-  itemSchema: Schema.Schema<A, I, R>,
-): Schema.Schema<SingleItemResponseWrapper<A>, SingleItemResponseWrapper<I>, R> =>
+export const singleItemResponseWrapperSchema = <A, I, RD, RE>(
+  itemSchema: Schema.Codec<A, I, RD, RE>,
+): Schema.Codec<SingleItemResponseWrapper<A>, SingleItemResponseWrapper<I>, RD, RE> =>
   Schema.Struct({
     data: itemSchema,
     success: Schema.Literal(true),
-    timestamp: Schema.String.annotations({
+    timestamp: Schema.String.annotate({
       examples: ['2025-07-25T12:30:18.956Z'],
     }),
   })

@@ -1,12 +1,15 @@
 import type * as Pg from 'pg'
 
 import * as PgClient from '@effect/sql-pg/PgClient'
+import { EffectCache } from 'drizzle-orm/cache/core/cache-effect'
 import * as PgDrizzle from 'drizzle-orm/effect-postgres'
 import * as Config from 'effect/Config'
 import * as Context from 'effect/Context'
 import * as Effect from 'effect/Effect'
 import * as Layer from 'effect/Layer'
 import { types as pgTypes } from 'pg'
+
+import { QueryLoggerLive } from '../query-logger.ts'
 
 /**
  * OIDs whose raw text values are handed straight through to Drizzle, which owns
@@ -59,7 +62,18 @@ export class DrizzlePgClient extends Context.Service<DrizzlePgClient, DrizzlePgC
   '@packages/db-drizzlepg/DrizzlePgClient',
   {
     make: Effect.gen(function* () {
-      const db = yield* PgDrizzle.makeWithDefaults()
+      const isQueryLoggingEnabled = yield* Config.boolean('DB_LOGGING_ENABLED').pipe(
+        Config.withDefault(false),
+      )
+
+      const db = yield* PgDrizzle.make().pipe(
+        Effect.provide(
+          Layer.mergeAll(
+            isQueryLoggingEnabled ? QueryLoggerLive : PgDrizzle.EffectLogger.Default,
+            EffectCache.Default,
+          ),
+        ),
+      )
 
       return { db } satisfies DrizzlePgClientImpl
     }),

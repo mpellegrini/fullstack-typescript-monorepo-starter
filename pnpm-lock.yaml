@@ -270,15 +270,15 @@ importers:
       '@tailwindcss/vite':
         specifier: 4.3.3
         version: 4.3.3(vite@8.2.2(@types/node@26.4.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0))
-      '@toolchain/eslint-config':
+      '@toolchain/eslint':
         specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
+        version: link:../../toolchain/eslint
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
+        version: link:../../toolchain/typescript
+      '@toolchain/vitest':
         specifier: workspace:*
-        version: link:../../toolchain/vitest-config
+        version: link:../../toolchain/vitest
       '@types/node':
         specifier: 26.4.0
         version: 26.4.0
@@ -331,18 +331,18 @@ importers:
         specifier: 4.0.0-rc.112
         version: 4.0.0-rc.112
     devDependencies:
-      '@toolchain/eslint-config':
+      '@toolchain/eslint':
         specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
+        version: link:../../toolchain/eslint
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vite-config':
+        version: link:../../toolchain/typescript
+      '@toolchain/vite':
         specifier: workspace:*
-        version: link:../../toolchain/vite-config
-      '@toolchain/vitest-config':
+        version: link:../../toolchain/vite
+      '@toolchain/vitest':
         specifier: workspace:*
-        version: link:../../toolchain/vitest-config
+        version: link:../../toolchain/vitest
 
   apps/effect-mcp-server:
     dependencies:
@@ -356,18 +356,18 @@ importers:
       '@modelcontextprotocol/inspector':
         specifier: 2.4.0
         version: 2.4.0(@modelcontextprotocol/sdk@1.30.0(supports-color@8.1.1)(zod@4.5.4))(@types/node@26.4.0)(esbuild@0.28.2)(express@5.2.1(supports-color@8.1.1))(jiti@2.7.0)(react-dom@18.3.1(react@19.2.8))(supports-color@8.1.1)(tsx@4.23.12)
-      '@toolchain/eslint-config':
+      '@toolchain/eslint':
         specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
+        version: link:../../toolchain/eslint
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vite-config':
+        version: link:../../toolchain/typescript
+      '@toolchain/vite':
         specifier: workspace:*
-        version: link:../../toolchain/vite-config
-      '@toolchain/vitest-config':
+        version: link:../../toolchain/vite
+      '@toolchain/vitest':
         specifier: workspace:*
-        version: link:../../toolchain/vitest-config
+        version: link:../../toolchain/vitest
       '@types/node':
         specifier: 26.4.0
         version: 26.4.0
@@ -381,18 +381,18 @@ importers:
         specifier: 4.0.0-rc.112
         version: 4.0.0-rc.112
     devDependencies:
-      '@toolchain/eslint-config':
+      '@toolchain/eslint':
         specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
+        version: link:../../toolchain/eslint
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vite-config':
+        version: link:../../toolchain/typescript
+      '@toolchain/vite':
         specifier: workspace:*
-        version: link:../../toolchain/vite-config
-      '@toolchain/vitest-config':
+        version: link:../../toolchain/vite
+      '@toolchain/vitest':
         specifier: workspace:*
-        version: link:../../toolchain/vitest-config
+        version: link:../../toolchain/vitest
       '@types/node':
         specifier: 26.4.0
         version: 26.4.0
@@ -414,15 +414,15 @@ importers:
       '@tailwindcss/vite':
         specifier: 4.3.3
         version: 4.3.3(vite@8.2.2(@types/node@26.4.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0))
-      '@toolchain/eslint-config':
+      '@toolchain/eslint':
         specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
+        version: link:../../toolchain/eslint
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
+        version: link:../../toolchain/typescript
+      '@toolchain/vitest':
         specifier: workspace:*
-        version: link:../../toolchain/vitest-config
+        version: link:../../toolchain/vitest
       '@types/ws':
         specifier: 8.18.1
         version: 8.18.1
@@ -460,18 +460,18 @@ importers:
         specifier: 4.5.4
         version: 4.5.4
     devDependencies:
-      '@toolchain/eslint-config':
+      '@toolchain/eslint':
         specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
+        version: link:../../toolchain/eslint
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vite-config':
+        version: link:../../toolchain/typescript
+      '@toolchain/vite':
         specifier: workspace:*
-        version: link:../../toolchain/vite-config
-      '@toolchain/vitest-config':
+        version: link:../../toolchain/vite
+      '@toolchain/vitest':
         specifier: workspace:*
-        version: link:../../toolchain/vitest-config
+        version: link:../../toolchain/vitest
 
   apps/learn-effect-platform:
     dependencies:
@@ -500,18 +500,18 @@ importers:
         specifier: 4.0.0-rc.112
         version: 4.0.0-rc.112
     devDependencies:
-      '@toolchain/eslint-config':
+      '@toolchain/eslint':
         specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
+        version: link:../../toolchain/eslint
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vite-config':
+        version: link:../../toolchain/typescript
+      '@toolchain/vite':
         specifier: workspace:*
-        version: link:../../toolchain/vite-config
-      '@toolchain/vitest-config':
+        version: link:../../toolchain/vite
+      '@toolchain/vitest':
         specifier: workspace:*
-        version: link:../../toolchain/vitest-config
+        version: link:../../toolchain/vitest
 
   apps/sveltekit-example-app:
     dependencies:
@@ -537,15 +537,15 @@ importers:
       '@tailwindcss/vite':
         specifier: 4.3.3
         version: 4.3.3(vite@8.2.2(@types/node@26.4.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0))
-      '@toolchain/eslint-config':
+      '@toolchain/eslint':
         specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
+        version: link:../../toolchain/eslint
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
+        version: link:../../toolchain/typescript
+      '@toolchain/vitest':
         specifier: workspace:*
-        version: link:../../toolchain/vitest-config
+        version: link:../../toolchain/vitest
       effect:
         specifier: 4.0.0-rc.112
         version: 4.0.0-rc.112
@@ -583,15 +583,15 @@ importers:
         specifier: 10.8.1
         version: 10.8.1
     devDependencies:
-      '@toolchain/eslint-config':
+      '@toolchain/eslint':
         specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
+        version: link:../../toolchain/eslint
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
+        version: link:../../toolchain/typescript
+      '@toolchain/vitest':
         specifier: workspace:*
-        version: link:../../toolchain/vitest-config
+        version: link:../../toolchain/vitest
       aws-cdk:
         specifier: 2.1139.0
         version: 2.1139.0
@@ -605,15 +605,15 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
     devDependencies:
-      '@toolchain/eslint-config':
+      '@toolchain/eslint':
         specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
+        version: link:../../toolchain/eslint
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
+        version: link:../../toolchain/typescript
+      '@toolchain/vitest':
         specifier: workspace:*
-        version: link:../../toolchain/vitest-config
+        version: link:../../toolchain/vitest
 
   packages/api-hono:
     dependencies:
@@ -633,15 +633,15 @@ importers:
         specifier: 4.5.4
         version: 4.5.4
     devDependencies:
-      '@toolchain/eslint-config':
+      '@toolchain/eslint':
         specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
+        version: link:../../toolchain/eslint
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
+        version: link:../../toolchain/typescript
+      '@toolchain/vitest':
         specifier: workspace:*
-        version: link:../../toolchain/vitest-config
+        version: link:../../toolchain/vitest
       '@types/node':
         specifier: 26.4.0
         version: 26.4.0
@@ -655,15 +655,15 @@ importers:
       '@packages/api':
         specifier: workspace:*
         version: link:../api
-      '@toolchain/eslint-config':
+      '@toolchain/eslint':
         specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
+        version: link:../../toolchain/eslint
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
+        version: link:../../toolchain/typescript
+      '@toolchain/vitest':
         specifier: workspace:*
-        version: link:../../toolchain/vitest-config
+        version: link:../../toolchain/vitest
 
   packages/aws-cdk-lib:
     dependencies:
@@ -677,15 +677,15 @@ importers:
         specifier: 10.8.1
         version: 10.8.1
     devDependencies:
-      '@toolchain/eslint-config':
+      '@toolchain/eslint':
         specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
+        version: link:../../toolchain/eslint
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
+        version: link:../../toolchain/typescript
+      '@toolchain/vitest':
         specifier: workspace:*
-        version: link:../../toolchain/vitest-config
+        version: link:../../toolchain/vitest
       '@types/node':
         specifier: 26.4.0
         version: 26.4.0
@@ -711,15 +711,15 @@ importers:
       '@softwaretechnik/dbml-renderer':
         specifier: 1.0.31
         version: 1.0.31
-      '@toolchain/eslint-config':
+      '@toolchain/eslint':
         specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
+        version: link:../../toolchain/eslint
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
+        version: link:../../toolchain/typescript
+      '@toolchain/vitest':
         specifier: workspace:*
-        version: link:../../toolchain/vitest-config
+        version: link:../../toolchain/vitest
       '@types/pg':
         specifier: 8.23.1
         version: 8.23.1
@@ -732,15 +732,15 @@ importers:
 
   packages/example-pkg:
     devDependencies:
-      '@toolchain/eslint-config':
+      '@toolchain/eslint':
         specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
+        version: link:../../toolchain/eslint
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
+        version: link:../../toolchain/typescript
+      '@toolchain/vitest':
         specifier: workspace:*
-        version: link:../../toolchain/vitest-config
+        version: link:../../toolchain/vitest
 
   packages/ui-lib-svelte:
     dependencies:
@@ -772,15 +772,15 @@ importers:
       '@tailwindcss/vite':
         specifier: 4.3.3
         version: 4.3.3(vite@8.2.2(@types/node@26.4.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0))
-      '@toolchain/eslint-config':
+      '@toolchain/eslint':
         specifier: workspace:*
-        version: link:../../toolchain/eslint-config
-      '@toolchain/typescript-config':
+        version: link:../../toolchain/eslint
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../../toolchain/typescript-config
-      '@toolchain/vitest-config':
+        version: link:../../toolchain/typescript
+      '@toolchain/vitest':
         specifier: workspace:*
-        version: link:../../toolchain/vitest-config
+        version: link:../../toolchain/vitest
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -809,7 +809,7 @@ importers:
         specifier: 8.2.2
         version: 8.2.2(@types/node@26.4.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0)
 
-  toolchain/eslint-config:
+  toolchain/eslint:
     dependencies:
       '@eslint/js':
         specifier: 10.0.1
@@ -864,7 +864,7 @@ importers:
         specifier: 17.12.0
         version: 17.12.0
 
-  toolchain/typescript-config:
+  toolchain/typescript:
     dependencies:
       '@typescript/native':
         specifier: npm:typescript@7.0.2
@@ -873,17 +873,17 @@ importers:
         specifier: npm:@typescript/typescript6@6.0.2
         version: '@typescript/typescript6@6.0.2'
 
-  toolchain/vite-config:
+  toolchain/vite:
     dependencies:
       vite:
         specifier: 8.2.2
         version: 8.2.2(@types/node@26.4.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0)
     devDependencies:
-      '@toolchain/typescript-config':
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../typescript-config
+        version: link:../typescript
 
-  toolchain/vitest-config:
+  toolchain/vitest:
     dependencies:
       '@vitest/coverage-v8':
         specifier: 4.1.11
@@ -892,9 +892,9 @@ importers:
         specifier: 4.1.11
         version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@26.4.0)(@vitest/coverage-v8@4.1.11)(vite@8.2.2(@types/node@26.4.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0))
     devDependencies:
-      '@toolchain/typescript-config':
+      '@toolchain/typescript':
         specifier: workspace:*
-        version: link:../typescript-config
+        version: link:../typescript
 
 packages:
 

@@ -1,5 +1,5 @@
 {
-  "extends": "@toolchain/typescript-config/tsconfig-node22.json",
+  "extends": "@toolchain/typescript/tsconfig-node.json",
   "compilerOptions": {
     "allowJs": true,
     "checkJs": true

@@ -28,9 +28,9 @@
     "effect": "4.0.0-rc.112"
   },
   "devDependencies": {
-    "@toolchain/eslint-config": "workspace:*",
-    "@toolchain/typescript-config": "workspace:*",
-    "@toolchain/vite-config": "workspace:*",
-    "@toolchain/vitest-config": "workspace:*"
+    "@toolchain/eslint": "workspace:*",
+    "@toolchain/typescript": "workspace:*",
+    "@toolchain/vite": "workspace:*",
+    "@toolchain/vitest": "workspace:*"
   }
 }

@@ -1,5 +1,5 @@
-import { defineNodeBuildConfig, mergeConfig } from '@toolchain/vite-config'
-import { defineTestConfig } from '@toolchain/vitest-config'
+import { defineNodeBuildConfig, mergeConfig } from '@toolchain/vite'
+import { defineTestConfig } from '@toolchain/vitest'
 
 import packageJson from './package.json' with { type: 'json' }
 

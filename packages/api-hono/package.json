@@ -22,9 +22,9 @@
     "zod": "4.5.4"
   },
   "devDependencies": {
-    "@toolchain/eslint-config": "workspace:*",
-    "@toolchain/typescript-config": "workspace:*",
-    "@toolchain/vitest-config": "workspace:*",
+    "@toolchain/eslint": "workspace:*",
+    "@toolchain/typescript": "workspace:*",
+    "@toolchain/vitest": "workspace:*",
     "@types/node": "26.4.0"
   }
 }

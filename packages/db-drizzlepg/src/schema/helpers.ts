@@ -25,6 +25,17 @@ export const namedIndex = (...columns: [pg.PgColumn, ...pg.PgColumn[]]): pg.Inde
   return pg.index(name).on(...columns)
 }
 
+export const namedEnumCheck = (
+  column: pg.PgColumn,
+  literals: readonly [string, ...string[]],
+): pg.CheckBuilder => {
+  const tableName = getTableName(getColumnTable<Table>(column))
+  return pg.check(
+    `${tableName}_chk_${column.name}`,
+    sql`${column} in ${sql.raw(`('${literals.join("','")}')`)}`,
+  )
+}
+
 export const withSurrogateId = {
   id: pg
     .uuid()

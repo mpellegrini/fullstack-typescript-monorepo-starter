@@ -1,5 +1,5 @@
 {
-  "name": "@toolchain/eslint-config",
+  "name": "@toolchain/eslint",
   "version": "0.0.0",
   "private": true,
   "license": "UNLICENSED",

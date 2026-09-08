@@ -19,8 +19,8 @@
     "http-status": "2.1.0"
   },
   "devDependencies": {
-    "@toolchain/eslint-config": "workspace:*",
-    "@toolchain/typescript-config": "workspace:*",
-    "@toolchain/vitest-config": "workspace:*"
+    "@toolchain/eslint": "workspace:*",
+    "@toolchain/typescript": "workspace:*",
+    "@toolchain/vitest": "workspace:*"
   }
 }

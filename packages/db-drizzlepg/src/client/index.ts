@@ -1,3 +1,3 @@
 export * from './database-errors.ts'
 
-export { DrizzleNodePgClient } from './drizzle-nodepg-client.ts'
+export { type DrizzleClient, DrizzlePgClient } from './drizzle-pg-client.ts'

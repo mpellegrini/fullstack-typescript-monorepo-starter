@@ -1,21 +1,31 @@
-import type { Logger } from 'drizzle-orm'
-
+import * as PgDrizzle from 'drizzle-orm/effect-postgres'
+import * as Effect from 'effect/Effect'
+import * as Layer from 'effect/Layer'
 import { format } from 'sql-formatter'
 
-export class QueryLogger implements Logger {
-  logQuery(query: string, params: unknown[]): void {
-    console.debug('_____DRIZZLE_QUERY_____')
-    console.debug(
-      format(query, {
-        language: 'postgresql',
-        params: Object.fromEntries(
-          params.map((value, index) => [
-            index + 1,
-            typeof value === 'string' ? `'${value}'` : String(value),
-          ]),
-        ),
-      }),
-    )
-    console.debug('___END_DRIZZLE_QUERY___')
-  }
-}
+const formatQuery = (query: string, params: readonly unknown[]): string =>
+  format(query, {
+    language: 'postgresql',
+    params: Object.fromEntries(
+      params.map((value, index) => [
+        index + 1,
+        typeof value === 'string' ? `'${value}'` : String(value),
+      ]),
+    ),
+  })
+
+/**
+ * Drizzle query logger that pretty-prints each statement with its parameters
+ * inlined and emits it through Effect's logging pipeline at DEBUG level, so
+ * queries carry the surrounding fiber's log spans and annotations.
+ */
+export const QueryLoggerLive: Layer.Layer<PgDrizzle.EffectLogger> = Layer.succeed(
+  PgDrizzle.EffectLogger,
+  {
+    logQuery: (query, params) =>
+      Effect.suspend(() => Effect.logDebug(formatQuery(query, params))).pipe(
+        Effect.annotateLogs({ 'db.statement': query }),
+        Effect.withLogSpan('drizzle.query'),
+      ),
+  },
+)

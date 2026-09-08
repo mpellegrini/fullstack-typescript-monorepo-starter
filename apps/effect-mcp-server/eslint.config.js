@@ -1,4 +1,4 @@
-import config from '@toolchain/eslint-config/profile/node'
+import config from '@toolchain/eslint/profile/node'
 
 export default [
   ...config,

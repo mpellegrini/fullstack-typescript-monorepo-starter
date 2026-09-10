@@ -5,7 +5,7 @@
 #   "main":  pointing at its built server entry (e.g. "build/index.js")
 #   "files": including the build output directory (e.g. "files": ["build"]),
 #            otherwise `pnpm deploy` won't copy the bundle into the runtime image
-FROM node:24.20.0-trixie-slim AS base
+FROM node:24.21.0-trixie-slim AS base
 RUN corepack enable pnpm
 WORKDIR /repo
 
@@ -43,7 +43,7 @@ RUN node -e "const p = require('/repo/out/package.json'); \
 # ---- Minimal runtime ----
 # Distroless publishes no Node patch-version tags, so pin by digest to keep the runtime
 # Node version reproducible and in step with the builder image above.
-FROM gcr.io/distroless/nodejs24-debian13@sha256:7cca079bad19303c78cd874a5da79832441985a216b767196507d69b8784a698 AS deployer
+FROM gcr.io/distroless/nodejs24-debian13@sha256:e7b49c7570331548957099e4c53d1b7255605dd20b0c56ee368077c07c1b170b AS deployer
 WORKDIR /app
 ENV NODE_ENV=production
 # Left root-owned deliberately: the app only reads its own files, and the nonroot

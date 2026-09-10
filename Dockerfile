@@ -33,7 +33,7 @@ RUN pnpm --filter=@apps/${APP_NAME} exec node -e "const p = require('./package.j
     if (!p.scripts || !p.scripts.build) throw new Error(p.name + ' needs a \"build\" script that emits its production bundle')"
 RUN pnpm exec turbo run codegen --filter=@apps/$APP_NAME^...
 RUN pnpm --filter=@apps/${APP_NAME} run build
-RUN pnpm --filter=@apps/${APP_NAME} deploy --legacy --prod out
+RUN pnpm --filter=@apps/${APP_NAME} deploy --prod out
 # Fail the build if the deployed package can't be started with `node .` in the runtime
 # stage: `main` must be declared and the file it points at must have been packed
 RUN node -e "const p = require('/repo/out/package.json'); \

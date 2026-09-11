@@ -26,6 +26,6 @@
     "@toolchain/typescript": "workspace:*",
     "@toolchain/vite": "workspace:*",
     "@toolchain/vitest": "workspace:*",
-    "@types/node": "26.4.0"
+    "@types/node": "26.5.0"
   }
 }

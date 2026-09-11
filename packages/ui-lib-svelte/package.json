@@ -22,8 +22,8 @@
   },
   "dependencies": {
     "@internationalized/date": "3.12.4",
-    "@lucide/svelte": "1.42.0",
-    "bits-ui": "2.19.0",
+    "@lucide/svelte": "1.43.0",
+    "bits-ui": "2.19.1",
     "svelte-sonner": "1.2.1"
   },
   "devDependencies": {

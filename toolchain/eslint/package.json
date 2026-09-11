@@ -16,7 +16,7 @@
     "@eslint/js": "10.0.1",
     "@microsoft/eslint-formatter-sarif": "3.1.0",
     "@vitest/eslint-plugin": "1.6.27",
-    "eslint": "10.9.1",
+    "eslint": "10.10.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-import-resolver-typescript": "4.4.5",
     "eslint-plugin-eslint-comments": "3.2.0",
@@ -27,10 +27,10 @@
     "eslint-plugin-svelte": "3.23.0",
     "eslint-plugin-turbo": "2.10.12",
     "eslint-plugin-unicorn": "74.0.0",
-    "typescript-eslint": "8.69.0"
+    "typescript-eslint": "8.70.0"
   },
   "devDependencies": {
-    "@eslint/compat": "2.1.0",
+    "@eslint/compat": "2.1.1",
     "globals": "17.12.0"
   }
 }

@@ -29,3 +29,33 @@ export const QueryLoggerLive: Layer.Layer<PgDrizzle.EffectLogger> = Layer.succee
       ),
   },
 )
+
+/**
+ * A Layer that provides an EffectLogger with Effect-based logging.
+ *
+ * This layer logs queries using `Effect.log()` with annotations for the query
+ * SQL and parameters. Use this when you want query logging integrated with
+ * Effect's logging infrastructure.
+ *
+ * @example
+ * ```ts
+ * const db = yield* PgDrizzle.make({ relations }).pipe(
+ *   Effect.provide(EffectLogger.layer),
+ *   Effect.provide(PgDrizzle.DefaultServices),
+ * );
+ * ```
+ */
+// static layer = Layer.succeed(EffectLogger, { logQuery: Effect.fn("EffectLogger.logQuery")(function* (query, params) {
+//     const stringifiedParams = params.map((p) => {
+//       try {
+//         return JSON.stringify(p);
+//       } catch {
+//         return String(p);
+//       }
+//     });
+//     yield* Effect.log().pipe(Effect.annotateLogs({
+//       query,
+//       params: stringifiedParams
+//     }));
+//   }) });
+// };

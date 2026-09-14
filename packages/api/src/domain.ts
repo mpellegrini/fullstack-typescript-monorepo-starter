@@ -1,4 +1,20 @@
-import { Schema } from 'effect'
+import * as Schema from 'effect/Schema'
+import * as SchemaTransformation from 'effect/SchemaTransformation'
+import * as Struct from 'effect/Struct'
+
+/**
+ * Decodes a string by trimming leading/trailing whitespace, then requires at least
+ * one character to remain.
+ *
+ * Note: the check is declared on both sides of the transformation on purpose.
+ *       The decoded side ("trimmed and non-empty") is the invariant that matters,
+ *       but JSON Schema — and therefore the generated OpenAPI document — is derived
+ *       from the encoded side, so repeating the check there is what surfaces
+ *       `minLength: 1` to API consumers.
+ */
+const NonEmptyTrimmedString = Schema.NonEmptyString.pipe(
+  Schema.decodeTo(Schema.NonEmptyString.check(Schema.isTrimmed()), SchemaTransformation.trim()),
+)
 
 export const TaskId = Schema.String.check(Schema.isUUID()).pipe(Schema.brand('TaskId'))
 export type TaskId = typeof TaskId.Type
@@ -6,11 +22,17 @@ export type TaskId = typeof TaskId.Type
 export class Task extends Schema.Class<Task>('Task')({
   id: TaskId,
   done: Schema.Boolean,
-  name: Schema.NonEmptyString.check(Schema.isTrimmed()).annotate({
-    description: "The task's name",
-    examples: ['My First Task'],
-  }),
+  title: NonEmptyTrimmedString.pipe(
+    Schema.annotateEncoded({
+      description: "The task's name",
+      examples: ['My First Task'],
+    }),
+  ),
 }) {}
+
+export class CreateTaskPayload extends Schema.Class<CreateTaskPayload>('CreateTaskPayload')(
+  Struct.pick(Task.fields, ['title']),
+) {}
 
 export class BuildInfo extends Schema.Class<BuildInfo>('Info')({
   appName: Schema.String.annotate({

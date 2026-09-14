@@ -1,6 +1,7 @@
 import { NodeHttpServer } from '@effect/platform-node'
 import { Config, Layer } from 'effect'
 import { HttpRouter } from 'effect/unstable/http'
+import * as HttpServerResponse from 'effect/unstable/http/HttpServerResponse'
 import { HttpApiScalar } from 'effect/unstable/httpapi'
 import { createServer } from 'node:http'
 
@@ -13,8 +14,20 @@ const ServerLive = Config.int('PORT').pipe(
   Layer.unwrap,
 )
 
-const DocsLive = HttpApiScalar.layer(Api, { scalar: { layout: 'modern', theme: 'kepler' } })
+const DocsLive = HttpApiScalar.layer(Api, {
+  path: '/docs',
+  scalar: { layout: 'modern', theme: 'kepler' },
+})
 
-export const HttpLive = HttpRouter.serve(Layer.mergeAll(ApiLive, DocsLive, HttpRouter.cors())).pipe(
-  Layer.provide(ServerLive),
-)
+const HealthRoute = HttpRouter.add('GET', '/health', HttpServerResponse.text('ok'))
+
+const allRoutes = Layer.mergeAll(HealthRoute, ApiLive, DocsLive, HttpRouter.cors())
+
+/**
+ * Serves the provided application layer as an HTTP server.
+ *
+ * NodeHttpServer.layer() supplies the HttpServer along with the platform services
+ * (NodeServices, HttpPlatform and Etag.Generator) that HttpApiBuilder.layer requires,
+ * so no additional services layer needs to be provided here.
+ */
+export const HttpLive = HttpRouter.serve(allRoutes).pipe(Layer.provide(ServerLive))

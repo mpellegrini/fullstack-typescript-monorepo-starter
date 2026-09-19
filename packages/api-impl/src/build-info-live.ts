@@ -6,10 +6,10 @@ import { Api, BuildInfo, InternalServerError, wrapSingleItemResponse } from '@pa
 const UNKNOWN = 'unknown'
 
 const buildInfoConfig = Config.all({
-  appName: Config.string('APP_NAME').pipe(Config.withDefault(UNKNOWN)),
-  buildDate: Config.string('BUILD_DATE').pipe(Config.withDefault(UNKNOWN)),
-  vcsRef: Config.string('VCS_REF').pipe(Config.withDefault(UNKNOWN)),
-  version: Config.string('VERSION').pipe(Config.withDefault(UNKNOWN)),
+  appName: Config.String('APP_NAME').pipe(Config.withDefault(UNKNOWN)),
+  buildDate: Config.String('BUILD_DATE').pipe(Config.withDefault(UNKNOWN)),
+  vcsRef: Config.String('VCS_REF').pipe(Config.withDefault(UNKNOWN)),
+  version: Config.String('VERSION').pipe(Config.withDefault(UNKNOWN)),
 }).pipe(Config.map((fields) => new BuildInfo(fields)))
 
 export const buildInfoGroupLive = HttpApiBuilder.group(Api, 'info', (handlers) =>

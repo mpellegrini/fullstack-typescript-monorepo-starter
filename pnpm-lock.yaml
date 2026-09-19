@@ -449,9 +449,6 @@ importers:
       '@node-rs/argon2':
         specifier: 2.2.1
         version: 2.2.1
-      pg:
-        specifier: 8.23.0
-        version: 8.23.0
     devDependencies:
       '@packages/ui-lib-svelte':
         specifier: workspace:*
@@ -632,9 +629,6 @@ importers:
       effect:
         specifier: 4.0.0-rc.115
         version: 4.0.0-rc.115
-      pg:
-        specifier: 8.23.0
-        version: 8.23.0
       pg-error-enum:
         specifier: 2.0.1
         version: 2.0.1
@@ -654,9 +648,6 @@ importers:
       '@toolchain/vitest':
         specifier: workspace:*
         version: link:../../toolchain/vitest
-      '@types/pg':
-        specifier: 8.23.1
-        version: 8.23.1
       drizzle-dbml-generator:
         specifier: 0.10.0
         version: 0.10.0(drizzle-orm@1.0.0-rc.5-5935859(@effect/sql-pg@4.0.0-rc.115(effect@4.0.0-rc.115))(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(arktype@2.2.2)(effect@4.0.0-rc.115)(pg@8.23.0)(typebox@1.3.3)(valibot@1.4.2(typescript@7.0.2))(zod@4.5.4))
@@ -8268,6 +8259,7 @@ snapshots:
       '@types/node': 26.5.1
       pg-protocol: 1.16.0
       pg-types: 2.2.0
+    optional: true
 
   '@types/resolve@1.20.2': {}
 
@@ -10738,17 +10730,21 @@ snapshots:
   pg-cloudflare@1.4.0:
     optional: true
 
-  pg-connection-string@2.14.0: {}
+  pg-connection-string@2.14.0:
+    optional: true
 
   pg-error-enum@2.0.1: {}
 
-  pg-int8@1.0.1: {}
+  pg-int8@1.0.1:
+    optional: true
 
   pg-pool@3.14.0(pg@8.23.0):
     dependencies:
       pg: 8.23.0
+    optional: true
 
-  pg-protocol@1.16.0: {}
+  pg-protocol@1.16.0:
+    optional: true
 
   pg-types@2.2.0:
     dependencies:
@@ -10757,6 +10753,7 @@ snapshots:
       postgres-bytea: 1.0.1
       postgres-date: 1.0.7
       postgres-interval: 1.2.0
+    optional: true
 
   pg@8.23.0:
     dependencies:
@@ -10767,10 +10764,12 @@ snapshots:
       pgpass: 1.0.5
     optionalDependencies:
       pg-cloudflare: 1.4.0
+    optional: true
 
   pgpass@1.0.5:
     dependencies:
       split2: 4.2.0
+    optional: true
 
   picocolors@1.1.1: {}
 
@@ -10831,15 +10830,19 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  postgres-array@2.0.0: {}
+  postgres-array@2.0.0:
+    optional: true
 
-  postgres-bytea@1.0.1: {}
+  postgres-bytea@1.0.1:
+    optional: true
 
-  postgres-date@1.0.7: {}
+  postgres-date@1.0.7:
+    optional: true
 
   postgres-interval@1.2.0:
     dependencies:
       xtend: 4.0.2
+    optional: true
 
   prelude-ls@1.2.1: {}
 
@@ -11925,7 +11928,8 @@ snapshots:
     dependencies:
       is-wsl: 3.1.1
 
-  xtend@4.0.2: {}
+  xtend@4.0.2:
+    optional: true
 
   y18n@5.0.8: {}
 

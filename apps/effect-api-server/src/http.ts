@@ -8,7 +8,7 @@ import { createServer } from 'node:http'
 import { Api } from '@packages/api'
 import { ApiLive } from '@packages/api-impl'
 
-const ServerLive = Config.int('PORT').pipe(
+const ServerLive = Config.Int('PORT').pipe(
   Config.withDefault(3000),
   Config.map((port) => NodeHttpServer.layer(createServer, { port })),
   Layer.unwrap,

@@ -3,7 +3,7 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import { Config, Effect, Layer, Option } from 'effect'
 
-export const TracingLive = Config.option(Config.url('OTEL_EXPORTER_OTLP_ENDPOINT')).pipe(
+export const TracingLive = Config.option(Config.URL('OTEL_EXPORTER_OTLP_ENDPOINT')).pipe(
   Effect.flatMap(
     Option.match({
       onNone: () =>

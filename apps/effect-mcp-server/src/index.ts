@@ -16,7 +16,7 @@ const HelloRouter = HttpRouter.add('GET', '/hello', (_request) =>
 const AllRouters = Layer.mergeAll(ApiRouter, ApiScalarRouter, ApiSwaggerRouter, HelloRouter)
 
 const ServerLive = Layer.unwrap(
-  Config.int('PORT').pipe(
+  Config.Int('PORT').pipe(
     Config.withDefault(3000),
     Config.map((port) =>
       HttpRouter.serve(AllRouters).pipe(

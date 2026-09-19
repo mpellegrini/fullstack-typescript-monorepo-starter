@@ -17,14 +17,14 @@
   "dependencies": {
     "@hono/zod-openapi": "1.6.3",
     "@scalar/hono-api-reference": "0.12.1",
-    "hono": "4.13.7",
+    "hono": "4.13.8",
     "http-status-codes": "2.3.0",
-    "zod": "4.5.4"
+    "zod": "4.6.5"
   },
   "devDependencies": {
     "@toolchain/eslint": "workspace:*",
     "@toolchain/typescript": "workspace:*",
     "@toolchain/vitest": "workspace:*",
-    "@types/node": "26.5.0"
+    "@types/node": "26.5.1"
   }
 }

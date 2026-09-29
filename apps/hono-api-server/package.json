@@ -20,7 +20,7 @@
   "dependencies": {
     "@hono/node-server": "2.1.1",
     "@packages/api-hono": "workspace:*",
-    "dotenv": "17.4.2",
+    "dotenv": "18.0.4",
     "zod": "4.6.5"
   },
   "devDependencies": {

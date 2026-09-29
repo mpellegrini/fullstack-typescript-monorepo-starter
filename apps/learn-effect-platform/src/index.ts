@@ -151,15 +151,13 @@ const AuthorizationLive = Layer.succeed(Authorization)(
     apiKey: Effect.fn(function* (httpEffect, { credential }) {
       yield* Effect.logInfo('Authentication Middleware - checking api key')
 
-      if (Redacted.value(credential) !== 'sk_opensaysme') {
-        return yield* new HttpApiError.Unauthorized()
-      }
-
-      return yield* Effect.provideService(
-        httpEffect,
-        CallerContext,
-        Caller.make({ id: 1000, name: `Authenticated with ${Redacted.value(credential)}` }),
-      )
+      return Redacted.value(credential) === 'sk_opensaysme'
+        ? yield* Effect.provideService(
+            httpEffect,
+            CallerContext,
+            Caller.make({ id: 1000, name: `Authenticated with ${Redacted.value(credential)}` }),
+          )
+        : yield* new HttpApiError.Unauthorized()
     }),
   }),
 )

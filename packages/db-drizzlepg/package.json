@@ -27,7 +27,7 @@
     "drizzle-orm": "1.0.0-rc.5-5935859",
     "effect": "4.0.0-rc.115",
     "pg-error-enum": "2.0.1",
-    "sql-formatter": "15.8.2"
+    "sql-formatter": "15.9.0"
   },
   "devDependencies": {
     "@softwaretechnik/dbml-renderer": "1.0.31",

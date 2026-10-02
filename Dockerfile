@@ -43,7 +43,7 @@ RUN node -e "const p = require('/repo/out/package.json'); \
 # ---- Minimal runtime ----
 # Distroless publishes no Node patch-version tags, so pin by digest to keep the runtime
 # Node version reproducible and in step with the builder image above.
-FROM gcr.io/distroless/nodejs24-debian13@sha256:b1fc33242cc74151f50c62b4a03d48afd759dccf81279b5f8e401db4546479c1 AS deployer
+FROM gcr.io/distroless/nodejs24-debian13@sha256:96df910f65fdd8a21d00d14d4cc046adcfcf3ced2d5e96be4b39ebde9f4866c6 AS deployer
 WORKDIR /app
 ENV NODE_ENV=production
 # Left root-owned deliberately: the app only reads its own files, and the nonroot

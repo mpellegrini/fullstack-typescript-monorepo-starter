@@ -2,7 +2,7 @@ import { EffectDrizzleQueryError } from 'drizzle-orm/effect-core/errors'
 import * as Cause from 'effect/Cause'
 import * as Data from 'effect/Data'
 import * as Match from 'effect/Match'
-import * as SqlError from 'effect/unstable/sql/SqlError'
+import * as SqlError from 'effect/sql/SqlError'
 import { PostgresError } from 'pg-error-enum'
 
 export class DatabaseConnectionError extends Data.TaggedError('DatabaseConnectionError')<{

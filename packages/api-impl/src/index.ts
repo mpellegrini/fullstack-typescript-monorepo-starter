@@ -1,5 +1,5 @@
 import { Layer } from 'effect'
-import { HttpApiBuilder } from 'effect/unstable/httpapi'
+import { HttpApiBuilder } from 'effect/http-api'
 
 import { Api } from '@packages/api'
 

@@ -1,8 +1,8 @@
 import { NodeHttpServer } from '@effect/platform-node'
 import { Config, Layer } from 'effect'
-import { HttpRouter } from 'effect/unstable/http'
-import * as HttpServerResponse from 'effect/unstable/http/HttpServerResponse'
-import { HttpApiScalar } from 'effect/unstable/httpapi'
+import { HttpRouter } from 'effect/http'
+import { HttpApiScalar } from 'effect/http-api'
+import * as HttpServerResponse from 'effect/http/HttpServerResponse'
 import { createServer } from 'node:http'
 
 import { Api } from '@packages/api'

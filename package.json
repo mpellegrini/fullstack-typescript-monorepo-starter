@@ -16,7 +16,7 @@
   "devDependencies": {
     "@commitlint/cli": "21.2.3",
     "@commitlint/config-conventional": "21.2.3",
-    "@effect/language-service": "0.87.2",
+    "@effect/language-service": "0.87.4",
     "@turbo/gen": "2.11.4",
     "del-cli": "7.0.0",
     "husky": "9.1.7",

@@ -29,7 +29,7 @@
     "@toolchain/eslint": "workspace:*",
     "@toolchain/typescript": "workspace:*",
     "@toolchain/vitest": "workspace:*",
-    "effect": "4.0.0-rc.115",
+    "effect": "4.0.2",
     "http-status-codes": "2.3.0",
     "mode-watcher": "1.1.0",
     "svelte": "5.57.1",

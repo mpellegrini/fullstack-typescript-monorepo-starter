@@ -17,8 +17,9 @@
     "@ai-sdk/openai": "4.0.78",
     "@ai-sdk/svelte": "5.0.116",
     "@packages/ui-lib-svelte": "workspace:*",
-    "@sveltejs/adapter-auto": "7.0.1",
-    "@sveltejs/kit": "2.70.3",
+    "@sveltejs/adapter-auto": "8.0.0",
+    "@sveltejs/kit": "3.0.1",
+    "@sveltejs/load-config": "0.2.3",
     "@sveltejs/vite-plugin-svelte": "7.3.1",
     "@tailwindcss/vite": "4.3.3",
     "@toolchain/eslint": "workspace:*",
@@ -26,11 +27,11 @@
     "@toolchain/vitest": "workspace:*",
     "@types/node": "26.6.3",
     "ai": "7.0.116",
-    "svelte": "5.57.1",
+    "svelte": "5.57.2",
     "svelte-check": "4.7.6",
     "svelte-sonner": "1.2.1",
     "tailwindcss": "4.3.3",
-    "vite": "8.3.1",
+    "vite": "8.3.4",
     "zod": "4.6.5"
   }
 }

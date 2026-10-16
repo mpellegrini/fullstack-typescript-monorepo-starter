@@ -1,6 +1,9 @@
+import { loadConfig } from '@sveltejs/load-config'
+
 import config from '@toolchain/eslint/profile/svelte'
 
-import svelteConfig from './svelte.config.js'
+const loaded = await loadConfig('./', { traverse: false })
+const svelteConfig = loaded?.config
 
 export default [
   ...config,

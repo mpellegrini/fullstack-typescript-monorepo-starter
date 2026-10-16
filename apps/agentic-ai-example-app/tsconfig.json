@@ -1,6 +1,6 @@
 {
   "extends": ["@toolchain/typescript/tsconfig-svelte.json", "$app/tsconfig"],
   "compilerOptions": {
-    "types": ["$app/types", "vitest/globals"]
+    "types": ["$app/types", "vitest/globals", "node"]
   }
 }

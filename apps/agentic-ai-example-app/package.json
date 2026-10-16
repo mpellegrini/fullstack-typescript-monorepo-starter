@@ -4,6 +4,10 @@
   "private": true,
   "description": "SvelteKit Agentic AI Example App",
   "type": "module",
+  "imports": {
+    "#lib": "./src/lib/index.js",
+    "#lib/*": "./src/lib/*"
+  },
   "scripts": {
     "build": "vite build",
     "clean": "del .turbo coverage .svelte-kit build *.sarif",
@@ -17,8 +21,9 @@
     "@ai-sdk/openai": "4.0.78",
     "@ai-sdk/svelte": "5.0.116",
     "@packages/ui-lib-svelte": "workspace:*",
-    "@sveltejs/adapter-auto": "7.0.1",
-    "@sveltejs/kit": "2.70.3",
+    "@sveltejs/adapter-auto": "8.0.0",
+    "@sveltejs/kit": "3.0.1",
+    "@sveltejs/load-config": "0.2.3",
     "@sveltejs/vite-plugin-svelte": "7.3.1",
     "@tailwindcss/vite": "4.3.3",
     "@toolchain/eslint": "workspace:*",

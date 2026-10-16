@@ -1,6 +1,6 @@
 import type { RequestHandler } from '@sveltejs/kit'
 
-import { env } from '$env/dynamic/private'
+import { OPENAI_API_KEY } from '$app/env/private'
 import { createOpenAI } from '@ai-sdk/openai'
 import {
   type UIMessage,
@@ -13,7 +13,7 @@ import {
 } from 'ai'
 import { z } from 'zod'
 
-const openai = createOpenAI({ apiKey: env['OPENAI_API_KEY'] })
+const openai = createOpenAI({ apiKey: OPENAI_API_KEY })
 
 export const POST: RequestHandler = async ({ request }) => {
   // TODO: this should be addressed with Zod as a type guard

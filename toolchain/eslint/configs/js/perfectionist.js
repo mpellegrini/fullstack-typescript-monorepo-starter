@@ -65,6 +65,10 @@ export default config({
             elementNamePattern: [String.raw`^\$lib/.*`],
             groupName: 'ts-paths',
           },
+          {
+            elementNamePattern: [String.raw`^\#lib/.*`],
+            groupName: 'ts-paths2',
+          },
         ],
         environment: 'node',
         groups: [
@@ -73,6 +77,7 @@ export default config({
           'type-internal',
           'value-internal',
           'ts-paths',
+          'ts-paths2',
           'type-parent',
           'type-sibling',
           'type-index',

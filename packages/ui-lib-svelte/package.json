@@ -5,6 +5,10 @@
     "**/*.css"
   ],
   "type": "module",
+  "imports": {
+    "#lib": "./src/lib/index.js",
+    "#lib/*": "./src/lib/*"
+  },
   "exports": {
     "./components/ui/*": {
       "types": "./src/lib/components/ui/*/index.ts",
@@ -27,8 +31,9 @@
     "svelte-sonner": "1.2.1"
   },
   "devDependencies": {
-    "@sveltejs/adapter-auto": "7.0.1",
-    "@sveltejs/kit": "2.70.3",
+    "@sveltejs/adapter-auto": "^8.0.0",
+    "@sveltejs/kit": "^3.0.0",
+    "@sveltejs/load-config": "^0.2.2",
     "@sveltejs/vite-plugin-svelte": "7.3.1",
     "@tailwindcss/forms": "0.5.11",
     "@tailwindcss/vite": "4.3.3",

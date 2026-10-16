@@ -18,13 +18,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.1141.0",
-    "@effect-aws/client-dynamodb": "2.0.0-beta.4",
-    "@effect/opentelemetry": "4.0.2",
-    "@effect/platform-node": "4.0.2",
+    "@aws-sdk/client-dynamodb": "3.1150.0",
+    "@effect-aws/client-dynamodb": "2.0.0",
+    "@effect/opentelemetry": "4.0.4",
+    "@effect/platform-node": "4.0.4",
     "@opentelemetry/sdk-trace-base": "2.12.0",
     "@opentelemetry/sdk-trace-node": "2.12.0",
-    "effect": "4.0.2"
+    "effect": "4.0.4"
   },
   "devDependencies": {
     "@toolchain/eslint": "workspace:*",

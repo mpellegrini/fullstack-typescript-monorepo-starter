@@ -27,13 +27,13 @@
     "@toolchain/eslint": "workspace:*",
     "@toolchain/typescript": "workspace:*",
     "@toolchain/vitest": "workspace:*",
-    "@types/node": "26.6.3",
-    "@types/ws": "8.18.1",
-    "home-assistant-js-websocket": "9.7.0",
-    "svelte": "5.57.1",
+    "@types/node": "26.6.5",
+    "@types/ws": "8.18.2",
+    "home-assistant-js-websocket": "9.7.1",
+    "svelte": "5.57.2",
     "svelte-check": "4.7.6",
     "tailwindcss": "4.3.3",
-    "vite": "8.3.1",
-    "ws": "8.21.3"
+    "vite": "8.3.4",
+    "ws": "8.22.0"
   }
 }

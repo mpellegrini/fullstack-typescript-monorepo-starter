@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 import { fail, message, superValidate } from 'sveltekit-superforms'
 import { standard } from 'sveltekit-superforms/adapters'
 
-import { SignUpFormSchema } from '$lib/schemas'
+import { SignUpFormSchema } from '#lib/schemas/index.js'
 
 import type { Actions, PageServerLoad } from './$types.js'
 

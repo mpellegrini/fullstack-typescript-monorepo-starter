@@ -24,7 +24,7 @@
 <script lang="ts">
   import type { HTMLAnchorAttributes } from 'svelte/elements'
 
-  import { type WithElementRef, cn } from '$lib/utils.js'
+  import { type WithElementRef, cn } from '#lib/utils.js'
 
   let {
     children,

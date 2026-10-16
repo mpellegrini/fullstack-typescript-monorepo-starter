@@ -2,7 +2,7 @@
   import '../app.css'
   import type { Snippet } from 'svelte'
 
-  import favicon from '$lib/assets/favicon.svg'
+  import favicon from '#lib/assets/favicon.svg'
 
   const { children }: { children: Snippet } = $props()
 </script>

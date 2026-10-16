@@ -3,7 +3,7 @@
   import SuperDebug, { superForm } from 'sveltekit-superforms'
   import { standardClient } from 'sveltekit-superforms/adapters'
 
-  import { SignUpFormSchema } from '$lib/schemas/index.js'
+  import { SignUpFormSchema } from '#lib/schemas/index.js'
 
   import type { PageProps } from './$types.js'
 
@@ -16,8 +16,8 @@
   const { allErrors, constraints, enhance, errors, form: formData, message } = form
 </script>
 
-<div class="flex min-h-screen items-center justify-center bg-gray-100">
-  <div class="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
+<div class="bg-muted flex min-h-screen items-center justify-center">
+  <div class="bg-card text-card-foreground w-full max-w-md rounded-lg p-8 shadow-md">
     <h2 class="mb-6 text-center text-2xl font-bold">Create Your Account</h2>
     {#if $message}<h3 class="text-lg">{$message}</h3>{/if}
 

@@ -22,7 +22,7 @@
     "typecheck": "svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "@node-rs/argon2": "2.2.1"
+    "@node-rs/argon2": "2.2.2"
   },
   "devDependencies": {
     "@packages/ui-lib-svelte": "workspace:*",
@@ -34,14 +34,14 @@
     "@toolchain/eslint": "workspace:*",
     "@toolchain/typescript": "workspace:*",
     "@toolchain/vitest": "workspace:*",
-    "@types/node": "26.6.3",
-    "effect": "4.0.2",
+    "@types/node": "26.6.5",
+    "effect": "4.0.4",
     "http-status-codes": "2.3.0",
     "mode-watcher": "1.1.0",
-    "svelte": "5.57.1",
+    "svelte": "5.57.2",
     "svelte-check": "4.7.6",
     "sveltekit-superforms": "3.0.0",
     "tailwindcss": "4.3.3",
-    "vite": "8.3.1"
+    "vite": "8.3.4"
   }
 }

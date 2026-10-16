@@ -19,15 +19,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/platform-node": "4.0.2",
-    "effect": "4.0.2"
+    "@effect/platform-node": "4.0.4",
+    "effect": "4.0.4"
   },
   "devDependencies": {
-    "@modelcontextprotocol/inspector": "2.8.0",
+    "@modelcontextprotocol/inspector": "2.10.1",
     "@toolchain/eslint": "workspace:*",
     "@toolchain/typescript": "workspace:*",
     "@toolchain/vite": "workspace:*",
     "@toolchain/vitest": "workspace:*",
-    "@types/node": "26.6.3"
+    "@types/node": "26.6.5"
   }
 }

@@ -4,8 +4,8 @@
   import { Chat } from '@ai-sdk/svelte'
   import { toast } from 'svelte-sonner'
 
-  import ChatHeader from '$lib/components/chat-header.svelte'
-  import Messages from '$lib/components/messages.svelte'
+  import ChatHeader from '#lib/components/chat-header.svelte'
+  import Messages from '#lib/components/messages.svelte'
 
   const {
     initialMessages,

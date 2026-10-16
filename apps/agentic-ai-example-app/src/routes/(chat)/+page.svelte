@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Chat from '$lib/components/chat.svelte'
+  import Chat from '#lib/components/chat.svelte'
 </script>
 
 <Chat initialMessages={[]} />

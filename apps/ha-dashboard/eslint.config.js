@@ -2,8 +2,7 @@ import { loadConfig } from '@sveltejs/load-config'
 
 import config from '@toolchain/eslint/profile/svelte'
 
-const loaded = await loadConfig('./', { traverse: false })
-const svelteConfig = loaded?.config
+const { config: svelteConfig } = (await loadConfig('./', { traverse: false })) ?? {}
 
 export default [
   ...config,

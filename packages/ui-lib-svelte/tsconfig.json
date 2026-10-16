@@ -2,6 +2,5 @@
   "extends": ["@toolchain/typescript/tsconfig-svelte.json", "$app/tsconfig"],
   "compilerOptions": {
     "types": ["$app/types", "vitest/globals"]
-  },
-  "include": ["src", "vite.config.js"]
+  }
 }

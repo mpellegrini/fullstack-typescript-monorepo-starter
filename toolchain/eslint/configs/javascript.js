@@ -20,25 +20,25 @@ export default config(
 
     rules: {
       /**
-       * Disallow empty functions.
-       *
-       * 🚫 Not fixable - https://eslint.org/docs/latest/rules/no-empty-function
-       */
+      Disallow empty functions.
+      
+      🚫 Not fixable - https://eslint.org/docs/latest/rules/no-empty-function
+      */
       'no-empty-function': 'error',
 
       /**
-       * Require braces around arrow function bodies.
-       *
-       * 🔧 Fixable - https://eslint.org/docs/latest/rules/arrow-body-style
-       */
+      Require braces around arrow function bodies.
+      
+      🔧 Fixable - https://eslint.org/docs/latest/rules/arrow-body-style
+      */
       'arrow-body-style': ['error', 'as-needed'],
 
       /**
-       * Enforce the consistent use of either function declarations or expressions
-       * assigned to variables.
-       *
-       * 🔧 Fixable - https://eslint.org/docs/latest/rules/func-style
-       */
+      Enforce the consistent use of either function declarations or expressions
+      assigned to variables.
+      
+      🔧 Fixable - https://eslint.org/docs/latest/rules/func-style
+      */
       'func-style': ['error', 'expression'],
 
       'prefer-arrow-callback': 'error',

@@ -3,15 +3,15 @@ import * as SchemaTransformation from 'effect/SchemaTransformation'
 import * as Struct from 'effect/Struct'
 
 /**
- * Decodes a string by trimming leading/trailing whitespace, then requires at least
- * one character to remain.
- *
- * Note: the check is declared on both sides of the transformation on purpose.
- *       The decoded side ("trimmed and non-empty") is the invariant that matters,
- *       but JSON Schema — and therefore the generated OpenAPI document — is derived
- *       from the encoded side, so repeating the check there is what surfaces
- *       `minLength: 1` to API consumers.
- */
+Decodes a string by trimming leading/trailing whitespace, then requires at least
+one character to remain.
+
+Note: the check is declared on both sides of the transformation on purpose.
+      The decoded side ("trimmed and non-empty") is the invariant that matters,
+      but JSON Schema — and therefore the generated OpenAPI document — is derived
+      from the encoded side, so repeating the check there is what surfaces
+      `minLength: 1` to API consumers.
+*/
 const NonEmptyTrimmedString = Schema.NonEmptyString.pipe(
   Schema.decodeTo(Schema.NonEmptyString.check(Schema.isTrimmed()), SchemaTransformation.trim()),
 )

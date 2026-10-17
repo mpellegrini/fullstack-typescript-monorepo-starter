@@ -2,8 +2,8 @@ import { Schema } from 'effect'
 import status from 'http-status'
 
 /**
- * 4xx Client Errors
- */
+4xx Client Errors
+*/
 export class BadRequest extends Schema.TaggedError<BadRequest>()(
   'BadRequest',
   {
@@ -38,8 +38,8 @@ export class NotFound extends Schema.TaggedError<NotFound>()(
 ) {}
 
 /**
- * 5xx Client Errors
- */
+5xx Client Errors
+*/
 export class InternalServerError extends Schema.TaggedError<InternalServerError>()(
   'InternalServerError',
   {

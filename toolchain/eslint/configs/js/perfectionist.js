@@ -4,11 +4,11 @@ import { config } from 'typescript-eslint'
 const sortingMethodType = 'natural'
 
 /**
- * eslint-plugin-perfectionist configuration
- *
- * ESLint plugin with rules that take your code to a beauty salon.
- * https://github.com/azat-io/eslint-plugin-perfectionist
- */
+eslint-plugin-perfectionist configuration
+
+ESLint plugin with rules that take your code to a beauty salon.
+https://github.com/azat-io/eslint-plugin-perfectionist
+*/
 export default config({
   name: 'eslint-config:config:js:perfectionist',
 

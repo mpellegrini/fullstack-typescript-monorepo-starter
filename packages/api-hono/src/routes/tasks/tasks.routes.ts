@@ -8,14 +8,14 @@ import { taskSelectSchema, UuidParamsSchema } from './tasks.schema.ts'
 
 const tags = ['Tasks']
 
-const notFoundResponse = (description?: string): RouteResponse => ({
+const notFoundResponse = (description = 'Not found'): RouteResponse => ({
   404: {
     content: {
       'application/json': {
         schema: z.object({ message: z.string(), success: z.literal(false) }),
       },
     },
-    description: description ?? 'Not found',
+    description: description,
   },
 })
 

@@ -26,13 +26,13 @@
   },
   "dependencies": {
     "@internationalized/date": "3.12.4",
-    "@lucide/svelte": "1.56.0",
+    "@lucide/svelte": "1.57.0",
     "bits-ui": "2.19.5",
     "svelte-sonner": "1.2.1"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "8.0.0",
-    "@sveltejs/kit": "3.0.1",
+    "@sveltejs/kit": "3.1.0",
     "@sveltejs/load-config": "0.2.3",
     "@sveltejs/vite-plugin-svelte": "7.3.1",
     "@tailwindcss/forms": "0.5.11",

@@ -15,10 +15,10 @@ const formatQuery = (query: string, params: readonly unknown[]): string =>
   })
 
 /**
- * Drizzle query logger that pretty-prints each statement with its parameters
- * inlined and emits it through Effect's logging pipeline at DEBUG level, so
- * queries carry the surrounding fiber's log spans and annotations.
- */
+Drizzle query logger that pretty-prints each statement with its parameters
+inlined and emits it through Effect's logging pipeline at DEBUG level, so
+queries carry the surrounding fiber's log spans and annotations.
+*/
 export const QueryLoggerLive: Layer.Layer<PgDrizzle.EffectLogger> = Layer.succeed(
   PgDrizzle.EffectLogger,
   {
@@ -31,20 +31,20 @@ export const QueryLoggerLive: Layer.Layer<PgDrizzle.EffectLogger> = Layer.succee
 )
 
 /**
- * A Layer that provides an EffectLogger with Effect-based logging.
- *
- * This layer logs queries using `Effect.log()` with annotations for the query
- * SQL and parameters. Use this when you want query logging integrated with
- * Effect's logging infrastructure.
- *
- * @example
- * ```ts
- * const db = yield* PgDrizzle.make({ relations }).pipe(
- *   Effect.provide(EffectLogger.layer),
- *   Effect.provide(PgDrizzle.DefaultServices),
- * );
- * ```
- */
+A Layer that provides an EffectLogger with Effect-based logging.
+
+This layer logs queries using `Effect.log()` with annotations for the query
+SQL and parameters. Use this when you want query logging integrated with
+Effect's logging infrastructure.
+
+@example
+```ts
+const db = yield* PgDrizzle.make({ relations }).pipe(
+  Effect.provide(EffectLogger.layer),
+  Effect.provide(PgDrizzle.DefaultServices),
+);
+```
+*/
 // static layer = Layer.succeed(EffectLogger, { logQuery: Effect.fn("EffectLogger.logQuery")(function* (query, params) {
 //     const stringifiedParams = params.map((p) => {
 //       try {

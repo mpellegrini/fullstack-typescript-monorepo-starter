@@ -11,19 +11,19 @@ export const UuidParamSchema = Schema.String.check(Schema.isUUID()).annotate({
 })
 
 /**
- * You can group related endpoints under a single entity by using HttpApiGroup.make().
- * This can help organize your code and provide a clearer structure for your API.
- */
+You can group related endpoints under a single entity by using HttpApiGroup.make().
+This can help organize your code and provide a clearer structure for your API.
+*/
 export class ApiGroup extends HttpApiGroup.make('tasks') //
   .add(
     /**
-     * An HttpApiEndpoint represents a single endpoint in your API.
-     * Each endpoint is defined with a:
-     *  - name
-     *  - path-
-     *  - HTTP method
-     *  - optional schemas for requests and responses
-     */
+    An HttpApiEndpoint represents a single endpoint in your API.
+    Each endpoint is defined with a:
+     - name
+     - path-
+     - HTTP method
+     - optional schemas for requests and responses
+    */
     HttpApiEndpoint.get('getTaskById', '/:id', {
       error: [
         CustomHttpApiError.BadRequest,

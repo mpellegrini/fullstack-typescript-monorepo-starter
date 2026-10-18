@@ -4,12 +4,12 @@ import { HttpApiBuilder } from 'effect/http-api'
 import { Api, Task, TaskId, wrapSingleItemResponse } from '@packages/api'
 
 /**
- * The HttpApiBuilder.group() API is used to implement a specific group of
- * endpoints within an HttpApi definition.
- *
- * The HttpApiBuilder.group() API produces a Layer that can later be
- * provided to the server implementation.
- */
+The HttpApiBuilder.group() API is used to implement a specific group of
+endpoints within an HttpApi definition.
+
+The HttpApiBuilder.group() API produces a Layer that can later be
+provided to the server implementation.
+*/
 export const taskGroupLive = HttpApiBuilder.group(Api, 'tasks', (handlers) =>
   handlers.handle('getTaskById', ({ params }) =>
     Effect.succeed(

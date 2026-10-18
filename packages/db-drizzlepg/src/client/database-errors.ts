@@ -29,10 +29,10 @@ export class DatabaseError extends Data.TaggedError('DatabaseError')<{
 }
 
 /**
- * `@effect/sql-pg` already classifies PostgreSQL error codes into a
- * `SqlErrorReason`, so only the cases it does not distinguish (foreign key vs.
- * other integrity violations) need the raw `pg` error code.
- */
+`@effect/sql-pg` already classifies PostgreSQL error codes into a
+`SqlErrorReason`, so only the cases it does not distinguish (foreign key vs.
+other integrity violations) need the raw `pg` error code.
+*/
 const pgCodeOf = (cause: unknown): string | undefined => {
   if (typeof cause !== 'object' || cause === null || !('code' in cause)) {
     return undefined
@@ -53,20 +53,20 @@ const matchSqlErrorReason = (reason: SqlError.SqlErrorReason): DatabaseErrorType
   )
 
 /**
- * Drizzle's Effect session wraps the underlying failure in a `Cause` before
- * attaching it to `EffectDrizzleQueryError.cause`, so it has to be squashed
- * back out to reach the `SqlError`.
- */
+Drizzle's Effect session wraps the underlying failure in a `Cause` before
+attaching it to `EffectDrizzleQueryError.cause`, so it has to be squashed
+back out to reach the `SqlError`.
+*/
 const sqlErrorOf = (cause: unknown): SqlError.SqlError | undefined => {
   const squashed = Cause.isCause(cause) ? Cause.squash(cause) : cause
   return SqlError.isSqlError(squashed) ? squashed : undefined
 }
 
 /**
- * Maps the errors surfaced by the Effect Drizzle driver onto this package's
- * tagged errors. Query errors arrive as `EffectDrizzleQueryError` (carrying the
- * SQL and params); connection and client-level failures arrive as `SqlError`.
- */
+Maps the errors surfaced by the Effect Drizzle driver onto this package's
+tagged errors. Query errors arrive as `EffectDrizzleQueryError` (carrying the
+SQL and params); connection and client-level failures arrive as `SqlError`.
+*/
 export const toDatabaseError = (
   error: EffectDrizzleQueryError | SqlError.SqlError,
 ): DatabaseConnectionError | DatabaseError => {

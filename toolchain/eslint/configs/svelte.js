@@ -4,11 +4,11 @@ import { config, parser } from 'typescript-eslint'
 import typescriptConfig from './typescript.js'
 
 /**
- * eslint-plugin-svelte
- *
- * ESLint plugin for Svelte using AST
- * https://github.com/sveltejs/eslint-plugin-svelte
- */
+eslint-plugin-svelte
+
+ESLint plugin for Svelte using AST
+https://github.com/sveltejs/eslint-plugin-svelte
+*/
 export default config(
   ...plugin.configs.recommended,
   {

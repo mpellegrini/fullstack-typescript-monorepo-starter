@@ -2,11 +2,11 @@ import plugin from 'eslint-plugin-unicorn'
 import { config } from 'typescript-eslint'
 
 /**
- * eslint-plugin-unicorn configuration
- *
- * More than 100 powerful ESLint rules.
- * https://github.com/sindresorhus/eslint-plugin-unicorn
- */
+eslint-plugin-unicorn configuration
+
+More than 100 powerful ESLint rules.
+https://github.com/sindresorhus/eslint-plugin-unicorn
+*/
 export default config(
   //
   plugin.configs.recommended,
@@ -15,19 +15,19 @@ export default config(
 
     rules: {
       /**
-       * Use destructured variables over properties.
-       *
-       * 🔧 Fixable - https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/consistent-destructuring.md
-       *
-       */
+      Use destructured variables over properties.
+
+      🔧 Fixable - https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/consistent-destructuring.md
+
+      */
       'unicorn/consistent-destructuring': ['error'],
 
       /**
-       * Enforce correct Error subclassing.
-       *
-       * 🔧 Partially Fixable  - https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/custom-error-definition.md
-       *
-       */
+      Enforce correct Error subclassing.
+
+      🔧 Partially Fixable  - https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/custom-error-definition.md
+
+      */
       'unicorn/custom-error-definition': ['error'],
 
       // Turn off the following recommended rules
@@ -37,6 +37,20 @@ export default config(
       'unicorn/no-null': 'off',
       'unicorn/prevent-abbreviations': 'off',
       'unicorn/require-module-specifiers': 'off',
+
+      // Flat-config helpers that only transform and return config objects.
+      'unicorn/no-top-level-side-effects': [
+        'error',
+        {
+          allow: {
+            '@eslint/compat': ['fixupPluginRules'],
+            '@toolchain/vite': ['defineNodeBuildConfig', 'mergeConfig'],
+            '@toolchain/vitest': ['defineTestConfig'],
+            'drizzle-kit': ['defineConfig'],
+            'typescript-eslint': ['config'], // TODO: this should be removed after moving to defineConfig()
+          },
+        },
+      ],
     },
   },
 )

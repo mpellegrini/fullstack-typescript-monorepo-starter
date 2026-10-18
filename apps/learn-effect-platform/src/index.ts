@@ -1,7 +1,7 @@
 /**
- * You can only access "request level" context after a service is constructed.
- * That is generally the only time putting "requirements" into service methods is ok.
- */
+You can only access "request level" context after a service is constructed.
+That is generally the only time putting "requirements" into service methods is ok.
+*/
 
 import type { PutItemCommandInput } from '@aws-sdk/client-dynamodb'
 
@@ -143,9 +143,9 @@ class TasksService extends Context.Service<TasksService, TasksServiceImpl>()('Ta
 }
 
 /**
- * Middleware wraps the endpoint's response effect: the security handler receives
- * the decoded credential and provides `CallerContext` to everything downstream.
- */
+Middleware wraps the endpoint's response effect: the security handler receives
+the decoded credential and provides `CallerContext` to everything downstream.
+*/
 const AuthorizationLive = Layer.succeed(Authorization)(
   Authorization.of({
     apiKey: Effect.fn(function* (httpEffect, { credential }) {
@@ -163,9 +163,9 @@ const AuthorizationLive = Layer.succeed(Authorization)(
 )
 
 /**
- * A pre-response handler runs once the response is ready, so the header is set on
- * every response the endpoint produces, including the ones raised by other middleware.
- */
+A pre-response handler runs once the response is ready, so the header is set on
+every response the endpoint produces, including the ones raised by other middleware.
+*/
 const PoweredByMiddlewareLive = Layer.succeed(PoweredByMiddleware)((httpEffect) =>
   Effect.andThen(
     HttpEffect.appendPreResponseHandler((_req, res) =>
@@ -223,9 +223,9 @@ const DocsRoute = HttpApiScalar.layer(MyApi, { path: '/docs' })
 const AllRoutes = Layer.mergeAll(ApiRoutes, DocsRoute, HttpRouter.cors())
 
 /**
- * `HttpRouter.serve` installs the request logger and logs the listen address,
- * so `HttpMiddleware.logger` and `HttpServer.withLogAddress` are not wired in here.
- */
+`HttpRouter.serve` installs the request logger and logs the listen address,
+so `HttpMiddleware.logger` and `HttpServer.withLogAddress` are not wired in here.
+*/
 HttpRouter.serve(AllRoutes).pipe(
   Layer.provide(NodeHttpServer.layer(createServer, { port: 3000 })),
   Layer.provide(NodeSdkLive),

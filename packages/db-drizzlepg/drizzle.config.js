@@ -2,38 +2,38 @@ import { defineConfig } from 'drizzle-kit'
 
 export default defineConfig({
   /**
-   * https://orm.drizzle.team/kit-docs/config-reference#out
-   */
+  https://orm.drizzle.team/kit-docs/config-reference#out
+  */
   out: './src/migrations',
 
   /**
-   * https://orm.drizzle.team/kit-docs/config-reference#schema
-   */
+  https://orm.drizzle.team/kit-docs/config-reference#schema
+  */
   schema: './src/schema/index.ts',
 
   /**
-   * https://orm.drizzle.team/kit-docs/config-reference#breakpoints
-   */
+  https://orm.drizzle.team/kit-docs/config-reference#breakpoints
+  */
   breakpoints: false,
 
   /**
-   * https://orm.drizzle.team/kit-docs/config-reference#verbose
-   */
+  https://orm.drizzle.team/kit-docs/config-reference#verbose
+  */
   verbose: true,
 
   /**
-   * https://orm.drizzle.team/kit-docs/config-reference#schemafilter
-   */
+  https://orm.drizzle.team/kit-docs/config-reference#schemafilter
+  */
   schemaFilter: ['public', 'user'],
 
   /**
-   * https://orm.drizzle.team/kit-docs/config-reference#dialect
-   */
+  https://orm.drizzle.team/kit-docs/config-reference#dialect
+  */
   dialect: 'postgresql',
 
   /**
-   * https://orm.drizzle.team/docs/drizzle-config-file#dbcredentials
-   */
+  https://orm.drizzle.team/docs/drizzle-config-file#dbcredentials
+  */
   dbCredentials: {
     url: process.env.DB_CONNECTION_STRING,
   },

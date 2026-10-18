@@ -21,16 +21,14 @@
       try {
         // If there's an API error, its message will be JSON-formatted
         const jsonError = JSON.parse(error.message) as unknown
-        if (
+        toast.error(
           typeof jsonError === 'object' &&
-          jsonError !== null &&
-          'message' in jsonError &&
-          typeof jsonError.message === 'string'
-        ) {
-          toast.error(jsonError.message)
-        } else {
-          toast.error(error.message)
-        }
+            jsonError !== null &&
+            'message' in jsonError &&
+            typeof jsonError.message === 'string'
+            ? jsonError.message
+            : error.message,
+        )
       } catch {
         toast.error(error.message)
       }

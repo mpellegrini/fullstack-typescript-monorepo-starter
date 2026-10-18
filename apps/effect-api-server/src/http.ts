@@ -24,10 +24,10 @@ const HealthRoute = HttpRouter.add('GET', '/health', HttpServerResponse.text('ok
 const allRoutes = Layer.mergeAll(HealthRoute, ApiLive, DocsLive, HttpRouter.cors())
 
 /**
- * Serves the provided application layer as an HTTP server.
- *
- * NodeHttpServer.layer() supplies the HttpServer along with the platform services
- * (NodeServices, HttpPlatform and Etag.Generator) that HttpApiBuilder.layer requires,
- * so no additional services layer needs to be provided here.
- */
+Serves the provided application layer as an HTTP server.
+
+NodeHttpServer.layer() supplies the HttpServer along with the platform services
+(NodeServices, HttpPlatform and Etag.Generator) that HttpApiBuilder.layer requires,
+so no additional services layer needs to be provided here.
+*/
 export const HttpLive = HttpRouter.serve(allRoutes).pipe(Layer.provide(ServerLive))

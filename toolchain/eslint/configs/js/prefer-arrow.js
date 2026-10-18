@@ -2,11 +2,11 @@ import plugin from 'eslint-plugin-prefer-arrow'
 import { config } from 'typescript-eslint'
 
 /**
- * eslint-plugin-prefer-arrow configuration
- *
- * ESLint plugin to prefer arrow functions.
- * https://github.com/TristonJ/eslint-plugin-prefer-arrow
- */
+eslint-plugin-prefer-arrow configuration
+
+ESLint plugin to prefer arrow functions.
+https://github.com/TristonJ/eslint-plugin-prefer-arrow
+*/
 export default config({
   name: 'eslint-config:config:js:prefer-arrow',
 

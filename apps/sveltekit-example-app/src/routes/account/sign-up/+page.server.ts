@@ -21,7 +21,6 @@ export const actions = {
   //   default: async ({ cookies, locals: { api }, request }) => {
   default: async ({ request }) => {
     const form = await superValidate(request, signUpFormAdapter)
-    if (!form.valid) return fail(StatusCodes.BAD_REQUEST, { form })
 
     /*
     const resp = await api.accounts.signup.$post({
@@ -45,6 +44,7 @@ export const actions = {
       return setError(form, 'username', await resp.text())
     }
     */
-    return message(form, 'Signup Completed')
+
+    return form.valid ? message(form, 'Signup Completed') : fail(StatusCodes.BAD_REQUEST, { form })
   },
 } satisfies Actions

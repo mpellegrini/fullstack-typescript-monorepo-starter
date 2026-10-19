@@ -18,8 +18,8 @@
     "typecheck": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
-    "@ai-sdk/openai": "4.0.94",
-    "@ai-sdk/svelte": "5.0.141",
+    "@ai-sdk/openai": "4.0.96",
+    "@ai-sdk/svelte": "5.0.143",
     "@packages/ui-lib-svelte": "workspace:*",
     "@sveltejs/adapter-auto": "8.0.0",
     "@sveltejs/kit": "3.1.0",
@@ -30,9 +30,9 @@
     "@toolchain/typescript": "workspace:*",
     "@toolchain/vitest": "workspace:*",
     "@types/node": "26.6.5",
-    "ai": "7.0.141",
+    "ai": "7.0.143",
     "svelte": "5.57.2",
-    "svelte-check": "4.7.6",
+    "svelte-check": "4.7.7",
     "svelte-sonner": "1.2.1",
     "tailwindcss": "4.3.3",
     "vite": "8.3.4",

@@ -65,7 +65,7 @@ jobs:
       # silently exfiltrate the AWS session. Audit changes no behavior; the
       # harvested endpoint list is the input to a future egress-policy: block.
       - name: Harden the runner
-        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
         with:
           egress-policy: audit
           # No step uses sudo; Trivy runs via docker on the runner's docker group.
@@ -149,7 +149,7 @@ jobs:
           trivyignores: '.trivyignore'
 
       - name: Upload Trivy scan results to GitHub Security
-        uses: github/codeql-action/upload-sarif@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
+        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
         if: always() && hashFiles('trivy-results.sarif') != '' # Upload results even if the scan fails
         with:
           sarif_file: 'trivy-results.sarif'

@@ -120,7 +120,7 @@ jobs:
       # `annotations: true` (instead of the default SARIF upload) keeps the
       # job's permissions at contents: read.
       - name: Run zizmor
-        uses: zizmorcore/zizmor-action@cc914d7f3750a2d13d75c7f184a1060aa0e9d482 # v0.6.4
+        uses: zizmorcore/zizmor-action@85b2b9fb8e3325e7a23d7d0a9d7ba5ae0f999e3e # v0.7.1
         with:
           # Pinned zizmor version so a new release with new audits can't start
           # failing unrelated PRs; bump deliberately.

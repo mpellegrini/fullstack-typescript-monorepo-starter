@@ -15,7 +15,7 @@ runs:
     # pnpm blocks install scripts by default; only the allowBuilds allowlist
     # in pnpm-workspace.yaml runs, matching the Dockerfile.
     - name: Set up pnpm, Node.js and install dependencies
-      uses: pnpm/setup@a0881977cd8ea73b1ed212236c99ca10dcc80cf4 # v3.1.1
+      uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
       with:
         cache: true
         require-lockfile: true

@@ -23,9 +23,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@effect/sql-pg": "4.0.5",
+    "@effect/sql-pg": "4.0.6",
     "drizzle-orm": "1.0.0-rc.5-5935859",
-    "effect": "4.0.5",
+    "effect": "4.0.6",
     "pg-error-enum": "2.0.1",
     "sql-formatter": "15.9.0"
   },

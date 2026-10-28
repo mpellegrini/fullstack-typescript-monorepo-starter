@@ -54,6 +54,8 @@ jobs:
       id-token: write # assume the AWS role via OIDC
       security-events: write # upload SARIF to GitHub Security tab
     env:
+      # Single source of truth for the Trivy CLI version used by every scan step.
+      TRIVY_VERSION: v0.76.1
       # ghcr.io rate-limits the Trivy DBs hard under CI fan-out (every matrix
       # leg pulls them). Prefer the ECR Public mirror, fall back to ghcr.
       TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db,ghcr.io/aquasecurity/trivy-db
@@ -141,6 +143,7 @@ jobs:
           TRIVY_PLATFORM: linux/amd64
         with:
           image-ref: ${{ env.AMD64_REF }}
+          version: ${{ env.TRIVY_VERSION }}
           scanners: 'vuln,secret,misconfig'
           format: 'sarif'
           output: 'trivy-results.sarif'
@@ -168,6 +171,7 @@ jobs:
           TRIVY_PLATFORM: linux/amd64
         with:
           image-ref: ${{ env.AMD64_REF }}
+          version: ${{ env.TRIVY_VERSION }}
           scanners: 'vuln'
           format: 'table'
           severity: ${{ inputs.severity_threshold }}
@@ -186,6 +190,7 @@ jobs:
           TRIVY_PLATFORM: linux/arm64
         with:
           image-ref: ${{ env.ARM64_REF }}
+          version: ${{ env.TRIVY_VERSION }}
           scanners: 'vuln'
           format: 'table'
           severity: ${{ inputs.severity_threshold }}
@@ -201,6 +206,7 @@ jobs:
           TRIVY_PLATFORM: linux/amd64
         with:
           image-ref: ${{ env.AMD64_REF }}
+          version: ${{ env.TRIVY_VERSION }}
           scanners: 'misconfig,secret'
           format: 'table'
           exit-code: '1'

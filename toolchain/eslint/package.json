@@ -27,7 +27,7 @@
     "eslint-plugin-svelte": "3.23.1",
     "eslint-plugin-turbo": "2.11.10",
     "eslint-plugin-unicorn": "79.0.0",
-    "typescript-eslint": "8.72.0"
+    "typescript-eslint": "8.72.1"
   },
   "devDependencies": {
     "globals": "17.13.0"

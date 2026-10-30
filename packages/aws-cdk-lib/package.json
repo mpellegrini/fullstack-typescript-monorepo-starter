@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "aws-cdk-lib": "2.274.0",
+    "aws-cdk-lib": "2.275.0",
     "change-case": "5.4.4",
     "constructs": "10.8.1"
   },

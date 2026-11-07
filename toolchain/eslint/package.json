@@ -17,19 +17,19 @@
     "@eslint/js": "10.0.1",
     "@microsoft/eslint-formatter-sarif": "3.1.0",
     "@vitest/eslint-plugin": "1.6.28",
-    "eslint": "10.13.0",
+    "eslint": "10.14.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-import-resolver-typescript": "4.4.5",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-perfectionist": "5.13.0",
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-promise": "7.3.0",
-    "eslint-plugin-svelte": "3.23.1",
+    "eslint-plugin-svelte": "3.24.0",
     "eslint-plugin-turbo": "2.11.10",
     "eslint-plugin-unicorn": "79.0.0",
     "typescript-eslint": "8.72.1"
   },
   "devDependencies": {
-    "globals": "17.13.0"
+    "globals": "17.14.0"
   }
 }

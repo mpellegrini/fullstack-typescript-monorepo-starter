@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@hono/zod-openapi": "1.6.3",
-    "@scalar/hono-api-reference": "0.12.14",
-    "hono": "4.13.14",
+    "@scalar/hono-api-reference": "0.12.17",
+    "hono": "4.13.16",
     "http-status-codes": "2.3.0",
     "zod": "4.6.7"
   },
@@ -25,6 +25,6 @@
     "@toolchain/eslint": "workspace:*",
     "@toolchain/typescript": "workspace:*",
     "@toolchain/vitest": "workspace:*",
-    "@types/node": "26.6.5"
+    "@types/node": "26.6.6"
   }
 }

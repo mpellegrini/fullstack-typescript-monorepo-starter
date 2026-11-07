@@ -21,6 +21,6 @@
     "@toolchain/eslint": "workspace:*",
     "@toolchain/typescript": "workspace:*",
     "@toolchain/vitest": "workspace:*",
-    "aws-cdk": "2.1146.1"
+    "aws-cdk": "2.1147.0"
   }
 }

@@ -31,9 +31,7 @@
     </span>
     {#if childrenProp}
       {@render childrenProp({
-        /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- false positive */
         highlighted,
-        /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- false positive */
         selected,
       })}
     {:else}

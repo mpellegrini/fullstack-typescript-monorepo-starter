@@ -28,7 +28,7 @@ jobs:
   # scan → publish chain, plus a has_apps flag so the chain skips cleanly when
   # empty.
   deploy-matrix:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 5
     permissions:
       contents: read

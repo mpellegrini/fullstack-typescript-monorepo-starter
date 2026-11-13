@@ -23,7 +23,7 @@
     "@sveltejs/kit": "3.1.1",
     "@sveltejs/load-config": "0.2.3",
     "@sveltejs/vite-plugin-svelte": "7.3.1",
-    "@tailwindcss/vite": "4.3.4",
+    "@tailwindcss/vite": "4.3.5",
     "@toolchain/eslint": "workspace:*",
     "@toolchain/typescript": "workspace:*",
     "@toolchain/vitest": "workspace:*",
@@ -32,8 +32,8 @@
     "home-assistant-js-websocket": "9.8.1",
     "svelte": "5.57.3",
     "svelte-check": "4.7.8",
-    "tailwindcss": "4.3.4",
-    "vite": "8.3.5",
-    "ws": "8.22.1"
+    "tailwindcss": "4.3.5",
+    "vite": "8.3.7",
+    "ws": "8.22.2"
   }
 }

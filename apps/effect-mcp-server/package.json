@@ -23,7 +23,7 @@
     "effect": "4.0.6"
   },
   "devDependencies": {
-    "@modelcontextprotocol/inspector": "2.13.0",
+    "@modelcontextprotocol/inspector": "2.14.0",
     "@toolchain/eslint": "workspace:*",
     "@toolchain/typescript": "workspace:*",
     "@toolchain/vite": "workspace:*",

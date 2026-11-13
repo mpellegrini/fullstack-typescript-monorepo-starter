@@ -20,7 +20,7 @@ jobs:
   # file list, so it skips 'prepare' entirely — no install is needed, and this
   # job gates the three checks below.
   detect-changes:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 5
     permissions:
       contents: read
@@ -61,7 +61,7 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.deps-changed == 'true'
     name: One Version Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     permissions:
       contents: read
@@ -82,7 +82,7 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.deps-changed == 'true'
     name: Duplicate Dependencies Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     permissions:
       contents: read
@@ -103,7 +103,7 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.github-changed == 'true'
     name: Workflow Security
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     permissions:
       contents: read
@@ -148,7 +148,7 @@ jobs:
     # only fails on jobs listed here, so any NEW health check added above must
     # also be added here — otherwise its failures silently stop blocking merges.
     needs: [detect-changes, one-version-check, duplicate-dependencies-check, workflow-security]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 5
     permissions: {}
     steps:

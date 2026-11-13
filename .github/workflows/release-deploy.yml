@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   verify-provenance:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 5
     steps:
       # Derive the release bot's login from the App credentials (same single
@@ -76,7 +76,7 @@ jobs:
 
   deploy:
     needs: verify-provenance
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 5
     steps:
       - name: Echo release payload

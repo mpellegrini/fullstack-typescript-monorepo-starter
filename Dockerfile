@@ -49,7 +49,8 @@ ENV NODE_ENV=production
 # Left root-owned deliberately: the app only reads its own files, and the nonroot
 # runtime user must not be able to modify them
 COPY --from=builder /repo/out/ .
-USER nonroot
+# Numeric uid:gid of distroless's `nonroot` user, so Kubernetes `runAsNonRoot` can verify it
+USER 65532:65532
 
 ARG APP_NAME=unknown
 ARG VERSION=unknown

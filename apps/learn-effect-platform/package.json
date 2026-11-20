@@ -18,7 +18,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.1168.0",
+    "@aws-sdk/client-dynamodb": "3.1170.0",
     "@effect-aws/client-dynamodb": "2.0.0",
     "@effect/opentelemetry": "4.1.4",
     "@effect/platform-node": "4.1.4",

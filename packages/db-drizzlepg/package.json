@@ -35,6 +35,6 @@
     "@toolchain/typescript": "workspace:*",
     "@toolchain/vitest": "workspace:*",
     "drizzle-dbml-generator": "0.10.0",
-    "drizzle-kit": "1.0.0-rc.5-ab785fc"
+    "drizzle-kit": "1.0.0-rc.5-5935859"
   }
 }

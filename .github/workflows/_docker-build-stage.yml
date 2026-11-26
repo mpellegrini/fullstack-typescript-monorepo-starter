@@ -70,7 +70,7 @@ jobs:
       # silently exfiltrate the AWS session. Audit changes no behavior; the
       # harvested endpoint list is the input to a future egress-policy: block.
       - name: Harden the runner
-        uses: step-security/harden-runner@1d88384fd173af6ecb012dfd0264a306b711241a # v2.22.4
+        uses: step-security/harden-runner@aebdcf6156ab6691adf63218240e476564a1ed4c # v2.23.0
         with:
           egress-policy: audit
           # No step uses sudo; docker/buildx run via the runner's docker group.
@@ -102,7 +102,7 @@ jobs:
 
       - name: Log in to Amazon ECR
         id: ecr-login
-        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # v2.1.7
+        uses: aws-actions/amazon-ecr-login@7290e214a610b32bc0eef81748948b6d466a8783 # v2.2.0
 
       # The ECR repository (with its lifecycle rules, scan config, and policies)
       # must be provisioned out-of-band via IaC — CI does NOT create it. Verify it
